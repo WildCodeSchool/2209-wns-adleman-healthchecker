@@ -8,5 +8,7 @@ RUN npm i -g pnpm
 RUN pnpm i
 
 COPY src src
+COPY tsconfig.json tsconfig.json
+COPY nodemon.json nodemon.json
 
-CMD npm run start
+CMD npm run dev

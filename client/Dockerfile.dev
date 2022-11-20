@@ -13,4 +13,4 @@ COPY public public
 COPY codegen.yml codegen.yml
 COPY src src
 
-CMD npm run start
+CMD npm run dev
