@@ -1,10 +1,11 @@
 import React from "react";
 import "./App.css";
+import Home from "./views/Home";
 
 function App() {
   return (
     <div className="App">
-      <h1>Health-Checker</h1>
+      <Home />
     </div>
   );
 }
