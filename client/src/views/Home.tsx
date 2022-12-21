@@ -1,10 +1,35 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Button, TextField } from "@mui/material";
 
-export default function SimpleContainer() {
+export default function Home() {
+  const [url, setUrl] = useState("");
+  const [isValid, setIsValid] = useState(true);
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUrl(e.target.value);
+  };
+
+  useEffect(() => {
+    const urlPattern =
+      /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
+
+    const reg = new RegExp(urlPattern);
+    if (url.length === 0) {
+      return;
+    }
+    if (!reg.test(url)) {
+      setIsValid(false);
+      setIsDisabled(true);
+    } else {
+      setIsValid(true);
+      setIsDisabled(false);
+    }
+  }, [url]);
+
   return (
     <React.Fragment>
       <CssBaseline />
@@ -41,6 +66,17 @@ export default function SimpleContainer() {
               id="input-URL"
               label="Saisir l'URL"
               variant="outlined"
+              value={url}
+              onChange={handleValidation}
+              error={!isValid}
+              required={true}
+              helperText={
+                url.length === 0
+                  ? "Veuillez saisir une URL"
+                  : isValid
+                  ? ""
+                  : "Votre URL n'est pas valide"
+              }
               sx={{
                 display: "flex",
                 width: "80%",
@@ -67,6 +103,7 @@ export default function SimpleContainer() {
             />
             <Button
               variant="contained"
+              disabled={isDisabled || !isValid}
               sx={{
                 display: "flex",
                 margin: "0 auto",
