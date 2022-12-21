@@ -9,6 +9,7 @@ import { env } from "./environment";
 import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
+import { ResponseResolver } from "./resolver/ResponseResolver";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
@@ -17,7 +18,7 @@ const start = async (): Promise<void> => {
   const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
-    resolvers: [UrlResolver],
+    resolvers: [UrlResolver, ResponseResolver],
   });
 
   const server = new ApolloServer({
