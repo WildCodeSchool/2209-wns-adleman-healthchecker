@@ -12,5 +12,6 @@ COPY tsconfig.json tsconfig.json
 COPY public public
 COPY codegen.yml codegen.yml
 COPY src src
+COPY .env .env
 
-CMD npm run dev
+CMD pnpm dev

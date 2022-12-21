@@ -10,5 +10,6 @@ RUN pnpm i
 COPY src src
 COPY tsconfig.json tsconfig.json
 COPY nodemon.json nodemon.json
+COPY .env .env
 
-CMD npm run dev
+CMD pnpm dev
