@@ -1,5 +1,6 @@
 import { DataSource } from "typeorm";
 import Url from "./entity/Url";
+import Response from "./entity/Response";
 import { env } from "./environment";
 
 export default new DataSource({
@@ -10,6 +11,6 @@ export default new DataSource({
   password: env.POSTGRES_PASSWORD,
   database: env.POSTGRES_DATABASE,
   synchronize: true,
-  entities: [Url],
+  entities: [Url, Response],
   logging: ["query", "error"],
 });
