@@ -1,0 +1,7 @@
+mutation createUrl($url: createUrlInput!) {
+  createUrl(url: $url) {
+    created_at
+    id
+    url
+  }
+}

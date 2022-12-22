@@ -1,0 +1,9 @@
+query Query {
+  getResponses {
+    created_at
+    id
+    latency
+    response_status
+    url_id
+  }
+}
