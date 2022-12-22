@@ -5,8 +5,7 @@ test("can view form on homepage", async ({ page }) => {
   await database.initialize();
 
   await page.goto("/");
-
-  await expect(page.getByTestId("form-URL")).toContainText(
-    "Veuillez saisir une URL"
-  );
+  await page.getByLabel("Saisir l'URL *").click();
+  await page.getByLabel("Saisir l'URL *").fill("https://www.facebook.com");
+  await page.getByTestId("form-button-test").click();
 });
