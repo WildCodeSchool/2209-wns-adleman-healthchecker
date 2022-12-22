@@ -5,11 +5,11 @@ import { env } from "./environment";
 
 export default new DataSource({
   type: "postgres",
-  host: "database",
+  host: env.DATABASE_HOST,
   port: 5432,
-  username: env.POSTGRES_USER,
-  password: env.POSTGRES_PASSWORD,
-  database: env.POSTGRES_DATABASE,
+  username: "postgres",
+  password: "postgres",
+  database: "postgres",
   synchronize: true,
   entities: [Url, Response],
   logging: ["query", "error"],
