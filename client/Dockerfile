@@ -1,5 +1,7 @@
 FROM node:lts-alpine
 
+RUN apk --no-cache add curl
+
 RUN mkdir /app
 WORKDIR /app
 COPY package*.json ./
@@ -12,5 +14,6 @@ COPY tsconfig.json tsconfig.json
 COPY public public
 COPY codegen.yml codegen.yml
 COPY src src
+COPY .env .env
 
-CMD npm run start
+CMD pnpm dev

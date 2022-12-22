@@ -10,12 +10,25 @@ import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import { ResponseResolver } from "./resolver/ResponseResolver";
+import cors from "cors";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
 
   const app = express();
   const httpServer = http.createServer(app);
+  const allowedOrigins = env.CORS_ALLOWED_ORIGINS.split(",");
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: (origin, callback) => {
+        if (typeof origin === "undefined" || allowedOrigins.includes(origin))
+          return callback(null, true);
+        callback(new Error("Not allowed by CORS"));
+      },
+    })
+  );
 
   const schema = await buildSchema({
     resolvers: [UrlResolver, ResponseResolver],
