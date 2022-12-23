@@ -4,10 +4,17 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Button, TextField } from "@mui/material";
 
+import {
+  Url as UrlType,
+  useCreateUrlMutation,
+} from "../graphql/generated/schema";
+
 export default function Home() {
   const [url, setUrl] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+
+  const [createUrl] = useCreateUrlMutation();
 
   const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUrl(e.target.value);
@@ -29,6 +36,18 @@ export default function Home() {
       setIsDisabled(false);
     }
   }, [url]);
+
+  const handleValidate = async () => {
+    console.log(url);
+    console.log(isValid);
+    if (isValid && url) {
+      try {
+        await createUrl({ variables: { url: { url } } });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
   return (
     <React.Fragment>
@@ -104,6 +123,7 @@ export default function Home() {
             <Button
               variant="contained"
               disabled={isDisabled || !isValid}
+              onClick={handleValidate}
               sx={{
                 display: "flex",
                 margin: "0 auto",

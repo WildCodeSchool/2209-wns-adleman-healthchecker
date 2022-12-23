@@ -10,12 +10,16 @@ import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import { ResponseResolver } from "./resolver/ResponseResolver";
+import cors from "cors";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
 
   const app = express();
   const httpServer = http.createServer(app);
+
+  const corsOptions = { credentials: true, origin: true };
+  app.use(cors(corsOptions));
 
   const schema = await buildSchema({
     resolvers: [UrlResolver, ResponseResolver],
@@ -32,6 +36,7 @@ const start = async (): Promise<void> => {
   });
 
   await server.start();
+
   server.applyMiddleware({ app, cors: false, path: "/" });
   httpServer.listen({ port: env.SERVER_PORT }, () =>
     console.log(`🚀 Server ready at ${env.SERVER_HOST}:${env.SERVER_PORT}`)

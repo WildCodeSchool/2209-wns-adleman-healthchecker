@@ -1,0 +1,7 @@
+query GetUrls {
+  getUrls {
+    created_at
+    id
+    url
+  }
+}
