@@ -4,31 +4,22 @@ import {
 } from "apollo-server-core";
 import { ApolloServer } from "apollo-server-express";
 import http from "http";
-import express from "express";
+import express, { Router } from "express";
 import { env } from "./environment";
-import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import { ResponseResolver } from "./resolver/ResponseResolver";
-import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { apiDocumentation } from "../docs/apidoc";
 
 const start = async (): Promise<void> => {
-  await datasource.initialize();
-
+  const router = Router();
   const app = express();
-  const httpServer = http.createServer(app);
-  const allowedOrigins = env.CORS_ALLOWED_ORIGINS.split(",");
+  app.use(router);
 
-  app.use(
-    cors({
-      credentials: true,
-      origin: (origin, callback) => {
-        if (typeof origin === "undefined" || allowedOrigins.includes(origin))
-          return callback(null, true);
-        callback(new Error("Not allowed by CORS"));
-      },
-    })
-  );
+  router.post("/users");
+
+  const httpServer = http.createServer(app);
 
   const schema = await buildSchema({
     resolvers: [UrlResolver, ResponseResolver],
@@ -44,11 +35,12 @@ const start = async (): Promise<void> => {
     ],
   });
 
+  app.use("/documentation", swaggerUi.serve, swaggerUi.setup(apiDocumentation));
+
   await server.start();
-  server.applyMiddleware({ app, cors: false, path: "/" });
   httpServer.listen({ port: env.SERVER_PORT }, () =>
     console.log(`🚀 Server ready at ${env.SERVER_HOST}:${env.SERVER_PORT}`)
   );
 };
-
+console.log("hello world");
 void start();
