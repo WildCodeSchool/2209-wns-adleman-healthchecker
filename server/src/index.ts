@@ -17,6 +17,18 @@ const start = async (): Promise<void> => {
 
   const app = express();
   const httpServer = http.createServer(app);
+  const allowedOrigins = env.CORS_ALLOWED_ORIGINS.split(",");
+
+  app.use(
+    cors({
+      credentials: true,
+      origin: (origin, callback) => {
+        if (typeof origin === "undefined" || allowedOrigins.includes(origin))
+          return callback(null, true);
+        callback(new Error("Not allowed by CORS"));
+      },
+    })
+  );
 
   const corsOptions = { credentials: true, origin: true };
   app.use(cors(corsOptions));
