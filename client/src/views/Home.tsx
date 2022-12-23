@@ -3,6 +3,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import UrlForm from "../components/UrlForm";
+import UrlList from "../components/UrlList";
 
 export default function Home() {
   return (
@@ -45,17 +46,7 @@ export default function Home() {
             }}
           ></Box>
         </Box>
-        <Box
-          sx={{
-            display: "flex",
-            bgcolor: "#DECEFD",
-            height: "50vh",
-            borderRadius: "10px",
-            justifyContent: "center",
-          }}
-        >
-          <h2>Liste des URL</h2>
-        </Box>
+        <UrlList />
       </Container>
     </React.Fragment>
   );
