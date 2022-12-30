@@ -4,8 +4,13 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import UrlForm from "../components/UrlForm";
 import UrlList from "../components/UrlList";
+import { useState } from "react";
 
 export default function Home() {
+  const [dataFormUrl, setData] = useState("");
+  const getFormUrl = (url: string) => {
+    setData(url);
+  };
   return (
     <React.Fragment>
       <CssBaseline />
@@ -36,7 +41,7 @@ export default function Home() {
             flexWrap: "wrap",
           }}
         >
-          <UrlForm />
+          <UrlForm getFormUrl={getFormUrl} />
           <Box
             sx={{
               width: "33%",
@@ -46,7 +51,7 @@ export default function Home() {
             }}
           ></Box>
         </Box>
-        <UrlList />
+        <UrlList dataFormUrl={dataFormUrl} />
       </Container>
     </React.Fragment>
   );

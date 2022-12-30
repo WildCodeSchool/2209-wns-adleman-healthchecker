@@ -4,6 +4,5 @@ query Query {
     id
     latency
     response_status
-    url_id
   }
 }

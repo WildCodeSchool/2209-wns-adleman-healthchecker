@@ -10,47 +10,75 @@ import { UrlService } from "../services/UrlService";
 export class UrlResolver {
   @Query(() => [Url])
   async getUrls(): Promise<Url[]> {
-    return await datasource.getRepository(Url).find();
+    return await datasource
+      .getRepository(Url)
+      .find({ relations: ["responses"] });
   }
 
   @Mutation(() => Url)
-  async createUrl(@Arg("url") url: createUrlInput): Promise<Response> {
-    console.log("-------------------------------------");
-    console.log(url.url);
+  async createUrl(@Arg("url") url: createUrlInput): Promise<Url> {
+    const urlService = new UrlService();
 
-    /// VALIDATION URL
-    /// REGEX
-    /// FORMAT
+    const urlValid = await urlService.checkIfUrlIsValid(url.url);
+    if (!urlValid) throw new ApolloError("Url is not valid");
 
-    const urlExist = await datasource
+    const urlWithNewFormat = await urlService.formatUrl(url.url);
+    const { href: urlFormatted } = urlWithNewFormat;
+
+    const urlAlreadyExist = await datasource
       .getRepository(Url)
-      .findOneBy({ url: url.url });
+      .findOneBy({ url: urlFormatted });
 
-    const service = new UrlService();
-    const responseService = await service.getResponse(url.url);
-    console.log("La reponse");
-    console.log(responseService);
+    if (urlAlreadyExist === null) {
+      const newUrlCreated = await datasource
+        .getRepository(Url)
+        .save({ url: urlFormatted });
 
-    let urlId = null;
+      const responseWithNewUrlCreated = await urlService.getResponseForUrl(
+        urlFormatted,
+        newUrlCreated.id
+      );
 
-    if (urlExist === null) {
-      const urlAdded = await datasource.getRepository(Url).save(url);
-      console.log("URL N'EXISTE PAS");
-      console.log(urlAdded);
+      await datasource.getRepository(Response).save({
+        urlId: newUrlCreated.id,
+        response_status: responseWithNewUrlCreated.response_status,
+        latency: responseWithNewUrlCreated.latency,
+      });
 
-      if (urlAdded !== null) urlId = urlAdded.id;
+      const urlWithResponses = await datasource.getRepository(Url).findOne({
+        where: { id: responseWithNewUrlCreated.id },
+        relations: ["responses"],
+      });
+
+      if (urlWithResponses === null)
+        throw new ApolloError("Error while saving new Url");
+
+      return urlWithResponses;
+    } else {
+      const responseFromExistingUrl = await urlService.getResponseForUrl(
+        urlFormatted,
+        urlAlreadyExist.id
+      );
+
+      await datasource.getRepository(Response).save({
+        urlId: urlAlreadyExist.id,
+        response_status: responseFromExistingUrl.response_status,
+        latency: responseFromExistingUrl.latency,
+      });
+
+      const urlAlreadyExistWithResponses = await datasource
+        .getRepository(Url)
+        .findOne({
+          where: { id: responseFromExistingUrl.id },
+          relations: ["responses"],
+        });
+
+      if (urlAlreadyExistWithResponses === null)
+        throw new ApolloError(
+          "Error while getting responses from existing Url"
+        );
+
+      return urlAlreadyExistWithResponses;
     }
-
-    if (urlExist !== null) urlId = urlExist.id;
-
-    if (urlId === null) throw new ApolloError("Response not added");
-
-    const response = {
-      url_id: urlId,
-      response_status: responseService.response_status,
-      latency: responseService.latency,
-    };
-
-    return await datasource.getRepository(Response).save(response);
   }
 }
