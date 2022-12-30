@@ -11,7 +11,7 @@ import Url from "./Url";
 @InputType()
 export class createResponseInput {
   @Field()
-  url_id: number;
+  urlId: number;
 
   @Field()
   response_status: number;
@@ -29,10 +29,6 @@ class Response {
 
   @Column()
   @Field()
-  url_id: number;
-
-  @Column()
-  @Field()
   response_status: number;
 
   @Column()
@@ -42,6 +38,9 @@ class Response {
   @CreateDateColumn()
   @Field()
   created_at: Date;
+
+  @Column()
+  urlId: number;
 
   @ManyToOne(() => Url, (u) => u.responses)
   url: Url;

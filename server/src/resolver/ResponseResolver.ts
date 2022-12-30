@@ -17,7 +17,7 @@ export class ResponseResolver {
   ): Promise<Response> {
     const urlExist = await datasource
       .getRepository(Url)
-      .findOneBy({ id: response.url_id });
+      .findOneBy({ id: response.urlId });
 
     if (urlExist === null)
       throw new ApolloError("Url id not found", "NOT_FOUND");
