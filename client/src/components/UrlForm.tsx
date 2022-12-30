@@ -4,7 +4,7 @@ import { Button, TextField } from "@mui/material";
 
 import { useCreateUrlMutation } from "../graphql/generated/schema";
 
-export default function UrlForm() {
+export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
   const [url, setUrl] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -38,9 +38,12 @@ export default function UrlForm() {
         await createUrl({ variables: { url: { url } } });
       } catch (err) {
         console.error(err);
+      } finally {
+        getFormUrl(url);
       }
     }
   };
+
   return (
     <Box>
       <h3>Ici, vous pouvez entrer votre URL pour vérifier l'état :</h3>

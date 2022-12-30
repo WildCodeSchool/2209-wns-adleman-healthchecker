@@ -1,26 +1,26 @@
-import { useState } from "react";
 import { DataGrid, GridRowsProp, GridColDef } from "@mui/x-data-grid";
+import { useEffect } from "react";
 import { useGetUrlsQuery } from "../graphql/generated/schema";
 
 const columns: GridColDef[] = [
-  { field: "col1", headerName: "Adresse web", width: 150 },
-  { field: "col2", headerName: "Date de création", width: 150 },
+  { field: "col1", headerName: "Adresse web", width: 300 },
+  { field: "col2", headerName: "Date de création", width: 300 },
 ];
-export default function UrlList() {
-  const [tableData, setTableData] = useState([]);
+export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
+  const { data, refetch } = useGetUrlsQuery();
+  const urlList = data?.getUrls;
 
-  const { data, loading, error, refetch } = useGetUrlsQuery({
-    variables: {},
-  });
+  useEffect(() => {
+    refetch();
+  }, [dataFormUrl, refetch]);
 
-  const tableInfo = data?.getUrls;
-  //   const newTbaleInfo = { id: data?.getUrls, url, created_at };
+  if (!urlList) return <div>En cours de chargement</div>;
 
-  const rows: GridRowsProp = [
-    { id: 1, col1: "DataGridPro", col2: "World" },
-    { id: 2, col1: "DataGridPro", col2: "is Awesome" },
-    { id: 3, col1: "MUI", col2: "is Amazing" },
-  ];
+  const rows: GridRowsProp = urlList.map((u) => ({
+    id: u.id,
+    col1: u.url,
+    col2: u.created_at,
+  }));
 
   return (
     <div style={{ height: 300, width: "100%" }}>

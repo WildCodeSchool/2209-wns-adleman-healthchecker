@@ -44,20 +44,20 @@ export type Response = {
   id: Scalars['Float'];
   latency: Scalars['Float'];
   response_status: Scalars['Float'];
-  url_id: Scalars['Float'];
 };
 
 export type Url = {
   __typename?: 'Url';
   created_at: Scalars['DateTime'];
   id: Scalars['Float'];
+  responses: Array<Response>;
   url: Scalars['String'];
 };
 
 export type CreateResponseInput = {
   latency: Scalars['Float'];
   response_status: Scalars['Float'];
-  url_id: Scalars['Float'];
+  urlId: Scalars['Float'];
 };
 
 export type CreateUrlInput = {
@@ -69,12 +69,12 @@ export type CreateUrlMutationVariables = Exact<{
 }>;
 
 
-export type CreateUrlMutation = { __typename?: 'Mutation', createUrl: { __typename?: 'Url', created_at: any, id: number, url: string } };
+export type CreateUrlMutation = { __typename?: 'Mutation', createUrl: { __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
 
 export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QueryQuery = { __typename?: 'Query', getResponses: Array<{ __typename?: 'Response', created_at: any, id: number, latency: number, response_status: number, url_id: number }> };
+export type QueryQuery = { __typename?: 'Query', getResponses: Array<{ __typename?: 'Response', created_at: any, id: number, latency: number, response_status: number }> };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -88,6 +88,12 @@ export const CreateUrlDocument = gql`
     created_at
     id
     url
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
   }
 }
     `;
@@ -124,7 +130,6 @@ export const QueryDocument = gql`
     id
     latency
     response_status
-    url_id
   }
 }
     `;

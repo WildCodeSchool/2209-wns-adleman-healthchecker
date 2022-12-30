@@ -3,5 +3,11 @@ mutation createUrl($url: createUrlInput!) {
     created_at
     id
     url
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
   }
 }
