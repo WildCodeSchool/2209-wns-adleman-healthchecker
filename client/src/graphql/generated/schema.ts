@@ -18,13 +18,7 @@ export type Scalars = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createResponse: Response;
   createUrl: Url;
-};
-
-
-export type MutationCreateResponseArgs = {
-  response: CreateResponseInput;
 };
 
 
@@ -34,8 +28,13 @@ export type MutationCreateUrlArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getResponses: Array<Response>;
+  getUrlById: Url;
   getUrls: Array<Url>;
+};
+
+
+export type QueryGetUrlByIdArgs = {
+  urlId: Scalars['Float'];
 };
 
 export type Response = {
@@ -54,12 +53,6 @@ export type Url = {
   url: Scalars['String'];
 };
 
-export type CreateResponseInput = {
-  latency: Scalars['Float'];
-  response_status: Scalars['Float'];
-  urlId: Scalars['Float'];
-};
-
 export type CreateUrlInput = {
   url: Scalars['String'];
 };
@@ -71,10 +64,12 @@ export type CreateUrlMutationVariables = Exact<{
 
 export type CreateUrlMutation = { __typename?: 'Mutation', createUrl: { __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
 
-export type QueryQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetUrlByIdQueryVariables = Exact<{
+  urlId: Scalars['Float'];
+}>;
 
 
-export type QueryQuery = { __typename?: 'Query', getResponses: Array<{ __typename?: 'Response', created_at: any, id: number, latency: number, response_status: number }> };
+export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'Url', url: string, id: number, created_at: any, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -123,43 +118,49 @@ export function useCreateUrlMutation(baseOptions?: Apollo.MutationHookOptions<Cr
 export type CreateUrlMutationHookResult = ReturnType<typeof useCreateUrlMutation>;
 export type CreateUrlMutationResult = Apollo.MutationResult<CreateUrlMutation>;
 export type CreateUrlMutationOptions = Apollo.BaseMutationOptions<CreateUrlMutation, CreateUrlMutationVariables>;
-export const QueryDocument = gql`
-    query Query {
-  getResponses {
-    created_at
+export const GetUrlByIdDocument = gql`
+    query GetUrlById($urlId: Float!) {
+  getUrlById(urlId: $urlId) {
+    url
     id
-    latency
-    response_status
+    created_at
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
   }
 }
     `;
 
 /**
- * __useQueryQuery__
+ * __useGetUrlByIdQuery__
  *
- * To run a query within a React component, call `useQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetUrlByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUrlByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useQueryQuery({
+ * const { data, loading, error } = useGetUrlByIdQuery({
  *   variables: {
+ *      urlId: // value for 'urlId'
  *   },
  * });
  */
-export function useQueryQuery(baseOptions?: Apollo.QueryHookOptions<QueryQuery, QueryQueryVariables>) {
+export function useGetUrlByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUrlByIdQuery, GetUrlByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        return Apollo.useQuery<GetUrlByIdQuery, GetUrlByIdQueryVariables>(GetUrlByIdDocument, options);
       }
-export function useQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryQuery, QueryQueryVariables>) {
+export function useGetUrlByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUrlByIdQuery, GetUrlByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+          return Apollo.useLazyQuery<GetUrlByIdQuery, GetUrlByIdQueryVariables>(GetUrlByIdDocument, options);
         }
-export type QueryQueryHookResult = ReturnType<typeof useQueryQuery>;
-export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
-export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;
+export type GetUrlByIdQueryHookResult = ReturnType<typeof useGetUrlByIdQuery>;
+export type GetUrlByIdLazyQueryHookResult = ReturnType<typeof useGetUrlByIdLazyQuery>;
+export type GetUrlByIdQueryResult = Apollo.QueryResult<GetUrlByIdQuery, GetUrlByIdQueryVariables>;
 export const GetUrlsDocument = gql`
     query GetUrls {
   getUrls {

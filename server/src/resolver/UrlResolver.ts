@@ -15,6 +15,15 @@ export class UrlResolver {
       .find({ relations: ["responses"] });
   }
 
+  @Query(() => Url)
+  async getUrlById(@Arg("urlId") id: number): Promise<Url> {
+    const urlExist = await datasource
+      .getRepository(Url)
+      .findOne({ where: { id }, relations: ["responses"] });
+    if (urlExist === null) throw new ApolloError("Url not found", "NOT_FOUND");
+    return urlExist;
+  }
+
   @Mutation(() => Url)
   async createUrl(@Arg("url") url: createUrlInput): Promise<Url> {
     const urlService = new UrlService();
