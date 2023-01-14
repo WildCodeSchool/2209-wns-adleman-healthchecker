@@ -1,5 +1,4 @@
-export default interface IResponse {
-  id: number;
+export interface IResponse {
   latency: number;
-  response_status: number;
+  response_status: number | null;
 }

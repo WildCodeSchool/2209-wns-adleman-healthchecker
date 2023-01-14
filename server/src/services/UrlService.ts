@@ -1,5 +1,8 @@
-import IResponse from "../interface/IResponse";
-
+import Url from "../entity/Url";
+import { IResponse } from "../interface/IResponse";
+import Response from "../entity/Response";
+import datasource from "../database";
+import { ApolloError } from "apollo-server-errors";
 export class UrlService {
   async checkIfUrlIsValid(url: string): Promise<boolean> {
     const urlPattern =
@@ -45,24 +48,81 @@ export class UrlService {
     return urlFormatted;
   }
 
-  async getResponseForUrl(url: string, id: number): Promise<IResponse> {
-    let latency, stop, res, status;
+  async getResponse(url: string): Promise<IResponse> {
+    let latency, stop, response, status;
     const start = new Date().getTime();
-
     try {
-      res = await fetch(url);
-      status = res.status;
+      response = await fetch(url);
+      status = response.status;
     } catch (error) {
-      status = 404;
+      console.error(error);
+      status = null;
     } finally {
       stop = new Date().getTime();
       latency = stop - start;
     }
-
     return {
-      id,
       latency,
       response_status: status,
     };
+  }
+
+  async saveResponseForNewUrlAndGetResponses(
+    urlFormatted: string,
+    responseForNewUrl: IResponse
+  ): Promise<Url> {
+    const newUrlCreated = await datasource
+      .getRepository(Url)
+      .save({ url: urlFormatted });
+
+    if (responseForNewUrl.response_status === null) {
+      throw new ApolloError(`Error while getting response for url`);
+    }
+
+    await datasource.getRepository(Response).save({
+      urlId: newUrlCreated.id,
+      response_status: responseForNewUrl.response_status,
+      latency: responseForNewUrl.latency,
+    });
+
+    const urlWithResponses = await datasource.getRepository(Url).findOne({
+      where: { id: newUrlCreated.id },
+      relations: ["responses"],
+    });
+
+    if (urlWithResponses === null)
+      throw new ApolloError(
+        `Error while searching responses for url : ${urlFormatted}`
+      );
+
+    return urlWithResponses;
+  }
+
+  async saveAndGetResponsesFromExistingUrl(
+    urlAlreadyExist: Url,
+    getResponseForExistingUrl: IResponse
+  ): Promise<Url> {
+    if (getResponseForExistingUrl.response_status === null) {
+      throw new ApolloError(`Error while getting response for url`);
+    }
+    await datasource.getRepository(Response).save({
+      urlId: urlAlreadyExist.id,
+      response_status: getResponseForExistingUrl.response_status,
+      latency: getResponseForExistingUrl.latency,
+    });
+
+    const urlAlreadyExistWithResponses = await datasource
+      .getRepository(Url)
+      .findOne({
+        where: { id: urlAlreadyExist.id },
+        relations: ["responses"],
+      });
+
+    if (urlAlreadyExistWithResponses === null)
+      throw new ApolloError(
+        `Error while searching responses for url : ${urlAlreadyExist.url}`
+      );
+
+    return urlAlreadyExistWithResponses;
   }
 }
