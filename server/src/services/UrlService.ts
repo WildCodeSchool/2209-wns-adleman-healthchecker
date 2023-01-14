@@ -125,4 +125,36 @@ export class UrlService {
 
     return urlAlreadyExistWithResponses;
   }
+
+  async getAndSaveResponseForEachUrl(
+    url: string,
+    urlId: number
+  ): Promise<Response> {
+    let latency, stop, response, status, responseForUrl;
+    const start = new Date().getTime();
+    try {
+      response = await fetch(url);
+      status = response.status;
+    } catch (error) {
+      console.error(error);
+      status = null;
+    } finally {
+      stop = new Date().getTime();
+      latency = stop - start;
+    }
+    if (status === null) {
+      responseForUrl = await datasource.getRepository(Response).save({
+        urlId,
+        response_status: 404,
+        latency,
+      });
+    } else {
+      responseForUrl = await datasource.getRepository(Response).save({
+        urlId,
+        response_status: status,
+        latency,
+      });
+    }
+    return responseForUrl;
+  }
 }

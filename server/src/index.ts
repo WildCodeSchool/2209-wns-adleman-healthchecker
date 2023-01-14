@@ -9,8 +9,8 @@ import { env } from "./environment";
 import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
-import { ResponseResolver } from "./resolver/ResponseResolver";
 import cors from "cors";
+import { sendNewRequestToAllUrls } from "./services/cronService";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
@@ -34,7 +34,7 @@ const start = async (): Promise<void> => {
   app.use(cors(corsOptions));
 
   const schema = await buildSchema({
-    resolvers: [UrlResolver, ResponseResolver],
+    resolvers: [UrlResolver],
   });
 
   const server = new ApolloServer({
@@ -53,6 +53,8 @@ const start = async (): Promise<void> => {
   httpServer.listen({ port: env.SERVER_PORT }, () =>
     console.log(`🚀 Server ready at ${env.SERVER_HOST}:${env.SERVER_PORT}`)
   );
+
+  setInterval(sendNewRequestToAllUrls, 3600000);
 };
 
 void start();
