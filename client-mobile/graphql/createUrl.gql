@@ -1,0 +1,13 @@
+mutation createUrl($url: createUrlInput!) {
+  createUrl(url: $url) {
+    created_at
+    id
+    url
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
+  }
+}

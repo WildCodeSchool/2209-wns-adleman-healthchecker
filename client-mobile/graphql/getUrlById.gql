@@ -1,0 +1,13 @@
+query GetUrlById($urlId: Float!) {
+  getUrlById(urlId: $urlId) {
+    url
+    id
+    created_at
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
+  }
+}
