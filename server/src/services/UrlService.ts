@@ -3,6 +3,7 @@ import { IResponse } from "../interface/IResponse";
 import Response from "../entity/Response";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
+
 export class UrlService {
   async checkIfUrlIsValid(url: string): Promise<boolean> {
     const urlPattern =
