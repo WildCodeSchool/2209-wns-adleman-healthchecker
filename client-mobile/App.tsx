@@ -1,49 +1,30 @@
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { useGetUrlsQuery } from "./graphql/generated/schema";
 import { ApolloProvider } from "@apollo/client";
 import client from "./graphql/client";
-import { useEffect } from "react";
-import UrlList from "./components/UrlList";
 import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import HomeScreen from "./components/Screen/HomeScreen";
+import HistoricalScreen from "./components/Screen/HistoricalScreen";
+import { Url } from "./graphql/generated/schema";
 
-const Tab = createBottomTabNavigator();
+import { createStackNavigator } from "@react-navigation/stack";
+
+type RootStackParamList = {
+  Home: undefined;
+  Historical: { url: Url };
+};
+
+const Tab = createStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (
-    <ApolloProvider client={client}>
-      <UrlList />
-      {/* <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-
-              if (route.name === "Camera") {
-                iconName = focused ? "camera" : "camera-outline";
-              } else if (route.name === "Images") {
-                iconName = focused ? "image" : "image-outline";
-              } else if (route.name === "Feed") {
-                iconName = focused ? "share-social" : "share-social-outline";
-              }
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: "blue",
-            tabBarInactiveTintColor: "gray",
-          })}
-        >
-          <Tab.Screen
-            name="Camera"
-            component={CameraScreen}
-            options={{ unmountOnBlur: true }}
-          />
-          <Tab.Screen name="Images" component={ImageScreen} />
-          <Tab.Screen name="Feed" component={FeedScreen} />
+    <NavigationContainer>
+      <ApolloProvider client={client}>
+        <Tab.Navigator initialRouteName="Home">
+          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Historical" component={HistoricalScreen} />
         </Tab.Navigator>
-      </NavigationContainer> */}
-    </ApolloProvider>
+      </ApolloProvider>
+    </NavigationContainer>
   );
 }
 

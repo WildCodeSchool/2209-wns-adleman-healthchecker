@@ -74,7 +74,7 @@ export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?:
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string }> };
+export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> }> };
 
 
 export const CreateUrlDocument = gql`
@@ -167,6 +167,12 @@ export const GetUrlsDocument = gql`
     created_at
     id
     url
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
   }
 }
     `;
