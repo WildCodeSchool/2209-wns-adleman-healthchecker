@@ -5,7 +5,7 @@ import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 
 export class UrlService {
-  async checkIfUrlIsValid(url: string): Promise<boolean> {
+  checkIfUrlIsValid(url: string): boolean {
     const urlPattern =
       /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 

@@ -1,1 +1,1 @@
-{ "eslint.workingDirectories": ["client", "server"] }
+{ "eslint.workingDirectories": ["client", "server"], "jest.autoEnable": false }

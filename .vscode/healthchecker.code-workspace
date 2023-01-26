@@ -1,0 +1,23 @@
+// {
+//   "folders": [
+//     {
+//       "name": "ROOT",
+//       "path": "../"
+//     },
+//     {
+//       "name": "client",
+//       "path": "../client/"
+//     },
+//     {
+//       "name": "server",
+//       "path": "../server"
+//     }
+//   ],
+//   "settings": {
+//     "files.exclude": {
+//       "node_modules/": true,
+//       "packages/": true
+//     },
+//     "jest.autoEnable": false
+//   }
+// }
