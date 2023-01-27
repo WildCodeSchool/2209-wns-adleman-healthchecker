@@ -36,22 +36,25 @@ export default function HistoricalScreen({ route }: HistoricalProps) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        keyExtractor={(item: any) => item.id}
-        contentContainerStyle={{ paddingBottom: 30 }}
-        // ItemSeparatorComponent={() => <View style={style.separator} />}
-        // ListEmptyComponent={() => <Text>No wilders for now</Text>}
-        scrollEnabled={true}
-        data={url.responses}
-        // refreshing={loadingWilders}
-        renderItem={({ item }) => (
-          <View style={styles.container}>
-            <Text>{formatDate(item.created_at)} </Text>
-            <Text>Status : {item.response_status}</Text>
-            <Text>Latency : {item.latency}</Text>
-          </View>
-        )}
-      />
+      <Text style={styles.title}>{url.url}</Text>
+      <View style={styles.containerList}>
+        <FlatList
+          keyExtractor={(item: any) => item.id}
+          // contentContainerStyle={{ paddingBottom: 30 }}
+          // ItemSeparatorComponent={() => <View style={style.separator} />}
+          // ListEmptyComponent={() => <Text>No wilders for now</Text>}
+          scrollEnabled={true}
+          data={url.responses}
+          // refreshing={loadingWilders}
+          renderItem={({ item }) => (
+            <View style={styles.listElement}>
+              <Text>{formatDate(item.created_at)} </Text>
+              <Text>Status : {item.response_status}</Text>
+              <Text>Latency : {item.latency}</Text>
+            </View>
+          )}
+        />
+      </View>
     </View>
   );
 }
@@ -62,7 +65,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     // alignItems: "center",
     padding: 10,
+    justifyContent: "space-between",
+  },
+  containerList: {
+    // backgroundColor: "#fff",
+    // // alignItems: "center",
+    // flex: 2,
+    alignSelf: "flex-start",
+    justifyContent: "space-between",
+    padding: 10,
+  },
+  listElement: {
+    // flex: 2,
     flexDirection: "row",
     justifyContent: "space-between",
+    // alignContent: "flex-start",
+  },
+  title: {
+    fontSize: 15,
+    textAlign: "center",
   },
 });
