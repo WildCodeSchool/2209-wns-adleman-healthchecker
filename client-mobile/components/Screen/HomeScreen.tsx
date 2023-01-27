@@ -72,27 +72,29 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
   return (
     <View style={styles.container}>
       <View style={styles.containerInput}>
-        <Text>Enter URL : </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="http://toto.fr"
-          onChangeText={(url) => handleChangeUrl(url)}
-          value={url}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <Button
-          onPress={handleValidate}
-          title="Validate"
-          disabled={isDisabled || !isValid}
-        />
-      </View>
-      <View>
-        <Text>
-          Status: {response?.response_status && response.response_status}
-        </Text>
-        <Text>Latency: {response?.latency && response.latency}</Text>
-        <Text>Date: {response?.created_at && response.created_at}</Text>
+        <View>
+          <Text>Enter URL : </Text>
+          <TextInput
+            style={styles.input}
+            placeholder="http://toto.fr"
+            onChangeText={(url) => handleChangeUrl(url)}
+            value={url}
+            autoCapitalize="none"
+            autoCorrect={false}
+          />
+          <Button
+            onPress={handleValidate}
+            title="Validate"
+            disabled={isDisabled || !isValid}
+          />
+        </View>
+        <View>
+          <Text>
+            Status: {response?.response_status && response.response_status}
+          </Text>
+          <Text>Latency: {response?.latency && response.latency}</Text>
+          <Text>Date: {response?.created_at && response.created_at}</Text>
+        </View>
       </View>
       <View style={styles.containerList}>
         <FlatList
