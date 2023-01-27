@@ -56,6 +56,24 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
     setResponse(undefined);
   };
 
+  const formatDate = (newDate: string) => {
+    var date = new Date(newDate);
+    var dateStr =
+      ("00" + (date.getMonth() + 1)).slice(-2) +
+      "/" +
+      ("00" + date.getDate()).slice(-2) +
+      "/" +
+      date.getFullYear() +
+      " " +
+      ("00" + date.getHours()).slice(-2) +
+      ":" +
+      ("00" + date.getMinutes()).slice(-2) +
+      ":" +
+      ("00" + date.getSeconds()).slice(-2);
+
+    return dateStr;
+  };
+
   const handleValidate = async () => {
     if (isValid && !isDisabled) {
       try {
@@ -93,7 +111,7 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
             Status: {response?.response_status && response.response_status}
           </Text>
           <Text>Latency: {response?.latency && response.latency}</Text>
-          <Text>Date: {response?.created_at && response.created_at}</Text>
+          {/* <Text>Date: {response?.created_at && response.created_at}</Text> */}
         </View>
       </View>
       <View style={styles.containerList}>
