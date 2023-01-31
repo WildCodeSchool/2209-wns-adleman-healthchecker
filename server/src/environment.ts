@@ -6,4 +6,5 @@ export const env = load({
   SERVER_HOST: String,
   SERVER_PORT: Number,
   DATABASE_HOST: ["database" as const, "testDB" as const, "localhost" as const],
+  JWT_PRIVATE_KEY: String,
 });
