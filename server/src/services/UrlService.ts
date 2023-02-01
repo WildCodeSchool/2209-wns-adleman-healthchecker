@@ -7,7 +7,7 @@ import { ApolloError } from "apollo-server-errors";
 export class UrlService {
   checkIfUrlIsValid(url: string): boolean {
     const urlPattern =
-      /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
+      /^(https?:\/\/|)(?:www\.|(?!www))([a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]{2,}\.[^\s]{2,}|www\.[a-zA-Z0-9]{2,}\.[^\s]{2,})/;
 
     const reg = new RegExp(urlPattern);
 
