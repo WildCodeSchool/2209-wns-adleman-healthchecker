@@ -2,8 +2,9 @@ import { useState } from "react";
 import {
   useGetProfileQuery,
   useLoginMutation,
-  useLogoutMutation,
+  // useLogoutMutation,
 } from "../graphql/generated/schema";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -13,7 +14,8 @@ export default function Login() {
     errorPolicy: "ignore",
   });
 
-  const [logout] = useLogoutMutation();
+  // const [logout] = useLogoutMutation();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -24,21 +26,17 @@ export default function Login() {
           >
             Logged in as {currentUser.profile.username}
           </div>
-
-          <button
-            onClick={async () => {
-              await logout();
-              await client.resetStore();
-            }}
-          >
-            Log out
-          </button>
         </div>
       ) : (
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            login({ variables: { data: credentials } }).then(client.resetStore);
+            login({ variables: { data: credentials } })
+              .then(async () => {
+                await client.resetStore();
+                navigate("/myurl");
+              })
+              .catch((err) => {});
           }}
         >
           <label htmlFor="email">
