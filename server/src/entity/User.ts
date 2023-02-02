@@ -43,6 +43,18 @@ export class UserInput {
   password: string;
 }
 
+@InputType()
+export class UserInputLogin {
+  @Field()
+  // @IsEmail()
+  email: string;
+
+  @Field()
+  // @MinLength(8)
+  // @Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
+  password: string;
+}
+
 // https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
 const hashingOptions = {
   memoryCost: 2 ** 16,

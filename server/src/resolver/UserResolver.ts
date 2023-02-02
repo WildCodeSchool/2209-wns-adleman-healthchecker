@@ -5,9 +5,10 @@ import User, {
   getSafeAttributes,
   hashPassword,
   UserInput,
+  UserInputLogin,
   verifyPassword,
 } from "../entity/User";
-import { ContextType } from "../index";
+import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
 
@@ -29,7 +30,7 @@ export class UserResolver {
 
   @Mutation(() => String)
   async login(
-    @Arg("data") { email, password }: UserInput,
+    @Arg("data") { email, password }: UserInputLogin,
     @Ctx() ctx: ContextType
   ): Promise<string> {
     const user = await datasource

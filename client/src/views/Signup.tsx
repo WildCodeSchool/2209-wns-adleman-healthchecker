@@ -31,7 +31,14 @@ export default function Signup() {
 
           createUser({ variables: { data: userInfos } })
             .then(async () => {
-              await login({ variables: { data: userInfos } });
+              await login({
+                variables: {
+                  data: {
+                    email: userInfos.email,
+                    password: userInfos.password,
+                  },
+                },
+              });
               await client.resetStore();
               navigate("/login");
             })

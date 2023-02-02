@@ -1,3 +1,3 @@
-mutation Login($data: UserInput!) {
+mutation Login($data: UserInputLogin!) {
   login(data: $data)
 }
