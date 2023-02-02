@@ -13,5 +13,5 @@ export default new DataSource({
   database: "postgres",
   synchronize: true,
   entities: [Url, Response, User],
-  logging: ["query", "error"],
+  // logging: ["query", "error"],
 });

@@ -1,8 +1,12 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import Url, { createUrlInput } from "../entity/Url";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import { UrlService } from "../services/UrlService";
+import { ContextType } from "../auth/customAuthChecker";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { env } from "../environment";
+import User from "../entity/User";
 
 @Resolver(Url)
 export class UrlResolver {
@@ -22,8 +26,22 @@ export class UrlResolver {
     return urlExist;
   }
 
+  @Authorized()
   @Mutation(() => Url)
-  async createUrl(@Arg("url") url: createUrlInput): Promise<Url> {
+  async createUrl(
+    @Arg("url") url: createUrlInput,
+    @Ctx() ctx: ContextType
+  ): Promise<Url> {
+    let user = null;
+    if (
+      ctx.currentUser?.id !== null &&
+      typeof ctx.currentUser?.id !== "undefined"
+    ) {
+      user = await datasource
+        .getRepository(User)
+        .findOne({ where: { id: ctx.currentUser?.id } });
+    }
+
     const urlService = new UrlService();
 
     const urlValid = await urlService.checkIfUrlIsValid(url.url);
