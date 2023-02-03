@@ -93,12 +93,7 @@ export class UrlService {
     });
 
     if (user !== null) {
-      const urlFromUser = await datasource
-        .getRepository(User)
-        .findOne({ where: { id: user.id }, relations: ["urls"] });
-
-      if (urlFromUser !== null)
-        user.urls = [...urlFromUser.urls, newUrlCreated];
+      user.urls = [...user.urls, newUrlCreated];
 
       await datasource.getRepository(User).save(user);
     }
@@ -133,12 +128,7 @@ export class UrlService {
       });
 
     if (user !== null) {
-      const urlFromUser = await datasource
-        .getRepository(User)
-        .findOne({ where: { id: user.id }, relations: ["urls"] });
-
-      if (urlFromUser !== null)
-        user.urls = [...urlFromUser.urls, urlAlreadyExist];
+      user.urls = [...user.urls, urlAlreadyExist];
 
       await datasource.getRepository(User).save(user);
     }

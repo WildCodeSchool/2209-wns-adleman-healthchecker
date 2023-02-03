@@ -11,6 +11,7 @@ import User, {
 import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
+import Url from "../entity/Url";
 
 @Resolver(User)
 export class UserResolver {
@@ -66,5 +67,17 @@ export class UserResolver {
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
     return getSafeAttributes(ctx.currentUser as User);
+  }
+
+  @Query(() => [User])
+  async getUrlsByUserId(@Arg("userId") id: number): Promise<Url[]> {
+    const urlsByUserId = await datasource.getRepository(User).findOne({
+      where: { id },
+      relations: ["urls"],
+    });
+
+    if (urlsByUserId === null)
+      throw new ApolloError("Urls not found", "NOT_FOUND");
+    return urlsByUserId.urls;
   }
 }
