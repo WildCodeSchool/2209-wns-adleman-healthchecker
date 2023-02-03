@@ -1,11 +1,11 @@
 import { test, expect } from "@playwright/test";
-import database from "../../server/src/database";
+import { connectToDb, disconnectFromDb, resetDB } from "./dbHelpers";
 
-test("can view form on homepage", async ({ page }) => {
-  await database.initialize();
+test.beforeAll(connectToDb);
+test.beforeEach(resetDB);
+test.afterAll(disconnectFromDb);
 
+test("can view title on homepage", async ({ page }) => {
   await page.goto("/");
-  await page.getByLabel("Saisir l'URL *").click();
-  await page.getByLabel("Saisir l'URL *").fill("https://www.facebook.com");
-  await page.getByTestId("form-button-test").click();
+  await expect(page.getByTestId(`title`)).toContainText("Texte d'accueil");
 });

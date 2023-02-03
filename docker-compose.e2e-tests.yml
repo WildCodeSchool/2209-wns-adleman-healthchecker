@@ -23,7 +23,7 @@ services:
       - ./server/src:/app/src
     environment:
       DB_HOST: host.docker.internal
-      CORS_ALLOWED_ORIGINS: http://host.docker.internal:3000,http://localhost:3000
+      CORS_ALLOWED_ORIGINS: http://host.docker.internal:3000,http://localhost:3000,http://localhost:4000
       SERVER_HOST: backend
       DATABASE_HOST: testDB
     healthcheck:

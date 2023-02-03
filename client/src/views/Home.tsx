@@ -27,7 +27,7 @@ export default function Home() {
             marginTop: "10px",
           }}
         >
-          <h1>Texte d'accueil</h1>
+          <h1 data-testid="title">Texte d'accueil</h1>
         </Box>
         <Box
           sx={{
