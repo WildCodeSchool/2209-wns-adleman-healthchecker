@@ -34,7 +34,7 @@ class User {
   @Column({ enum: ["visitor", "admin"], default: "visitor" })
   role: Role;
 
-  @ManyToMany(() => Url)
+  @ManyToMany(() => Url, (u) => u.users, { cascade: true })
   @JoinTable()
   urls: Url[];
 }
@@ -81,6 +81,7 @@ export const verifyPassword = async (
 
 export const getSafeAttributes = (user: User): User => ({
   ...user,
+  urls: user.urls,
   hashedPassword: undefined,
 });
 

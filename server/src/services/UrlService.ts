@@ -92,6 +92,17 @@ export class UrlService {
       relations: ["responses"],
     });
 
+    if (user !== null) {
+      const urlFromUser = await datasource
+        .getRepository(User)
+        .findOne({ where: { id: user.id }, relations: ["urls"] });
+
+      if (urlFromUser !== null)
+        user.urls = [...urlFromUser.urls, newUrlCreated];
+
+      await datasource.getRepository(User).save(user);
+    }
+
     if (urlWithResponses === null)
       throw new ApolloError(
         `Error while searching responses for url : ${urlFormatted}`
@@ -120,6 +131,17 @@ export class UrlService {
         where: { id: urlAlreadyExist.id },
         relations: ["responses"],
       });
+
+    if (user !== null) {
+      const urlFromUser = await datasource
+        .getRepository(User)
+        .findOne({ where: { id: user.id }, relations: ["urls"] });
+
+      if (urlFromUser !== null)
+        user.urls = [...urlFromUser.urls, urlAlreadyExist];
+
+      await datasource.getRepository(User).save(user);
+    }
 
     if (urlAlreadyExistWithResponses === null)
       throw new ApolloError(
