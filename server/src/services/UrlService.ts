@@ -3,6 +3,7 @@ import { IResponse } from "../interface/IResponse";
 import Response from "../entity/Response";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
+import User from "../entity/User";
 export class UrlService {
   async checkIfUrlIsValid(url: string): Promise<boolean> {
     const urlPattern =
@@ -69,7 +70,8 @@ export class UrlService {
 
   async saveResponseForNewUrlAndGetResponses(
     urlFormatted: string,
-    responseForNewUrl: IResponse
+    responseForNewUrl: IResponse,
+    user: User | null
   ): Promise<Url> {
     const newUrlCreated = await datasource
       .getRepository(Url)
@@ -100,7 +102,8 @@ export class UrlService {
 
   async saveAndGetResponsesFromExistingUrl(
     urlAlreadyExist: Url,
-    getResponseForExistingUrl: IResponse
+    getResponseForExistingUrl: IResponse,
+    user: User | null
   ): Promise<Url> {
     if (getResponseForExistingUrl.response_status === null) {
       throw new ApolloError(`Error while getting response for url`);

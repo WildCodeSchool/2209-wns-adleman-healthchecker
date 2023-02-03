@@ -4,8 +4,7 @@ import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import { UrlService } from "../services/UrlService";
 import { ContextType } from "../auth/customAuthChecker";
-import jwt, { JwtPayload } from "jsonwebtoken";
-import { env } from "../environment";
+
 import User from "../entity/User";
 
 @Resolver(Url)
@@ -63,7 +62,8 @@ export class UrlResolver {
 
       return await urlService.saveResponseForNewUrlAndGetResponses(
         urlFormatted,
-        responseForNewUrl
+        responseForNewUrl,
+        user
       );
     } else {
       const getResponseForExistingUrl = await urlService.getResponse(
@@ -77,7 +77,8 @@ export class UrlResolver {
 
       return await urlService.saveAndGetResponsesFromExistingUrl(
         urlAlreadyExist,
-        getResponseForExistingUrl
+        getResponseForExistingUrl,
+        user
       );
     }
   }
