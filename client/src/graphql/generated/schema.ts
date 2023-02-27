@@ -43,12 +43,18 @@ export type Query = {
   __typename?: 'Query';
   getUrlById: Url;
   getUrls: Array<Url>;
+  getUrlsByUserId: Array<Url>;
   profile: User;
 };
 
 
 export type QueryGetUrlByIdArgs = {
   urlId: Scalars['Float'];
+};
+
+
+export type QueryGetUrlsByUserIdArgs = {
+  userId: Scalars['Float'];
 };
 
 export type Response = {
@@ -103,6 +109,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: number, username: string } };
+
+export type GetUrlsByUserIdQueryVariables = Exact<{
+  userId: Scalars['Float'];
+}>;
+
+
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: Array<{ __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> }> };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -209,6 +222,49 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const GetUrlsByUserIdDocument = gql`
+    query GetUrlsByUserId($userId: Float!) {
+  getUrlsByUserId(userId: $userId) {
+    id
+    url
+    created_at
+    responses {
+      id
+      response_status
+      latency
+      created_at
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUrlsByUserIdQuery__
+ *
+ * To run a query within a React component, call `useGetUrlsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUrlsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUrlsByUserIdQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUrlsByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>(GetUrlsByUserIdDocument, options);
+      }
+export function useGetUrlsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>(GetUrlsByUserIdDocument, options);
+        }
+export type GetUrlsByUserIdQueryHookResult = ReturnType<typeof useGetUrlsByUserIdQuery>;
+export type GetUrlsByUserIdLazyQueryHookResult = ReturnType<typeof useGetUrlsByUserIdLazyQuery>;
+export type GetUrlsByUserIdQueryResult = Apollo.QueryResult<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>;
 export const GetProfileDocument = gql`
     query GetProfile {
   profile {

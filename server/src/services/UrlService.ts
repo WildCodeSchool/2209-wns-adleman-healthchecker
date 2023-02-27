@@ -3,7 +3,7 @@ import { IResponse } from "../interface/IResponse";
 import Response from "../entity/Response";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
-
+import User from "../entity/User";
 export class UrlService {
   checkIfUrlIsValid(url: string): boolean {
     const urlPattern =
@@ -70,7 +70,8 @@ export class UrlService {
 
   async saveResponseForNewUrlAndGetResponses(
     urlFormatted: string,
-    responseForNewUrl: IResponse
+    responseForNewUrl: IResponse,
+    user: User | null
   ): Promise<Url> {
     const newUrlCreated = await datasource
       .getRepository(Url)
@@ -91,6 +92,12 @@ export class UrlService {
       relations: ["responses"],
     });
 
+    if (user !== null) {
+      user.urls = [...user.urls, newUrlCreated];
+
+      await datasource.getRepository(User).save(user);
+    }
+
     if (urlWithResponses === null)
       throw new ApolloError(
         `Error while searching responses for url : ${urlFormatted}`
@@ -101,7 +108,8 @@ export class UrlService {
 
   async saveAndGetResponsesFromExistingUrl(
     urlAlreadyExist: Url,
-    getResponseForExistingUrl: IResponse
+    getResponseForExistingUrl: IResponse,
+    user: User | null
   ): Promise<Url> {
     if (getResponseForExistingUrl.response_status === null) {
       throw new ApolloError(`Error while getting response for url`);
@@ -118,6 +126,12 @@ export class UrlService {
         where: { id: urlAlreadyExist.id },
         relations: ["responses"],
       });
+
+    if (user !== null) {
+      user.urls = [...user.urls, urlAlreadyExist];
+
+      await datasource.getRepository(User).save(user);
+    }
 
     if (urlAlreadyExistWithResponses === null)
       throw new ApolloError(

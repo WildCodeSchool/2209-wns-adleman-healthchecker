@@ -1,7 +1,14 @@
 import { argon2id, hash, verify } from "argon2";
 import { IsEmail, Matches, MinLength } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import Url from "./Url";
 
 export type Role = "visitor" | "admin";
 
@@ -26,6 +33,10 @@ class User {
   @Field()
   @Column({ enum: ["visitor", "admin"], default: "visitor" })
   role: Role;
+
+  @ManyToMany(() => Url, (u) => u.users, { cascade: true })
+  @JoinTable()
+  urls: Url[];
 }
 
 @InputType()
@@ -46,12 +57,9 @@ export class UserInput {
 @InputType()
 export class UserInputLogin {
   @Field()
-  // @IsEmail()
   email: string;
 
   @Field()
-  // @MinLength(8)
-  // @Matches(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}/)
   password: string;
 }
 
@@ -73,6 +81,7 @@ export const verifyPassword = async (
 
 export const getSafeAttributes = (user: User): User => ({
   ...user,
+  urls: user.urls,
   hashedPassword: undefined,
 });
 

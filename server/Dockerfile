@@ -1,4 +1,4 @@
-FROM node:lts-alpine
+FROM node:18.13-alpine
 
 RUN apk --no-cache add curl
 RUN apk add make g++ python3 git
