@@ -10,7 +10,12 @@ import datasource from "./database";
 import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { sendNewRequestToAllUrls } from "./services/cronService";
+
+import customAuthChecker from "./auth/customAuthChecker";
+
+import { UserResolver } from "./resolver/UserResolver";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
@@ -33,8 +38,10 @@ const start = async (): Promise<void> => {
   const corsOptions = { credentials: true, origin: true };
   app.use(cors(corsOptions));
 
+  app.use(cookieParser());
   const schema = await buildSchema({
-    resolvers: [UrlResolver],
+    resolvers: [UrlResolver, UserResolver],
+    authChecker: customAuthChecker,
   });
 
   const server = new ApolloServer({
@@ -45,6 +52,9 @@ const start = async (): Promise<void> => {
       ApolloServerPluginDrainHttpServer({ httpServer }),
       ApolloServerPluginLandingPageLocalDefault({ embed: true }),
     ],
+    context: ({ req, res }) => {
+      return { req, res };
+    },
   });
 
   await server.start();

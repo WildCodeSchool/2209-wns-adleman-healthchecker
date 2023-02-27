@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import Url from "./entity/Url";
 import Response from "./entity/Response";
 import { env } from "./environment";
+import User from "./entity/User";
 
 export default new DataSource({
   type: "postgres",
@@ -11,6 +12,6 @@ export default new DataSource({
   password: "postgres",
   database: "postgres",
   synchronize: true,
-  entities: [Url, Response],
+  entities: [Url, Response, User],
   logging: ["query", "error"],
 });
