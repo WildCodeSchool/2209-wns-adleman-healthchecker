@@ -32,33 +32,20 @@ export default function History() {
 
   return (
     <>
-      <TableContainer>
-        <h1 className="history__title-position">{url?.url}</h1>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="left" sx={{ fontWeight: "900" }}>
-                Statut du site internet
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: "900" }}>
-                Latence du site internet
-              </TableCell>
-              <TableCell align="left" sx={{ fontWeight: "900" }}>
-                Date de la vérification
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell align="left">{row.status}</TableCell>
-                <TableCell>{row.latency}</TableCell>
-                <TableCell align="left">{row.created_at}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <div className="header flex">
+        <div>Statut</div>
+        <div>Latence</div>
+        <div>Date</div>
+      </div>
+      <div className="body">
+        {rows.map((row) => (
+          <div className="row flex" key={row.id}>
+            <div>{row.status}</div>
+            <div>{row.latency}</div>
+            <div>{row.created_at}</div>
+          </div>
+        ))}
+      </div>
     </>
   );
 }

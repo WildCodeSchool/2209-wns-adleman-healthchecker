@@ -1,11 +1,3 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetUrlsQuery } from "../graphql/generated/schema";
@@ -33,37 +25,23 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
   }
 
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" sx={{ fontWeight: "900" }}>
-              Adresse du site internet
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "900" }}>
-              Heure de la dernière mise à jour
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.url}
-              onClick={() => onUrlClick(row.id)}
-              hover
-              sx={{
-                "&.MuiTableRow-root:hover": {
-                  backgroundColor: "#dcdcdc",
-                },
-                cursor: "pointer",
-              }}
-            >
-              <TableCell>{row.url}</TableCell>
-              <TableCell align="left">{row.created_at}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <div className="header flex">
+        <div>Adresse</div>
+        <div>Date</div>
+      </div>
+      <div className="body">
+        {rows.map((row) => (
+          <div
+            className="row flex"
+            key={row.id}
+            onClick={() => onUrlClick(row.id)}
+          >
+            <div>{row.url}</div>
+            <div>{row.created_at}</div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

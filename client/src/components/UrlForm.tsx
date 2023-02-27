@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
-import { Button, TextField } from "@mui/material";
 
 import { useCreateUrlMutation } from "../graphql/generated/schema";
 
@@ -45,64 +43,23 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
   };
 
   return (
-    <Box>
+    <div>
       <h3>Ici, vous pouvez entrer votre URL pour vérifier l'état :</h3>
-      <TextField
+
+      <input
         id="input-URL"
-        label="Saisir l'URL"
-        variant="outlined"
+        placeholder="Saisir l'URL"
         value={url}
         onChange={handleValidation}
-        error={!isValid}
         required={true}
-        helperText={
-          url.length === 0
-            ? "Veuillez saisir une URL"
-            : isValid
-            ? ""
-            : "Votre URL n'est pas valide"
-        }
-        sx={{
-          display: "flex",
-          width: "80%",
-          margin: "0 auto",
-          marginBottom: "10px",
-          "& label.Mui-focused": {
-            color: "#7F51D6",
-          },
-          "& .MuiInput-underline:after": {
-            borderBottomColor: "#7F51D6",
-          },
-          "& .MuiOutlinedInput-root": {
-            "& fieldset": {
-              borderColor: "#7F51D6",
-            },
-            "&:hover fieldset": {
-              borderColor: "#7F51D6",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "#7F51D6",
-            },
-          },
-        }}
       />
-      <Button
+      <button
         data-testid="form-button-test"
-        variant="contained"
         disabled={isDisabled || !isValid}
         onClick={handleValidate}
-        sx={{
-          display: "flex",
-          margin: "0 auto",
-          color: "#fff",
-          backgroundColor: "#7F51D6",
-          ":hover": {
-            backgroundColor: "#6038af",
-          },
-        }}
       >
         Rechercher
-      </Button>
-    </Box>
+      </button>
+    </div>
   );
 }
