@@ -43,12 +43,12 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
   };
 
   return (
-    <div>
-      <h3>Ici, vous pouvez entrer votre URL pour vérifier l'état :</h3>
+    <div className="form flex">
+      <div className="heavy">Ici, entrer votre URL :</div>
 
       <input
         id="input-URL"
-        placeholder="Saisir l'URL"
+        placeholder="Entrer une URL"
         value={url}
         onChange={handleValidation}
         required={true}
@@ -57,6 +57,7 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
         data-testid="form-button-test"
         disabled={isDisabled || !isValid}
         onClick={handleValidate}
+        className="button"
       >
         Rechercher
       </button>

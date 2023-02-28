@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetUrlsQuery } from "../graphql/generated/schema";
+import { formatUrl, formatDate } from "../utils/utils";
 
 export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
   let navigate = useNavigate();
@@ -25,23 +26,36 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
   }
 
   return (
-    <>
+    <div className="url-list card">
+      <h1>Liste des URLs</h1>
+
+      <div className="url-list-form flex">
+        <span className="medium">Rechercher une URL déjà enregistrée: </span>
+        <input
+          id="list-input-URL"
+          placeholder="Entrer une URL"
+          // value={url}
+          // onChange={handleValidation}
+        />
+      </div>
+
       <div className="header flex">
-        <div>Adresse</div>
-        <div>Date</div>
+        <div className="heavy">URL</div>
+        <div className="heavy">Date</div>
+        <div className="heavy">Status</div>
       </div>
-      <div className="body">
-        {rows.map((row) => (
-          <div
-            className="row flex"
-            key={row.id}
-            onClick={() => onUrlClick(row.id)}
-          >
-            <div>{row.url}</div>
-            <div>{row.created_at}</div>
-          </div>
-        ))}
-      </div>
-    </>
+
+      {rows.map((row) => (
+        <div
+          className="row flex"
+          key={row.id}
+          onClick={() => onUrlClick(row.id)}
+        >
+          <div className="medium">{formatUrl(row.url)}</div>
+          <div>{formatDate(row.created_at)}</div>
+          <div>Status</div>
+        </div>
+      ))}
+    </div>
   );
 }
