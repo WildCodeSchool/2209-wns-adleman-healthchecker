@@ -13,7 +13,6 @@ RUN pnpm i
 COPY ./server/src ./src
 COPY ./server/.env ./.env
 COPY ./server/.eslintrc.js ./.eslintrc.js
-COPY ./server/.npmrc ./.npmrc
 COPY ./server/tsconfig.json ./tsconfig.json
 
 RUN mkdir /e2e-tests
