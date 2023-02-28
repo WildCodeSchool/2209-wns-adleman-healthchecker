@@ -8,6 +8,7 @@ COPY package*.json ./
 COPY .npmrc .npmrc
 
 RUN npm i -g pnpm
+RUN npx playwright install
 RUN pnpm i
 
 COPY tsconfig.json tsconfig.json
