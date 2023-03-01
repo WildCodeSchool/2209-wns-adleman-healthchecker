@@ -28,6 +28,7 @@ export default function Header() {
                     await logout();
                     await client.resetStore();
                   }}
+                  className="button"
                 >
                   Log out
                 </button>

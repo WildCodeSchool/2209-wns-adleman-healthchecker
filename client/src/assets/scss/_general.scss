@@ -109,6 +109,11 @@ ul {
   &:visited {
     color: $white;
   }
+
+  &:disabled {
+    background-color: $grey-light;
+    cursor: not-allowed;
+  }
 }
 
 input {

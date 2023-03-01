@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { useCreateUrlMutation } from "../graphql/generated/schema";
 
 export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
@@ -9,7 +8,11 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
 
   const [createUrl] = useCreateUrlMutation();
 
-  const handleValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value === "") {
+      console.log("la");
+      getFormUrl("", 0, 0, 0);
+    }
     setUrl(e.target.value);
   };
 
@@ -33,11 +36,23 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
   const handleValidate = async () => {
     if (isValid && !isDisabled) {
       try {
-        await createUrl({ variables: { url: { url } } });
+        const response = await createUrl({ variables: { url: { url } } });
+        if (response.data?.createUrl.responses) {
+          let lastResponse =
+            response.data.createUrl.responses[
+              response.data.createUrl.responses.length - 1
+            ];
+          console.log(lastResponse);
+
+          getFormUrl(
+            url,
+            lastResponse.response_status,
+            lastResponse.latency,
+            lastResponse.created_at
+          );
+        }
       } catch (err) {
         console.error(err);
-      } finally {
-        getFormUrl(url);
       }
     }
   };
@@ -50,7 +65,7 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
         id="input-URL"
         placeholder="Entrer une URL"
         value={url}
-        onChange={handleValidation}
+        onChange={handleChange}
         required={true}
       />
       <button

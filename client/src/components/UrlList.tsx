@@ -1,24 +1,78 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetUrlsQuery } from "../graphql/generated/schema";
 import { formatUrl, formatDate } from "../utils/utils";
 
+interface IUrl {
+  id: number;
+  url: string;
+  lastDate: string;
+  lastStatus: number;
+}
+
 export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
   let navigate = useNavigate();
 
+  const [filteredList, setFilteredList] = useState<IUrl[]>([]);
+  const [formatedList, setFormatedList] = useState<IUrl[]>([]);
+  const [search, setSearch] = useState<string>("");
+
   const { data, refetch } = useGetUrlsQuery();
   const urlList = data?.getUrls;
+
+  // const [filteredList, setFilteredList] = useState<>()
 
   useEffect(() => {
     refetch();
   }, [dataFormUrl, refetch]);
 
+  useEffect(() => {
+    if (urlList) {
+      let newList = urlList
+        .map((u) => {
+          let lastResponse = u.responses[u.responses.length - 1];
+          return {
+            id: u.id,
+            url: u.url,
+            lastDate: lastResponse.created_at,
+            lastStatus: lastResponse.response_status,
+          };
+        })
+        .sort((a, b) => b.lastDate.localeCompare(a.lastDate));
+      setFilteredList(newList);
+      setFormatedList(newList);
+    }
+  }, [urlList]);
+
+  useEffect(() => {
+    console.log("FORMATED ");
+    console.log(formatedList);
+  }, [formatedList]);
+
+  useEffect(() => {
+    console.log("FILTERED");
+    console.log(filteredList);
+  }, [filteredList]);
+
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value === "") {
+      setFilteredList(formatedList);
+    } else {
+      let newList = filteredList.filter((u) => {
+        return u.url.includes(e.target.value);
+      });
+      setFilteredList(newList);
+    }
+    setSearch(e.target.value);
+  };
+
   if (!urlList) return <div>Pas d'adresse trouvée</div>;
 
-  const rows = urlList.map((u) => ({
+  const rows = filteredList.map((u) => ({
     id: u.id,
     url: u.url,
-    created_at: u.created_at,
+    date: u.lastDate,
+    status: u.lastStatus,
   }));
 
   function onUrlClick(urlId: number) {
@@ -34,8 +88,8 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
         <input
           id="list-input-URL"
           placeholder="Entrer une URL"
-          // value={url}
-          // onChange={handleValidation}
+          value={search}
+          onChange={handleChangeSearch}
         />
       </div>
 
@@ -52,8 +106,8 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
           onClick={() => onUrlClick(row.id)}
         >
           <div className="medium">{formatUrl(row.url)}</div>
-          <div>{formatDate(row.created_at)}</div>
-          <div>Status</div>
+          <div>{formatDate(row.date)}</div>
+          <div>{row.status}</div>
         </div>
       ))}
     </div>
