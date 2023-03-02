@@ -10,9 +10,9 @@ export default function ProtectedRoute({ outlet }: ProtectedRouteProps) {
     errorPolicy: "ignore",
   });
 
-  if (currentUser) {
-    return outlet;
-  } else {
+  if (!currentUser?.profile) {
     return <Navigate to={{ pathname: "/login" }} />;
+  } else {
+    return outlet;
   }
 }

@@ -1,23 +1,32 @@
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useGetProfileQuery,
   useGetUrlsByUserIdQuery,
 } from "../graphql/generated/schema";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+
+interface IResponse {
+  latency: number;
+  status: number;
+  date: string;
+}
+
+interface IUrl {
+  id: number;
+  url: string;
+  lastStatus: number;
+  lastDate: string;
+  lastLatency: number;
+  responses: IResponse[];
+}
 
 export default function MyUrl() {
+  let navigate = useNavigate();
+
+  const [urlList, setUrlList] = useState<IUrl[]>([]);
   const { data: currentUser, client } = useGetProfileQuery({
     errorPolicy: "ignore",
   });
-
-  // const userId = currentUser?.profile.id;
 
   const { data } = useGetUrlsByUserIdQuery({
     variables: {
@@ -25,44 +34,53 @@ export default function MyUrl() {
     },
   });
 
-  const urlList = data?.getUrlsByUserId;
+  useEffect(() => {
+    if (data?.getUrlsByUserId) {
+      let newList = data.getUrlsByUserId.urls.map((u) => {
+        let lastLatency = u.responses[u.responses.length - 1].latency;
+        let lastDate = u.responses[u.responses.length - 1].created_at;
+        let lastStatus = u.responses[u.responses.length - 1].response_status;
+        let responseList = u.responses.map((r) => {
+          return {
+            latency: r.latency,
+            status: r.response_status,
+            date: r.created_at,
+          };
+        });
+        return {
+          id: u.id,
+          url: u.url,
+          responses: responseList,
+          lastDate,
+          lastStatus,
+          lastLatency,
+        };
+      });
+      setUrlList(newList);
+    }
+  }, [data]);
+
+  function onUrlClick(urlId: number) {
+    navigate(`/history/${urlId}`);
+  }
 
   if (!urlList) return <div>Pas d'adresse trouvée</div>;
-  console.log(urlList);
-  const rows = urlList.map((u) => ({
-    id: u.id,
-    url: u.url,
-    created_at: u.created_at,
-    latency: u.responses[0].latency,
-    response_status: u.responses[0].response_status,
-  }));
+
   return (
-    <TableContainer>
-      <h1 className="history__title-position">MyUrl</h1>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" sx={{ fontWeight: "900" }}>
-              Adresse du site internet
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "900" }}>
-              Latence du site internet
-            </TableCell>
-            <TableCell align="left" sx={{ fontWeight: "900" }}>
-              Statut du site internet
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell align="left">{row.url}</TableCell>
-              <TableCell align="left">{row.latency}</TableCell>
-              <TableCell align="left">{row.response_status}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <div className="container">
+      <div className="header flex">
+        <div>URL</div>
+        <div>Latence</div>
+        <div>Status</div>
+      </div>
+      {urlList &&
+        urlList.map((u) => (
+          <div className="row flex" onClick={() => onUrlClick(u.id)}>
+            <div>{u.url}</div>
+            <div>{u.lastLatency}</div>
+            <div>{u.lastStatus}</div>
+          </div>
+        ))}
+    </div>
   );
 }

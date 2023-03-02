@@ -43,7 +43,7 @@ export type Query = {
   __typename?: 'Query';
   getUrlById: Url;
   getUrls: Array<Url>;
-  getUrlsByUserId: Array<Url>;
+  getUrlsByUserId: User;
   profile: User;
 };
 
@@ -77,7 +77,9 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Float'];
+  responses: Array<Response>;
   role: Scalars['String'];
+  urls: Array<Url>;
   username: Scalars['String'];
 };
 
@@ -115,7 +117,7 @@ export type GetUrlsByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: Array<{ __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> }> };
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', email: string, id: number, role: string, urls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> }> } };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -132,7 +134,7 @@ export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?:
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string }> };
+export type GetUrlsQuery = { __typename?: 'Query', getUrls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> }> };
 
 export type LoginMutationVariables = Exact<{
   data: UserInputLogin;
@@ -225,14 +227,19 @@ export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMut
 export const GetUrlsByUserIdDocument = gql`
     query GetUrlsByUserId($userId: Float!) {
   getUrlsByUserId(userId: $userId) {
+    email
     id
-    url
-    created_at
-    responses {
-      id
-      response_status
-      latency
+    role
+    urls {
       created_at
+      id
+      url
+      responses {
+        response_status
+        latency
+        id
+        created_at
+      }
     }
   }
 }
@@ -351,6 +358,12 @@ export const GetUrlsDocument = gql`
     created_at
     id
     url
+    responses {
+      response_status
+      latency
+      id
+      created_at
+    }
   }
 }
     `;

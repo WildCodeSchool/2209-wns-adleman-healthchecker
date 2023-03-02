@@ -15,12 +15,12 @@ export default function Header() {
       <nav>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/">Accueil</Link>
           </li>
           {currentUser ? (
             <>
               <li>
-                <Link to="/myurl">My url</Link>
+                <Link to="/myurl">Mes URLs</Link>
               </li>
               <li>
                 <button
@@ -28,6 +28,7 @@ export default function Header() {
                     await logout();
                     await client.resetStore();
                   }}
+                  className="button"
                 >
                   Log out
                 </button>
@@ -36,10 +37,10 @@ export default function Header() {
           ) : (
             <>
               <li>
-                <Link to="/signup">Signup</Link>
+                <Link to="/signup">S'enregistrer</Link>
               </li>
               <li>
-                <Link to="/login">Login</Link>
+                <Link to="/login">Se connecter</Link>
               </li>
             </>
           )}

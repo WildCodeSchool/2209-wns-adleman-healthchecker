@@ -1,5 +1,14 @@
 import { ApolloError } from "apollo-server-errors";
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  FieldResolver,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from "type-graphql";
 import datasource from "../database";
 import User, {
   getSafeAttributes,
@@ -12,6 +21,7 @@ import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
 import Url from "../entity/Url";
+import Response from "../entity/Response";
 
 @Resolver(User)
 export class UserResolver {
@@ -69,15 +79,33 @@ export class UserResolver {
     return getSafeAttributes(ctx.currentUser as User);
   }
 
-  @Query(() => [User])
-  async getUrlsByUserId(@Arg("userId") id: number): Promise<Url[]> {
-    const urlsByUserId = await datasource.getRepository(User).findOne({
-      where: { id },
-      relations: ["urls"],
-    });
+  @Query(() => User)
+  async getUrlsByUserId(@Arg("userId") id: number): Promise<User> {
+    // const urlsByUserId = await datasource.getRepository(User).findOne({
+    //   where: { id },
+    //   relations: ["urls" ],
+    // });
+
+    const urlsByUserId = await datasource
+      .getRepository(User)
+      .createQueryBuilder("user")
+      .where("user.id = :id", { id })
+      .leftJoinAndSelect("user.urls", "url")
+      .leftJoinAndSelect("url.responses", "response")
+      .getOne();
 
     if (urlsByUserId === null)
       throw new ApolloError("Urls not found", "NOT_FOUND");
-    return urlsByUserId.urls;
+    return urlsByUserId;
+  }
+
+  @FieldResolver(() => [Url])
+  async urls(@Root() user: User): Promise<Url[]> {
+    return user.urls;
+  }
+
+  @FieldResolver(() => [Response])
+  async responses(@Root() url: Url): Promise<Response[]> {
+    return url.responses;
   }
 }

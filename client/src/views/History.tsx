@@ -1,16 +1,13 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetUrlByIdQuery } from "../graphql/generated/schema";
+import { formatDate, formatUrl } from "../utils/utils";
 
 export default function History() {
   const { id } = useParams();
+
+  // const [url, setUrl] = useState<string>("");
+
   const idFormat = parseInt(id!);
 
   const { data } = useGetUrlByIdQuery({
@@ -18,6 +15,10 @@ export default function History() {
       urlId: idFormat,
     },
   });
+
+  // useEffect(() => {
+  //   setUrl(data?.getUrlById);
+  // }, [data]);
 
   const url = data?.getUrlById;
   const responses = data?.getUrlById.responses;
@@ -31,7 +32,8 @@ export default function History() {
   }));
 
   return (
-    <>
+    <div className="container">
+      <h2>{url && formatUrl(url?.url)}</h2>
       <div className="header flex">
         <div>Statut</div>
         <div>Latence</div>
@@ -42,10 +44,10 @@ export default function History() {
           <div className="row flex" key={row.id}>
             <div>{row.status}</div>
             <div>{row.latency}</div>
-            <div>{row.created_at}</div>
+            <div>{formatDate(row.created_at)}</div>
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }

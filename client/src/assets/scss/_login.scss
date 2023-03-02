@@ -1,0 +1,16 @@
+form {
+  width: 300px;
+  margin: $space-xlarge auto;
+
+  label {
+    width: 100%;
+    input {
+      width: 94%;
+      margin-bottom: $space-medium;
+    }
+  }
+
+  .button {
+    width: 100%;
+  }
+}
