@@ -42,3 +42,5 @@ jobs:
           push: true
           context: "{{defaultContext}}:client"
           tags: ${{ vars.DOCKERHUB_USERNAME }}/healthchecker:latest
+          build-args: |
+            "REACT_APP_GRAPHQL_API_URL=${{ vars.REACT_APP_GRAPHQL_API_URL }}"
