@@ -44,16 +44,6 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
     }
   }, [urlList]);
 
-  useEffect(() => {
-    console.log("FORMATED ");
-    console.log(formatedList);
-  }, [formatedList]);
-
-  useEffect(() => {
-    console.log("FILTERED");
-    console.log(filteredList);
-  }, [filteredList]);
-
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
       setFilteredList(formatedList);

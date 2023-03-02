@@ -83,7 +83,7 @@ export class UserResolver {
   async getUrlsByUserId(@Arg("userId") id: number): Promise<User> {
     // const urlsByUserId = await datasource.getRepository(User).findOne({
     //   where: { id },
-    //   relations: ["urls", ],
+    //   relations: ["urls" ],
     // });
 
     const urlsByUserId = await datasource

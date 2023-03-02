@@ -34,6 +34,10 @@ const customAuthChecker = async (
       .getRepository(User)
       .findOne({ where: { id: context.jwtPayload.userId } });
 
+  if (context.req.body.operationName === "createUrl" && token === undefined) {
+    return true;
+  }
+
   if (user === null) return false;
 
   context.currentUser = user;

@@ -17,8 +17,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/history/:id" element={<History />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/myurl" element={<ProtectedRoute outlet={<MyUrl />} />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/myurl/" element={<ProtectedRoute outlet={<MyUrl />} />} />
       </Routes>
     </div>
   );

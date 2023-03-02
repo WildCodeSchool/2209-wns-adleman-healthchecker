@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   useGetProfileQuery,
   useGetUrlsByUserIdQuery,
@@ -11,6 +12,7 @@ interface IResponse {
 }
 
 interface IUrl {
+  id: number;
   url: string;
   lastStatus: number;
   lastDate: string;
@@ -19,6 +21,8 @@ interface IUrl {
 }
 
 export default function MyUrl() {
+  let navigate = useNavigate();
+
   const [urlList, setUrlList] = useState<IUrl[]>([]);
   const { data: currentUser, client } = useGetProfileQuery({
     errorPolicy: "ignore",
@@ -44,6 +48,7 @@ export default function MyUrl() {
           };
         });
         return {
+          id: u.id,
           url: u.url,
           responses: responseList,
           lastDate,
@@ -54,6 +59,10 @@ export default function MyUrl() {
       setUrlList(newList);
     }
   }, [data]);
+
+  function onUrlClick(urlId: number) {
+    navigate(`/history/${urlId}`);
+  }
 
   if (!urlList) return <div>Pas d'adresse trouvée</div>;
 
@@ -66,7 +75,7 @@ export default function MyUrl() {
       </div>
       {urlList &&
         urlList.map((u) => (
-          <div className="row flex">
+          <div className="row flex" onClick={() => onUrlClick(u.id)}>
             <div>{u.url}</div>
             <div>{u.lastLatency}</div>
             <div>{u.lastStatus}</div>

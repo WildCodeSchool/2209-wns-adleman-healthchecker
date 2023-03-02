@@ -5,6 +5,7 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
   const [url, setUrl] = useState("");
   const [isValid, setIsValid] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+  // const [error, setError] = useState('')
 
   const [createUrl] = useCreateUrlMutation();
 
@@ -42,7 +43,8 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
             response.data.createUrl.responses[
               response.data.createUrl.responses.length - 1
             ];
-          console.log(lastResponse);
+
+          console.log(response);
 
           getFormUrl(
             url,

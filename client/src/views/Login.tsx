@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const [login] = useLoginMutation();
 
   const { data: currentUser, client } = useGetProfileQuery({
@@ -36,7 +37,13 @@ export default function Login() {
                 await client.resetStore();
                 navigate("/myurl");
               })
-              .catch((err) => {});
+              .catch((err) => {
+                // setTimeout
+                setError("Identifiants incorrect");
+                setTimeout(() => {
+                  setError("");
+                }, 5000);
+              });
           }}
         >
           <label htmlFor="email">
@@ -66,7 +73,7 @@ export default function Login() {
               }
             />
           </label>
-
+          <span>{error && error}</span>
           <button type="submit" className="button">
             Login
           </button>
