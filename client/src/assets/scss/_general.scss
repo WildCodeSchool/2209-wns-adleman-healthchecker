@@ -1,0 +1,143 @@
+.history__title-position {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body {
+  background-color: $bg-color;
+  font-family: Avenir-book;
+  font-size: 18px;
+  color: $text;
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: Avenir-heavy;
+  text-align: center;
+}
+h1 {
+  font-size: $size-xxlarge;
+  font-family: Avenir-heavy;
+  margin: 0;
+}
+h2 {
+  font-size: $size-xlarge;
+  font-family: Avenir-medium;
+}
+h3 {
+  font-size: $size-xlarge;
+}
+
+a {
+  text-decoration: none;
+  color: $text;
+  font-family: Avenir-heavy;
+
+  &:visited {
+    color: $black;
+  }
+  &:hover {
+    color: $black;
+  }
+}
+
+.medium {
+  font-family: Avenir-medium;
+}
+.heavy {
+  font-family: Avenir-heavy;
+}
+.light {
+  font-family: Avenir-light;
+}
+.regular {
+  font-family: Avenir-regular;
+}
+.black {
+  font-family: Avenir-black;
+}
+.book {
+  font-family: Avenir-book;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  border-radius: $radius;
+  padding: $space-medium;
+  margin-bottom: $space-medium;
+  background-color: $primary;
+  box-shadow: $shadow;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+.button {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 8px;
+  background-color: $tertiary;
+  border: none;
+  color: $white;
+  border-radius: $radius-button;
+  font-family: Avenir-medium;
+  font-size: $size-normal;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $tertiary-lighter;
+    color: $white;
+  }
+
+  &:visited {
+    color: $white;
+  }
+
+  &:disabled {
+    background-color: $grey-light;
+    cursor: not-allowed;
+  }
+}
+
+input {
+  // width: 100%;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  text-align: left;
+  border: 1px solid $border-grey;
+  border-radius: $radius-button;
+  padding: 8px 8px 8px 8px;
+  font-family: Avenir-Book;
+  overflow: hidden;
+  color: $grey-light;
+
+  &::placeholder {
+    font-size: 18px;
+  }
+
+  &[value] {
+    font-size: 18px;
+    font-family: Avenir-Book;
+    color: $grey-light;
+  }
+}

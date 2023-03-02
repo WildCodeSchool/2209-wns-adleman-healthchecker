@@ -9,7 +9,8 @@
     "@mui/icons-material": "^5.10.14",
     "@mui/material": "^5.10.14",
     "@mui/styled-engine-sc": "^5.10.14",
-    "@testing-library/jest-dom": "^5.16.5",
+    "@mui/x-data-grid": "^5.17.16",
+    "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
@@ -34,7 +35,8 @@
     "watch-css": "sass ./src/assets/scss/style.scss:./src/assets/style.css --watch --style compressed --no-source-map",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "codegen": "graphql-codegen --config codegen.yml --watch"
   },
   "eslintConfig": {
     "extends": [
@@ -55,6 +57,10 @@
     ]
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^2.13.12"
+    "@graphql-codegen/cli": "^2.13.12",
+    "@graphql-codegen/introspection": "2.1.1",
+    "@graphql-codegen/typescript": "2.4.3",
+    "@graphql-codegen/typescript-operations": "2.3.0",
+    "@graphql-codegen/typescript-react-apollo": "3.2.5"
   }
 }

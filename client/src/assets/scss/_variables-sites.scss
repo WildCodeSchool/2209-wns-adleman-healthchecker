@@ -1,16 +1,63 @@
 // color
-$red: #e10600;
+$primary: rgb(245, 235, 224);
+$secondary: rgb(240, 219, 219);
+$tertiary: rgb(219, 163, 154);
 
-// text
-$text: black;
+$primary-light: rgb(245, 235, 224, 0.7);
+$primary-lighter: rgb(245, 235, 224, 0.4);
+$secondary-lighter: rgb(240, 219, 219, 0.5);
+$tertiary-lighter: rgb(219, 163, 154, 0.5);
 
-// background
-$bg-grey-light: rgb(244, 246, 248);
+$bg-color: rgb(254, 252, 243);
 
-// border
-$border-red: rgba(225, 6, 0, 0.6);
+$black: #38383f;
+$text: $black;
+$white: #fff;
+
+$border-grey: rgb(216, 218, 232);
+$grey-light: rgb(149, 157, 175);
 
 // Radius
-$radius: 15px;
+$radius: 10px;
+$radius-button: 5px;
+
+// space
+$space-xlittle: 0.6rem;
+$space-little: 1rem;
+$space-medium: 2rem;
+$space-large: 3rem;
+$space-xlarge: 6rem;
+
+$size-little: 14px;
+$size-normal: 16px;
+$size-large: 20px;
+$size-xlarge: 24px;
+$size-xxlarge: 28px;
+
+$shadow: 0 5px 2px -2px rgb(0 0 0 / 20%);
 
 // font
+@font-face {
+  font-family: Avenir-book;
+  src: url("./fonts/Avenir\ Book.ttf");
+}
+@font-face {
+  font-family: Avenir-heavy;
+  src: url("./fonts/Avenir\ Heavy.ttf");
+}
+@font-face {
+  font-family: Avenir-medium;
+  src: url("./fonts/Avenir\ Medium.ttf");
+}
+@font-face {
+  font-family: Avenir-regular;
+  src: url("./fonts/Avenir\ Regular.ttf");
+}
+@font-face {
+  font-family: Avenir-light;
+  src: url("./fonts/Avenir\ Light.ttf");
+}
+@font-face {
+  font-family: Avenir-black;
+  src: url("./fonts/Avenir\ Black.ttf");
+}

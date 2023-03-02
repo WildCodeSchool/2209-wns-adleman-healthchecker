@@ -1,0 +1,60 @@
+.url-list {
+  .url-list-form {
+    margin: $space-medium;
+    align-items: center;
+    justify-content: center;
+
+    span {
+      margin-right: $space-medium;
+    }
+
+    input {
+      width: 200px;
+    }
+  }
+}
+.header,
+.row {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+
+  & > div {
+    flex-basis: 30%;
+    text-align: center;
+  }
+}
+
+.header {
+  margin-bottom: $space-medium;
+  position: relative;
+
+  &::after {
+    content: "";
+    background-color: #38383f;
+    width: 99%;
+    height: 2px;
+    position: absolute;
+    top: 38px;
+    right: 4px;
+    border-radius: 3;
+  }
+}
+
+.row {
+  border-radius: $radius;
+  background-color: $tertiary;
+  margin-bottom: $space-little;
+  padding: $space-xlittle 0;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(
+      1.015
+    ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+
+  &:nth-child(odd) {
+    background-color: $tertiary-lighter;
+  }
+}
