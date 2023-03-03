@@ -14,7 +14,7 @@ export default function Header() {
     <header>
       <nav>
         <ul>
-          <li>
+          <li data-testid="accueil">
             <Link to="/">Accueil</Link>
           </li>
           {currentUser ? (
