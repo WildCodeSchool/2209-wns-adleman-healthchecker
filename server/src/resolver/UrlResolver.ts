@@ -82,4 +82,20 @@ export class UrlResolver {
       );
     }
   }
+
+  // async deleteUrls(): Promise<{ success: Boolean }> {
+  //   try {
+  //     // Get the entity repository
+  //     const urls = datasource.getRepository(Url);
+
+  //     // Delete all rows on the entity
+  //     await urls.createQueryBuilder().delete().execute();
+
+  //     // Return success and message
+  //     return { success: true };
+  //   } catch (error) {
+  //     // Return error message
+  //     return { success: false };
+  //   }
+  // }
 }
