@@ -69,9 +69,10 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
         value={url}
         onChange={handleChange}
         required={true}
+        data-testid="form-home-input"
       />
       <button
-        data-testid="form-button-test"
+        data-testid="form-home-btn"
         disabled={isDisabled || !isValid}
         onClick={handleValidate}
         className="button"

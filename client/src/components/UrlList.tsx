@@ -95,7 +95,9 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
           key={row.id}
           onClick={() => onUrlClick(row.id)}
         >
-          <div className="medium">{formatUrl(row.url)}</div>
+          <div className="medium" data-testid="home-urlList">
+            {formatUrl(row.url)}
+          </div>
           <div>{formatDate(row.date)}</div>
           <div>{row.status}</div>
         </div>

@@ -5,7 +5,9 @@ test.beforeAll(connectToDb);
 test.beforeEach(resetDB);
 test.afterAll(disconnectFromDb);
 
-test("can view title on homepage", async ({ page }) => {
+test("addUrl", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByTestId(`title`)).toContainText("Texte d'accueil");
+  await page.getByTestId(`form-home-input`).fill("www.toto.fr");
+  await page.getByTestId(`form-home-btn`).click();
+  await expect(page.getByTestId(`home-urlList`)).toContainText("www.toto.fr");
 });
