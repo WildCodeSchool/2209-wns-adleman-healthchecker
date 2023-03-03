@@ -4,6 +4,7 @@ import Response from "../entity/Response";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import User from "../entity/User";
+
 export class UrlService {
   checkIfUrlIsValid(url: string): boolean {
     const urlPattern =
@@ -18,10 +19,13 @@ export class UrlService {
     }
   }
 
-  async formatUrl(url: string): Promise<URL> {
+  async formatUrl(url: string): Promise<string> {
+    console.log("URL not formated");
+    console.log(url);
+
     let urlInLowerCase = url.toLowerCase();
     const formatUrlWithoutProtocolPattern = /^(?!https?).*$/;
-    const formatUrlWithoutPrefixPattern = /(https?:\/\/(?!www).*$)/;
+    // const formatUrlWithoutPrefixPattern = /(https?:\/\/(?!www).*$)/;
     const formatUrlWithSecureProtocolPattern = /^https:\/\/.*$/;
 
     const reg = new RegExp(formatUrlWithoutProtocolPattern);
@@ -30,14 +34,14 @@ export class UrlService {
       urlInLowerCase = `http://${urlInLowerCase}`;
     }
 
-    const reg2 = new RegExp(formatUrlWithoutPrefixPattern);
+    // const reg2 = new RegExp(formatUrlWithoutPrefixPattern);
 
-    if (reg2.test(urlInLowerCase)) {
-      urlInLowerCase = urlInLowerCase.replace(
-        /^([a-zA-Z][a-zA-Z0-9.+-]*):\/\//,
-        "$1://www."
-      );
-    }
+    // if (reg2.test(urlInLowerCase)) {
+    //   urlInLowerCase = urlInLowerCase.replace(
+    //     /^([a-zA-Z][a-zA-Z0-9.+-]*):\/\//,
+    //     "$1://www."
+    //   );
+    // }
 
     const reg3 = new RegExp(formatUrlWithSecureProtocolPattern);
 
@@ -45,15 +49,23 @@ export class UrlService {
       urlInLowerCase = urlInLowerCase.replace(/^https:\/\//i, "http://");
     }
 
-    const urlFormatted = new URL(urlInLowerCase);
-    return urlFormatted;
+    // const urlFormatted = new URL(url);
+
+    console.log("URL formated");
+    console.log(urlInLowerCase);
+    return urlInLowerCase;
   }
 
   async getResponse(url: string): Promise<IResponse> {
     let latency, stop, response, status;
     const start = new Date().getTime();
+
+    console.log("URL Fetched: ");
+    console.log(url);
+
     try {
       response = await fetch(url);
+      // console.log(response.status);
       status = response.status;
     } catch (error) {
       console.error(error);

@@ -141,3 +141,24 @@ input {
     color: $grey-light;
   }
 }
+
+.status {
+  text-align: center;
+  border-radius: 19px;
+  padding: 0 14px;
+}
+
+.status.good {
+  color: #5aae1b;
+  background: #edf7e7;
+}
+
+.status.medium {
+  color: #d7373f;
+  background: #fff7e5;
+}
+
+.status.not-good {
+  color: #d7373f;
+  background: #fff2ea;
+}

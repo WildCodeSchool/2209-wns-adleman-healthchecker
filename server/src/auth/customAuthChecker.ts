@@ -18,7 +18,7 @@ const customAuthChecker = async (
   const tokenInCookie = context.req.cookies?.token;
   const token = tokenInHeaders ?? tokenInCookie;
 
-  console.log({ tokenInCookie, tokenInHeaders });
+  // console.log({ tokenInCookie, tokenInHeaders });
 
   try {
     let decoded;

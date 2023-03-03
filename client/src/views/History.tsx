@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useGetUrlByIdQuery } from "../graphql/generated/schema";
 import { formatDate, formatUrl } from "../utils/utils";
+import Status from "../components/Status";
 
 export default function History() {
   const { id } = useParams();
@@ -42,7 +43,9 @@ export default function History() {
       <div className="body">
         {rows.map((row) => (
           <div className="row flex" key={row.id}>
-            <div>{row.status}</div>
+            <div>
+              <Status status={row.status} />
+            </div>
             <div>{row.latency}</div>
             <div>{formatDate(row.created_at)}</div>
           </div>

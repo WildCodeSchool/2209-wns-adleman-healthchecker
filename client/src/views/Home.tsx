@@ -4,6 +4,7 @@ import UrlForm from "../components/UrlForm";
 import UrlList from "../components/UrlList";
 import { useState } from "react";
 import { formatDate } from "../utils/utils";
+import Status from "../components/Status";
 
 interface IResponse {
   status: number;
@@ -46,7 +47,9 @@ export default function Home() {
               <div className="heavy">Date</div>
             </div>
             <div className="row flex">
-              <div>{response.status ? response.status : "-"}</div>
+              <div>
+                {response.status ? <Status status={response.status} /> : "-"}
+              </div>
               <div>{response.latency ? response.latency : "-"}</div>
               <div>{response.date ? formatDate(response.date) : "-"}</div>
             </div>

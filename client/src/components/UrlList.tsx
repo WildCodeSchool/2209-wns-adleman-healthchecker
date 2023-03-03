@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGetUrlsQuery } from "../graphql/generated/schema";
 import { formatUrl, formatDate } from "../utils/utils";
+import Status from "./Status";
 
 interface IUrl {
   id: number;
@@ -97,7 +98,9 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
         >
           <div className="medium">{formatUrl(row.url)}</div>
           <div>{formatDate(row.date)}</div>
-          <div>{row.status}</div>
+          <div>
+            <Status status={row.status} />
+          </div>
         </div>
       ))}
     </div>

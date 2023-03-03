@@ -4,6 +4,7 @@ import {
   useGetProfileQuery,
   useGetUrlsByUserIdQuery,
 } from "../graphql/generated/schema";
+import Status from "../components/Status";
 
 interface IResponse {
   latency: number;
@@ -78,7 +79,9 @@ export default function MyUrl() {
           <div className="row flex" onClick={() => onUrlClick(u.id)}>
             <div>{u.url}</div>
             <div>{u.lastLatency}</div>
-            <div>{u.lastStatus}</div>
+            <div>
+              <Status status={u.lastStatus} />
+            </div>
           </div>
         ))}
     </div>

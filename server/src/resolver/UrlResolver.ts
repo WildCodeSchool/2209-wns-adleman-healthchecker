@@ -46,7 +46,7 @@ export class UrlResolver {
     const urlValid = await urlService.checkIfUrlIsValid(url.url);
     if (!urlValid) throw new ApolloError("Url is not valid");
 
-    const { href: urlFormatted } = await urlService.formatUrl(url.url);
+    const urlFormatted = await urlService.formatUrl(url.url);
 
     const urlAlreadyExist = await datasource
       .getRepository(Url)
