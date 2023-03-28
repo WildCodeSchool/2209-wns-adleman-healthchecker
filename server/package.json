@@ -6,7 +6,9 @@
   "scripts": {
     "test": "jest",
     "dev": "nodemon --legacy-watch",
-    "start": "ts-node-dev --poll src/index.ts"
+    "start": "ts-node-dev --poll src/index.ts",
+    "build": "tsc",
+    "start:prod": "node build/index.js"
   },
   "repository": {
     "type": "git",
