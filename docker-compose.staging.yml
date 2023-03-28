@@ -1,42 +1,43 @@
+name: staging
 services:
-  prodDB:
+  stagingDB:
     image: postgres:15-alpine
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=${DB_PASS:-postgres}
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d postgres -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
     volumes:
-      - prodDB:/var/lib/postgresql/data
+      - stagingDB:/var/lib/postgresql/data
     networks:
-      - prodNetwork
+      - stagingNetwork
 
   server:
     depends_on:
-      prodDB:
+      stagingDB:
         condition: service_healthy
     environment:
       - NODE_ENV=${NODE_ENV:-production}
-      - DB_HOST=${DB_HOST:-prodDB}
+      - DB_HOST=${DB_HOST:-stagingDB}
       - SERVER_HOST=${SERVER_HOST:-localhost}
       - SERVER_PORT=${SERVER_PORT:-4000}
       - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:-abcdfzfefzefzefzeefghijkl}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:8003}
-    image: sachastorer/healthchecker
+    image: sachastorer/healthchecker-server:staging
     networks:
-      - prodNetwork
+      - stagingNetwork
     healthcheck:
-      test: "curl --fail --request GET -H 'content-type:application/json' --url 'http://localhost:4000/graphql?query=%7B__typename%7D'"
+      test: 'curl --fail --request GET -H ''content-type:application/json'' --url ''http://localhost:4000/graphql?query=%7B__typename%7D'''
       interval: 5s
       timeout: 5s
       retries: 10
 
   client:
-    image: sachastorer/healthchecker
+    image: sachastorer/healthchecker-client:staging
     networks:
-      - prodNetwork
+      - stagingNetwork
 
   nginx:
     image: nginx:1.21.3
@@ -52,10 +53,10 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./logs:/var/log/nginx
     networks:
-      - prodNetwork
+      - stagingNetwork
 
 volumes:
-  prodDB:
+  stagingDB:
 
 networks:
-  prodNetwork:
+  stagingNetwork:
