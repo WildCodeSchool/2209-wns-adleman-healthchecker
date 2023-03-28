@@ -19,7 +19,7 @@ jobs:
           envkey_JWT_PRIVATE_KEY: sqdqsdqsdqsdqsdqsd122qs5qsd
           file_name: .env
       - name: install dependency global and server
-        run: npm i -g pnpm && pnpm i && cd server && pnpm i
+        run: npm i -g pnpm && pnpm install --no-frozen-lockfile && cd server && pnpm install --no-frozen-lockfile
       - name: exec unit tests
         run: pnpm test
   e2e-tests:
@@ -39,7 +39,7 @@ jobs:
           directory: server
           file_name: .env
       - name: Run e2e tests
-        run: npm i -g pnpm && pnpm i && pnpm e2e-tests
+        run: npm i -g pnpm && pnpm install --no-frozen-lockfile && pnpm e2e-tests
   docker:
     needs: [unit-tests, e2e-tests]
     if: github.ref == 'refs/heads/main'
