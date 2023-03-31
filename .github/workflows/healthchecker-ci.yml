@@ -15,11 +15,11 @@ jobs:
           envkey_NODE_ENV: development
           envkey_SERVER_HOST: localhost
           envkey_SERVER_PORT: 4000
-          envkey_DATABASE_HOST: database
+          envkey_DB_HOST: database
           envkey_JWT_PRIVATE_KEY: sqdqsdqsdqsdqsdqsd122qs5qsd
           file_name: .env
       - name: install dependency global and server
-        run: npm i -g pnpm && pnpm i && cd server && pnpm i
+        run: npm i -g pnpm && pnpm install --no-frozen-lockfile && cd server && pnpm install --no-frozen-lockfile
       - name: exec unit tests
         run: pnpm test
   e2e-tests:
@@ -34,12 +34,12 @@ jobs:
           envkey_NODE_ENV: development
           envkey_SERVER_HOST: localhost
           envkey_SERVER_PORT: 4000
-          envkey_DATABASE_HOST: database
+          envkey_DB_HOST: database
           envkey_JWT_PRIVATE_KEY: sqdqsdqsdqsdqsdqsd122qs5qsd
           directory: server
           file_name: .env
       - name: Run e2e tests
-        run: npm i -g pnpm && pnpm i && pnpm e2e-tests
+        run: npm i -g pnpm && pnpm install --no-frozen-lockfile && pnpm e2e-tests
   docker:
     needs: [unit-tests, e2e-tests]
     if: github.ref == 'refs/heads/main'

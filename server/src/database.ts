@@ -6,12 +6,11 @@ import User from "./entity/User";
 
 export default new DataSource({
   type: "postgres",
-  host: env.DATABASE_HOST,
-  port: 5432,
-  username: "postgres",
-  password: "postgres",
-  database: "postgres",
-  synchronize: true,
-  entities: [Url, Response, User],
+  host: env.DB_HOST ?? "database",
+  port: env.DB_PORT ?? 5432,
+  username: env.DB_USER ?? "postgres",
+  password: env.DB_PASS ?? "postgres",
+  database: env.DB_NAME ?? "postgres",
+  synchronize: true, entities: [Url, Response, User],
   logging: ["query", "error"],
 });
