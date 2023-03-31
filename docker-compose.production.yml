@@ -24,7 +24,7 @@ services:
       - SERVER_PORT=${SERVER_PORT:-4000}
       - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY:-abcdfzfefzefzefzeefghijkl}
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS:-http://localhost:8003}
-    image: sachastorer/healthchecker
+    image: sachastorer/healthchecker-server
     networks:
       - prodNetwork
     healthcheck:
@@ -34,7 +34,7 @@ services:
       retries: 10
 
   client:
-    image: sachastorer/healthchecker
+    image: sachastorer/healthchecker-client
     networks:
       - prodNetwork
 
