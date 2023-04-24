@@ -22,6 +22,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../environment";
 import Url from "../entity/Url";
 import Response from "../entity/Response";
+import UserToUrl from "../entity/UserToUrl";
 
 @Resolver(User)
 export class UserResolver {
@@ -90,7 +91,7 @@ export class UserResolver {
       .getRepository(User)
       .createQueryBuilder("user")
       .where("user.id = :id", { id })
-      .leftJoinAndSelect("user.urls", "url")
+      .leftJoinAndSelect("user.userToUrls", "userToUrl")
       .leftJoinAndSelect("url.responses", "response")
       .getOne();
 
@@ -99,10 +100,15 @@ export class UserResolver {
     return urlsByUserId;
   }
 
-  @FieldResolver(() => [Url])
-  async urls(@Root() user: User): Promise<Url[]> {
-    return user.urls;
+  @FieldResolver(() => [UserToUrl])
+  async userToUrls(@Root() user: User): Promise<UserToUrl[]> {
+    return user.userToUrls;
   }
+
+  // @FieldResolver(() => [Url])
+  // async urls(@Root() user: User): Promise<Url[]> {
+  //   return user.urls;
+  // }
 
   @FieldResolver(() => [Response])
   async responses(@Root() url: Url): Promise<Response[]> {

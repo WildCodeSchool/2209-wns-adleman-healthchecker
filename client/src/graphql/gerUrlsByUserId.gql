@@ -1,18 +1,17 @@
-query GetUrlsByUserId($userId: Float!) {
+query Query($userId: Float!) {
   getUrlsByUserId(userId: $userId) {
     email
     id
-    role
-    urls {
+    responses {
       created_at
       id
-      url
-      responses {
-        response_status
-        latency
-        id
-        created_at
-      }
+      latency
+      response_status
     }
+    role
+    userToUrls {
+      frequency
+    }
+    username
   }
 }

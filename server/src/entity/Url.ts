@@ -4,12 +4,12 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   CreateDateColumn,
-  ManyToMany,
 } from "typeorm";
 import { Field, InputType, ObjectType } from "type-graphql";
 import Response from "./Response";
 import { IsNotEmpty, IsString } from "class-validator";
-import User from "./User";
+
+import UserToUrl from "./UserToUrl";
 
 @InputType()
 export class createUrlInput {
@@ -38,7 +38,9 @@ class Url {
   @Field(() => [Response])
   responses: Response[];
 
-  @ManyToMany(() => User, (u) => u.urls)
-  users: User[];
+  // @ManyToMany(() => User, (u) => u.urls)
+  // users: User[];
+  @OneToMany(() => UserToUrl, (userToUrl) => userToUrl.url)
+  userToUrls: UserToUrl[];
 }
 export default Url;
