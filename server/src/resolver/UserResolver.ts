@@ -77,24 +77,24 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
-    const user = await datasource.getRepository(User).findOne({
+    const urlsByUserId = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
-      relations: ["userToUrls"],
     });
 
-    return user as User;
+    return urlsByUserId as User;
     // return getSafeAttributes(ctx.currentUser as User);
   }
 
+  @Authorized()
   @Query(() => User)
-  async getUrlsByUserId(@Arg("userId") id: number): Promise<User> {
+  async getUrlsByUserId(@Ctx() ctx: ContextType): Promise<User> {
     // const urlsByUserId = await datasource.getRepository(User).findOne({
     //   where: { id },
     //   relations: ["urls" ],
     // });
 
     const urlsByUserId = await datasource.getRepository(User).findOne({
-      where: { id },
+      where: { id: ctx.currentUser?.id },
       relations: { userToUrls: { url: { responses: true } } },
     });
 

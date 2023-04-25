@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  useGetProfileQuery,
-  useGetUrlsByUserIdQuery,
-} from "../graphql/generated/schema";
+import { useGetUrlsByUserIdQuery } from "../graphql/generated/schema";
 
 interface IResponse {
   latency: number;
@@ -24,23 +21,17 @@ export default function MyUrl() {
   let navigate = useNavigate();
 
   const [urlList, setUrlList] = useState<IUrl[]>([]);
-  const { data: currentUser, client } = useGetProfileQuery({
-    errorPolicy: "ignore",
-  });
 
-  const { data } = useGetUrlsByUserIdQuery({
-    variables: {
-      userId: currentUser?.profile.id || 0,
-    },
-  });
+  const { data } = useGetUrlsByUserIdQuery();
 
   useEffect(() => {
     if (data?.getUrlsByUserId) {
-      let newList = data.getUrlsByUserId.urls.map((u) => {
-        let lastLatency = u.responses[u.responses.length - 1].latency;
-        let lastDate = u.responses[u.responses.length - 1].created_at;
-        let lastStatus = u.responses[u.responses.length - 1].response_status;
-        let responseList = u.responses.map((r) => {
+      let newList = data.getUrlsByUserId.userToUrls.map((u) => {
+        let lastLatency = u.url.responses[u.url.responses.length - 1].latency;
+        let lastDate = u.url.responses[u.url.responses.length - 1].created_at;
+        let lastStatus =
+          u.url.responses[u.url.responses.length - 1].response_status;
+        let responseList = u.url.responses.map((r) => {
           return {
             latency: r.latency,
             status: r.response_status,
@@ -48,8 +39,8 @@ export default function MyUrl() {
           };
         });
         return {
-          id: u.id,
-          url: u.url,
+          id: u.url.id,
+          url: u.url.url,
           responses: responseList,
           lastDate,
           lastStatus,

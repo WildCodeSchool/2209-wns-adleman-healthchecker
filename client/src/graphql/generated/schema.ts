@@ -52,11 +52,6 @@ export type QueryGetUrlByIdArgs = {
   urlId: Scalars['Float'];
 };
 
-
-export type QueryGetUrlsByUserIdArgs = {
-  userId: Scalars['Float'];
-};
-
 export type Response = {
   __typename?: 'Response';
   created_at: Scalars['DateTime'];
@@ -71,13 +66,13 @@ export type Url = {
   id: Scalars['Float'];
   responses: Array<Response>;
   url: Scalars['String'];
+  userToUrls: Array<UserToUrl>;
 };
 
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Float'];
-  responses: Array<Response>;
   role: Scalars['String'];
   userToUrls: Array<UserToUrl>;
   username: Scalars['String'];
@@ -97,6 +92,8 @@ export type UserInputLogin = {
 export type UserToUrl = {
   __typename?: 'UserToUrl';
   frequency: Scalars['Float'];
+  url: Url;
+  user: User;
 };
 
 export type CreateUrlInput = {
@@ -117,12 +114,10 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: number, username: string } };
 
-export type QueryQueryVariables = Exact<{
-  userId: Scalars['Float'];
-}>;
+export type GetUrlsByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type QueryQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', email: string, id: number, role: string, username: string, responses: Array<{ __typename?: 'Response', created_at: any, id: number, latency: number, response_status: number }>, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number }> } };
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -229,53 +224,57 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const QueryDocument = gql`
-    query Query($userId: Float!) {
-  getUrlsByUserId(userId: $userId) {
-    email
+export const GetUrlsByUserIdDocument = gql`
+    query GetUrlsByUserId {
+  getUrlsByUserId {
     id
-    responses {
-      created_at
-      id
-      latency
-      response_status
-    }
+    username
+    email
     role
     userToUrls {
       frequency
+      url {
+        id
+        url
+        created_at
+        responses {
+          id
+          response_status
+          latency
+          created_at
+        }
+      }
     }
-    username
   }
 }
     `;
 
 /**
- * __useQueryQuery__
+ * __useGetUrlsByUserIdQuery__
  *
- * To run a query within a React component, call `useQueryQuery` and pass it any options that fit your needs.
- * When your component renders, `useQueryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetUrlsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUrlsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useQueryQuery({
+ * const { data, loading, error } = useGetUrlsByUserIdQuery({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useQueryQuery(baseOptions: Apollo.QueryHookOptions<QueryQuery, QueryQueryVariables>) {
+export function useGetUrlsByUserIdQuery(baseOptions?: Apollo.QueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+        return Apollo.useQuery<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>(GetUrlsByUserIdDocument, options);
       }
-export function useQueryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<QueryQuery, QueryQueryVariables>) {
+export function useGetUrlsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<QueryQuery, QueryQueryVariables>(QueryDocument, options);
+          return Apollo.useLazyQuery<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>(GetUrlsByUserIdDocument, options);
         }
-export type QueryQueryHookResult = ReturnType<typeof useQueryQuery>;
-export type QueryLazyQueryHookResult = ReturnType<typeof useQueryLazyQuery>;
-export type QueryQueryResult = Apollo.QueryResult<QueryQuery, QueryQueryVariables>;
+export type GetUrlsByUserIdQueryHookResult = ReturnType<typeof useGetUrlsByUserIdQuery>;
+export type GetUrlsByUserIdLazyQueryHookResult = ReturnType<typeof useGetUrlsByUserIdLazyQuery>;
+export type GetUrlsByUserIdQueryResult = Apollo.QueryResult<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>;
 export const GetProfileDocument = gql`
     query GetProfile {
   profile {
