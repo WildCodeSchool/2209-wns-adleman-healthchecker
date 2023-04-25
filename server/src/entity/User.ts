@@ -34,6 +34,7 @@ class User {
   // urls: Url[];
 
   @OneToMany(() => UserToUrl, (userToUrl) => userToUrl.user)
+  @Field(() => [UserToUrl])
   userToUrls: UserToUrl[];
 }
 
@@ -77,10 +78,10 @@ export const verifyPassword = async (
 ): Promise<boolean> =>
   await verify(hashedPassword, plainPassword, hashingOptions);
 
-export const getSafeAttributes = (user: User): User => ({
-  ...user,
-  // urls: user.userToUrls,
-  hashedPassword: undefined,
-});
+// export const getSafeAttributes = (user: User): User => ({
+//   ...user,
+//   // urls: user.userToUrls,
+//   hashedPassword: undefined,
+// });
 
 export default User;

@@ -3,15 +3,15 @@ import {
   Arg,
   Authorized,
   Ctx,
-  FieldResolver,
+  // FieldResolver,
   Mutation,
   Query,
   Resolver,
-  Root,
+  // Root,
 } from "type-graphql";
 import datasource from "../database";
 import User, {
-  getSafeAttributes,
+  // getSafeAttributes,
   hashPassword,
   UserInput,
   UserInputLogin,
@@ -20,9 +20,9 @@ import User, {
 import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
-import Url from "../entity/Url";
-import Response from "../entity/Response";
-import UserToUrl from "../entity/UserToUrl";
+// import Url from "../entity/Url";
+// import Response from "../entity/Response";
+// import UserToUrl from "../entity/UserToUrl";
 
 @Resolver(User)
 export class UserResolver {
@@ -77,7 +77,13 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
-    return getSafeAttributes(ctx.currentUser as User);
+    const user = await datasource.getRepository(User).findOne({
+      where: { id: ctx.currentUser?.id },
+      relations: ["userToUrls"],
+    });
+
+    return user as User;
+    // return getSafeAttributes(ctx.currentUser as User);
   }
 
   @Query(() => User)
@@ -87,31 +93,42 @@ export class UserResolver {
     //   relations: ["urls" ],
     // });
 
-    const urlsByUserId = await datasource
-      .getRepository(User)
-      .createQueryBuilder("user")
-      .where("user.id = :id", { id })
-      .leftJoinAndSelect("user.userToUrls", "userToUrl")
-      .leftJoinAndSelect("url.responses", "response")
-      .getOne();
+    const urlsByUserId = await datasource.getRepository(User).findOne({
+      where: { id },
+      relations: { userToUrls: { url: { responses: true } } },
+    });
+
+    // .createQueryBuilder("user")
+    // .where("user.id = :id", { id })
+    // .leftJoinAndSelect("user.userToUrls", "userToUrl")
+    // .leftJoinAndSelect("userToUrl.url", "url")
+    // .leftJoinAndSelect("url.responses", "response")
+    // .select(["user", "userToUrl", "url", "response"])
+    // .getOne();
 
     if (urlsByUserId === null)
       throw new ApolloError("Urls not found", "NOT_FOUND");
+    // console.log(urlsByUserId.userToUrls[0].url);
     return urlsByUserId;
   }
 
-  @FieldResolver(() => [UserToUrl])
-  async userToUrls(@Root() user: User): Promise<UserToUrl[]> {
-    return user.userToUrls;
-  }
-
-  // @FieldResolver(() => [Url])
-  // async urls(@Root() user: User): Promise<Url[]> {
-  //   return user.urls;
+  // @FieldResolver(() => [UserToUrl])
+  // async userToUrls(@Root() user: User): Promise<UserToUrl[]> {
+  //   return user.userToUrls;
   // }
 
-  @FieldResolver(() => [Response])
-  async responses(@Root() url: Url): Promise<Response[]> {
-    return url.responses;
-  }
+  // @FieldResolver(() => [Url])
+  // async url(@Root() userToUrl: UserToUrl): Promise<Url> {
+  //   return userToUrl.url;
+  // }
+
+  // @FieldResolver(() => [Response])
+  // async responses(@Root() url: Url): Promise<Response[]> {
+  //   return url.responses;
+  // }
+
+  // @FieldResolver(() => [User])
+  // async user(@Root() userToUrl: UserToUrl): Promise<User> {
+  //   return userToUrl.user;
+  // }
 }

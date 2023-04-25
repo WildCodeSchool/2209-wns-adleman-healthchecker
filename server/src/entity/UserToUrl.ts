@@ -21,9 +21,11 @@ class UserToUrl {
   frequency: number;
 
   @ManyToOne(() => User, (user) => user.userToUrls)
+  @Field(() => User)
   user: User;
 
   @ManyToOne(() => Url, (url) => url.userToUrls)
+  @Field(() => Url)
   url: Url;
 }
 export default UserToUrl;

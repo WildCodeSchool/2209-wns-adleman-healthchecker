@@ -41,6 +41,7 @@ class Url {
   // @ManyToMany(() => User, (u) => u.urls)
   // users: User[];
   @OneToMany(() => UserToUrl, (userToUrl) => userToUrl.url)
+  @Field(() => [UserToUrl])
   userToUrls: UserToUrl[];
 }
 export default Url;
