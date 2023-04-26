@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, InputType, ObjectType } from "type-graphql";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import User from "./User";
@@ -28,4 +28,14 @@ class UserToUrl {
   @Field(() => Url)
   url: Url;
 }
+
+@InputType()
+export class FrequencyInput {
+  @Field()
+  frequency: number;
+
+  @Field()
+  urlId: number;
+}
+
 export default UserToUrl;
