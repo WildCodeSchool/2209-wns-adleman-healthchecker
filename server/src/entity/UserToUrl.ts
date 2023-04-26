@@ -16,7 +16,7 @@ class UserToUrl {
   @Column()
   urlId: number;
 
-  @Column()
+  @Column({ default: 3600000 })
   @Field()
   frequency: number;
 

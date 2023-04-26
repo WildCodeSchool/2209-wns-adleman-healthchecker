@@ -101,7 +101,7 @@ export class UrlService {
       await datasource.getRepository(UserToUrl).save({
         userId: user.id,
         urlId: newUrlCreated.id,
-        frequency: 3600,
+        frequency: 3600000,
       });
     }
 
@@ -141,7 +141,7 @@ export class UrlService {
       await datasource.getRepository(UserToUrl).save({
         userId: user.id,
         urlId: urlAlreadyExistWithResponses.id,
-        frequency: 3600,
+        frequency: 3600000,
       });
     }
 
@@ -157,7 +157,6 @@ export class UrlService {
     url: string,
     urlId: number
   ): Promise<Response> {
-    console.log(`${url} is fetched`);
     let latency, stop, response, status, responseForUrl;
     const start = new Date().getTime();
     try {
