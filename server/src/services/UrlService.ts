@@ -157,6 +157,7 @@ export class UrlService {
     url: string,
     urlId: number
   ): Promise<Response> {
+    console.log(`${url} is fetched`);
     let latency, stop, response, status, responseForUrl;
     const start = new Date().getTime();
     try {

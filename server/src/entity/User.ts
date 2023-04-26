@@ -78,10 +78,4 @@ export const verifyPassword = async (
 ): Promise<boolean> =>
   await verify(hashedPassword, plainPassword, hashingOptions);
 
-// export const getSafeAttributes = (user: User): User => ({
-//   ...user,
-//   // urls: user.userToUrls,
-//   hashedPassword: undefined,
-// });
-
 export default User;
