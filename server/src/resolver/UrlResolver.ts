@@ -40,8 +40,23 @@ export class UrlResolver {
         .getRepository(User)
         .findOne({ where: { id: ctx.currentUser?.id }, relations: ["urls"] });
     }
-
     const urlService = new UrlService();
+
+    if (url.url === "http://127.0.0.1:5000/servertest") {
+      const responseTest = await urlService.getResponse(url.url);
+      // console.log(responseTest);
+
+      if (responseTest.response_status === null)
+        throw new ApolloError(
+          `Error while getting response for url : ${url.url}`
+        );
+
+      return await urlService.saveResponseForNewUrlAndGetResponses(
+        url.url,
+        responseTest,
+        user
+      );
+    }
 
     const urlValid = await urlService.checkIfUrlIsValid(url.url);
     if (!urlValid) throw new ApolloError("Url is not valid");
