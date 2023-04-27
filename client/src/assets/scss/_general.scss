@@ -16,6 +16,11 @@ body {
   display: flex;
 }
 
+.flex-around {
+  justify-content: space-around;
+  align-items: center;
+}
+
 h1,
 h2,
 h3,

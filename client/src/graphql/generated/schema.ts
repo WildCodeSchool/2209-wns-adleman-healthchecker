@@ -16,12 +16,18 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type FrequencyInput = {
+  frequency: Scalars['Float'];
+  urlId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUrl: Url;
   createUser: User;
   login: Scalars['String'];
   logout: Scalars['String'];
+  updateFrequency: UserToUrl;
 };
 
 
@@ -37,6 +43,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationLoginArgs = {
   data: UserInputLogin;
+};
+
+
+export type MutationUpdateFrequencyArgs = {
+  data: FrequencyInput;
 };
 
 export type Query = {
@@ -147,6 +158,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: string };
+
+export type UpdateFrequencyMutationVariables = Exact<{
+  data: FrequencyInput;
+}>;
+
+
+export type UpdateFrequencyMutation = { __typename?: 'Mutation', updateFrequency: { __typename?: 'UserToUrl', frequency: number } };
 
 
 export const CreateUrlDocument = gql`
@@ -458,3 +476,36 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const UpdateFrequencyDocument = gql`
+    mutation UpdateFrequency($data: FrequencyInput!) {
+  updateFrequency(data: $data) {
+    frequency
+  }
+}
+    `;
+export type UpdateFrequencyMutationFn = Apollo.MutationFunction<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;
+
+/**
+ * __useUpdateFrequencyMutation__
+ *
+ * To run a mutation, you first call `useUpdateFrequencyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFrequencyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFrequencyMutation, { data, loading, error }] = useUpdateFrequencyMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateFrequencyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>(UpdateFrequencyDocument, options);
+      }
+export type UpdateFrequencyMutationHookResult = ReturnType<typeof useUpdateFrequencyMutation>;
+export type UpdateFrequencyMutationResult = Apollo.MutationResult<UpdateFrequencyMutation>;
+export type UpdateFrequencyMutationOptions = Apollo.BaseMutationOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;
