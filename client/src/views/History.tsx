@@ -29,6 +29,7 @@ export default function History() {
     []
   );
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3600000);
+  const [selectedStatus, setSelectedStatus] = useState<number>(0);
 
   const idFormat = parseInt(id!);
   const { data, startPolling } = useGetUrlByIdQuery({
@@ -48,6 +49,15 @@ export default function History() {
     { label: "10 minutes", value: 600000 },
     { label: "30 minutes", value: 1800000 },
     { label: "1 heure", value: 3600000 },
+  ];
+
+  const optionsStatus: Ioption[] = [
+    { label: "All", value: 0 },
+    { label: "1XX", value: 1 },
+    { label: "2XX", value: 2 },
+    { label: "3XX", value: 3 },
+    { label: "4XX", value: 4 },
+    { label: "5XX", value: 5 },
   ];
 
   // const { data } = useGetUrlByIdQuery({})
@@ -123,6 +133,10 @@ export default function History() {
     });
   };
 
+  const handleChangeStatus = (value: number) => {
+    setSelectedStatus(value);
+  };
+
   const handleChangeDate = (
     _start: string | number | readonly string[] | undefined,
     _end: string | number | readonly string[] | undefined
@@ -136,16 +150,31 @@ export default function History() {
     let _end: number = 0;
     if (typeof start === "string") _start = Date.parse(start);
     if (typeof end === "string") _end = Date.parse(end);
-    let newResonses = responseList.filter((r) => {
-      let date = Date.parse(r.created_at.toString());
-      return (
-        ((start && r.created_at && date > _start) || !_start) &&
-        ((end && r.created_at && date < _end) || !_end)
-      );
-    });
+    let newResonses = responseList
+      .filter((r) => {
+        let date = Date.parse(r.created_at.toString());
+        return (
+          ((start && r.created_at && date > _start) || !_start) &&
+          ((end && r.created_at && date < _end) || !_end)
+        );
+      })
+      .filter((r) => {
+        if (selectedStatus === 1)
+          return 100 <= r.response_status && r.response_status <= 199;
+        if (selectedStatus === 2)
+          return 200 <= r.response_status && r.response_status <= 299;
+        if (selectedStatus === 3)
+          return 300 <= r.response_status && r.response_status <= 399;
+        if (selectedStatus === 4)
+          return 400 <= r.response_status && r.response_status <= 499;
+        if (selectedStatus === 5)
+          return 500 <= r.response_status && r.response_status <= 599;
+
+        return r;
+      });
 
     setFilteredResponseList(newResonses);
-  }, [start, end, responseList]);
+  }, [start, end, responseList, selectedStatus]);
 
   Chart.register(CategoryScale);
 
@@ -166,7 +195,13 @@ export default function History() {
         <div>
           <DateFilter start={start} end={end} onChange={handleChangeDate} />
         </div>
-        <div>filtre par statut</div>
+        <div>
+          <Select
+            value={selectedStatus}
+            options={optionsStatus}
+            onChange={handleChangeStatus}
+          />
+        </div>
       </div>
       {filteredResponseList.length > 0 ? (
         <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
