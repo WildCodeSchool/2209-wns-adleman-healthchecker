@@ -11,7 +11,6 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === "") {
-      console.log("la");
       getFormUrl("", 0, 0, 0);
     }
     setUrl(e.target.value);
@@ -25,12 +24,9 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
     if (url.length === 0) {
       return;
     }
-    if (!reg.test(url)) {
+    if (!reg.test(url) && url !== "http://servertest:9000/servertest") {
       setIsValid(false);
       setIsDisabled(true);
-    } else if (url === "http://www.127.0.0.1:5000/servertest") {
-      setIsValid(true);
-      setIsDisabled(false);
     } else {
       setIsValid(true);
       setIsDisabled(false);

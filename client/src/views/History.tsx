@@ -89,7 +89,7 @@ export default function History() {
         [],
       datasets: [
         {
-          label: "Statut du serveur",
+          label: "latence",
           data: filteredResponseList?.map((r) => r.latency) || [],
           backgroundColor:
             filteredResponseList?.map((r) => {
