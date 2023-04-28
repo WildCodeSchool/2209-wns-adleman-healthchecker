@@ -6,7 +6,7 @@ import { UrlService } from "../services/UrlService";
 import { ContextType } from "../auth/customAuthChecker";
 
 import User from "../entity/User";
-import { TEST_DOCKER_URL, TEST_URL } from "../const";
+import { TEST_DOCKER_URL } from "../const";
 
 @Resolver(Url)
 export class UrlResolver {
@@ -44,12 +44,12 @@ export class UrlResolver {
     }
     const urlService = new UrlService();
 
-    if (url.url === TEST_URL) {
+    if (url.url === TEST_DOCKER_URL) {
       const urlAlreadyExist = await datasource
         .getRepository(Url)
         .findOneBy({ url: url.url });
-
       if (urlAlreadyExist === null) {
+        console.log(urlAlreadyExist);
         const responseForNewUrl = await urlService.getResponse(TEST_DOCKER_URL);
 
         if (responseForNewUrl.response_status === null)
@@ -78,45 +78,45 @@ export class UrlResolver {
           user
         );
       }
-    }
-
-    const urlValid = await urlService.checkIfUrlIsValid(url.url);
-    if (!urlValid) throw new ApolloError("Url is not valid");
-
-    const { href: urlFormatted } = await urlService.formatUrl(url.url);
-
-    const urlAlreadyExist = await datasource
-      .getRepository(Url)
-      .findOneBy({ url: urlFormatted });
-
-    if (urlAlreadyExist === null) {
-      const responseForNewUrl = await urlService.getResponse(urlFormatted);
-
-      if (responseForNewUrl.response_status === null)
-        throw new ApolloError(
-          `Error while getting response for url : ${urlFormatted}`
-        );
-
-      return await urlService.saveResponseForNewUrlAndGetResponses(
-        urlFormatted,
-        responseForNewUrl,
-        user
-      );
     } else {
-      const getResponseForExistingUrl = await urlService.getResponse(
-        urlAlreadyExist.url
-      );
+      const urlValid = await urlService.checkIfUrlIsValid(url.url);
+      if (!urlValid) throw new ApolloError("Url is not valid");
 
-      if (getResponseForExistingUrl.response_status === null)
-        throw new ApolloError(
-          `Error while getting response for url : ${urlAlreadyExist.url}`
+      const { href: urlFormatted } = await urlService.formatUrl(url.url);
+
+      const urlAlreadyExist = await datasource
+        .getRepository(Url)
+        .findOneBy({ url: urlFormatted });
+
+      if (urlAlreadyExist === null) {
+        const responseForNewUrl = await urlService.getResponse(urlFormatted);
+
+        if (responseForNewUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${urlFormatted}`
+          );
+
+        return await urlService.saveResponseForNewUrlAndGetResponses(
+          urlFormatted,
+          responseForNewUrl,
+          user
+        );
+      } else {
+        const getResponseForExistingUrl = await urlService.getResponse(
+          urlAlreadyExist.url
         );
 
-      return await urlService.saveAndGetResponsesFromExistingUrl(
-        urlAlreadyExist,
-        getResponseForExistingUrl,
-        user
-      );
+        if (getResponseForExistingUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${urlAlreadyExist.url}`
+          );
+
+        return await urlService.saveAndGetResponsesFromExistingUrl(
+          urlAlreadyExist,
+          getResponseForExistingUrl,
+          user
+        );
+      }
     }
   }
 }

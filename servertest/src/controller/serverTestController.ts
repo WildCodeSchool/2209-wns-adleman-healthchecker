@@ -3,8 +3,6 @@ import { Response, Request } from "express";
 const read = async (req: Request, res: Response) => {
   const randomNumber = Math.random() * 100;
 
-  console.log(randomNumber);
-
   const sendStatus =
     randomNumber < 80
       ? 200
@@ -12,7 +10,7 @@ const read = async (req: Request, res: Response) => {
       ? 400
       : 500;
 
-  console.log("reread");
-  return res.status(sendStatus).send("test");
+  console.log(`statut de la requête: ${sendStatus}`);
+  return res.status(sendStatus).send("Hello World!");
 };
 export default read;
