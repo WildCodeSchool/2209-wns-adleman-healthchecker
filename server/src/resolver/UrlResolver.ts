@@ -6,6 +6,7 @@ import { UrlService } from "../services/UrlService";
 import { ContextType } from "../auth/customAuthChecker";
 
 import User from "../entity/User";
+import { TEST_DOCKER_URL, TEST_URL } from "../const";
 
 @Resolver(Url)
 export class UrlResolver {
@@ -42,20 +43,40 @@ export class UrlResolver {
     }
     const urlService = new UrlService();
 
-    if (url.url === "http://127.0.0.1:5000/servertest") {
-      const responseTest = await urlService.getResponse(url.url);
-      // console.log(responseTest);
+    if (url.url === TEST_URL) {
+      const urlAlreadyExist = await datasource
+        .getRepository(Url)
+        .findOneBy({ url: url.url });
 
-      if (responseTest.response_status === null)
-        throw new ApolloError(
-          `Error while getting response for url : ${url.url}`
+      if (urlAlreadyExist === null) {
+        const responseForNewUrl = await urlService.getResponse(TEST_DOCKER_URL);
+
+        if (responseForNewUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${url.url}`
+          );
+
+        return await urlService.saveResponseForNewUrlAndGetResponses(
+          url.url,
+          responseForNewUrl,
+          user
+        );
+      } else {
+        const getResponseForExistingUrl = await urlService.getResponse(
+          TEST_DOCKER_URL
         );
 
-      return await urlService.saveResponseForNewUrlAndGetResponses(
-        url.url,
-        responseTest,
-        user
-      );
+        if (getResponseForExistingUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${urlAlreadyExist.url}`
+          );
+
+        return await urlService.saveAndGetResponsesFromExistingUrl(
+          urlAlreadyExist,
+          getResponseForExistingUrl,
+          user
+        );
+      }
     }
 
     const urlValid = await urlService.checkIfUrlIsValid(url.url);

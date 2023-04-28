@@ -41,3 +41,13 @@ services:
     environment:
       CHOKIDAR_USEPOLLING: "true"
       REACT_APP_GRAPHQL_API_URL: "http://localhost:4000"
+
+  servertest:
+    build:
+      context: ./servertest
+      dockerfile: Dockerfile
+    container_name: servertest
+    ports:
+      - 5000:5000
+    volumes:
+      - ./servertest/src:/app/src
