@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useGetUrlByIdQuery } from "../graphql/generated/schema";
+
 import { formatDate, formatUrl } from "../utils/utils";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
@@ -9,7 +9,6 @@ import {
   useGetUrlByIdQuery,
   useUpdateFrequencyMutation,
 } from "../graphql/generated/schema";
-import { formatUrl } from "../utils/utils";
 import { Ioption } from "../components/Select";
 import Select from "../components/Select";
 import DateFilter from "../components/DateFilter";
@@ -22,23 +21,6 @@ export interface IResponse {
   created_at: Date;
 }
 
-interface DataChart {
-  id: number;
-  latency: number;
-  response_status: number;
-  created_at: Date;
-}
-
-interface ModelChart {
-  labels?: string;
-  datasets: [
-    {
-      label: string;
-      data: number[];
-      backgroundColor: string[];
-    }
-  ];
-}
 export default function History() {
   const { id } = useParams();
 
@@ -49,14 +31,17 @@ export default function History() {
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3600000);
 
   const idFormat = parseInt(id!);
+  const { data, startPolling } = useGetUrlByIdQuery({
+    variables: {
+      urlId: idFormat,
+    },
+  });
 
   // const { data } = useGetUrlByIdQuery({
   //   variables: {
   //     urlId: idFormat,
   //   },
   // });
-
-  const { data } = useGetUrlByIdQuery({
   const options: Ioption[] = [
     { label: "5 secondes", value: 5000 },
     { label: "30 secondes", value: 30000 },
@@ -64,6 +49,8 @@ export default function History() {
     { label: "30 minutes", value: 1800000 },
     { label: "1 heure", value: 3600000 },
   ];
+
+  // const { data } = useGetUrlByIdQuery({})
 
   const [start, setStart] = useState<
     string | number | readonly string[] | undefined
@@ -73,19 +60,6 @@ export default function History() {
   >(undefined);
 
   const [updateFrequencyMutation] = useUpdateFrequencyMutation();
-
-  const { data, startPolling } = useGetUrlByIdQuery({
-    variables: {
-      urlId: idFormat,
-    },
-  });
-  // const {id, response_status, latency, created_at } = data;
-  // useEffect(() => {
-  //   setUrl(data?.getUrlById);
-  // }, [data]);
-
-  const url = data?.getUrlById;
-  const responses = data?.getUrlById.responses;
 
   const [chartData, setChartData] = useState({
     labels: [""],
@@ -97,15 +71,18 @@ export default function History() {
       },
     ],
   });
+
   useEffect(() => {
     setChartData({
-      labels: responses?.map((r) => formatDate(r.created_at)) || [],
+      labels:
+        filteredResponseList?.map((r) => formatDate(r.created_at.toString())) ||
+        [],
       datasets: [
         {
           label: "Statut du serveur",
-          data: responses?.map((r) => r.latency) || [],
+          data: filteredResponseList?.map((r) => r.latency) || [],
           backgroundColor:
-            responses?.map((r) => {
+            filteredResponseList?.map((r) => {
               if (r.response_status === 200) return "#4caf50";
               if (r.response_status === 500) return "#f44336";
               return "#ffc107";
@@ -113,9 +90,8 @@ export default function History() {
         },
       ],
     });
-  }, [responses]);
+  }, [filteredResponseList]);
 
-  if (!responses) return <div>Pas de réponse trouvé pour cette adresse</div>;
   useEffect(() => {
     if (data) {
       let responseList = data.getUrlById.responses
@@ -175,9 +151,9 @@ export default function History() {
 
   return (
     <div className="container">
-      <h2>{url && formatUrl(url?.url)}</h2>
+      <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url)}</h2>
       <HistoryChart chartData={chartData} />
-      <div className="header flex">
+
       <h2>{data && formatUrl(data.getUrlById.url)}</h2>
       <div className="filterBar flex flex-around">
         <div>
@@ -197,21 +173,6 @@ export default function History() {
       ) : (
         <div>Pas de réponse dispo</div>
       )}
-
-      {/* <div className="header flex">
-        <div>Statut</div>
-        <div>Latence</div>
-        <div>Date</div>
-      </div>
-      <div className="body">
-        {filteredResponseList.map((r) => (
-          <div className="row flex" key={r.id}>
-            <div>{r.response_status}</div>
-            <div>{r.latency}</div>
-            <div>{formatDate(r.created_at.toString())}</div>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 }

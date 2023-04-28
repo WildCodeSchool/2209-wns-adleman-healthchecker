@@ -48,6 +48,6 @@ services:
       dockerfile: Dockerfile
     container_name: servertest
     ports:
-      - 5000:5000
+      - 9000:9000
     volumes:
       - ./servertest/src:/app/src

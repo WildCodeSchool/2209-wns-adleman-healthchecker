@@ -2,6 +2,9 @@ import { Response, Request } from "express";
 
 const read = async (req: Request, res: Response) => {
   const randomNumber = Math.random() * 100;
+
+  console.log(randomNumber);
+
   const sendStatus =
     randomNumber < 80
       ? 200
