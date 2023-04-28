@@ -34,10 +34,6 @@ export default function Home() {
   return (
     <React.Fragment>
       <div className="container">
-        {/* <div className="card title">
-          <h1 data-testid="title">Texte d'accueil</h1>
-        </div> */}
-        <div>TOTO 5</div>
         <div className="card url-form flex">
           <UrlForm getFormUrl={getFormUrl} />
           <div className="response">

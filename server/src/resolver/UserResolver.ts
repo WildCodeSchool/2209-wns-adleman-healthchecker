@@ -1,17 +1,7 @@
 import { ApolloError } from "apollo-server-errors";
-import {
-  Arg,
-  Authorized,
-  Ctx,
-  FieldResolver,
-  Mutation,
-  Query,
-  Resolver,
-  Root,
-} from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import datasource from "../database";
 import User, {
-  getSafeAttributes,
   hashPassword,
   UserInput,
   UserInputLogin,
@@ -20,8 +10,6 @@ import User, {
 import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
-import Url from "../entity/Url";
-import Response from "../entity/Response";
 
 @Resolver(User)
 export class UserResolver {
@@ -76,36 +64,43 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
-    return getSafeAttributes(ctx.currentUser as User);
+    const urlsByUserId = await datasource.getRepository(User).findOne({
+      where: { id: ctx.currentUser?.id },
+    });
+
+    return urlsByUserId as User;
   }
 
+  @Authorized()
   @Query(() => User)
-  async getUrlsByUserId(@Arg("userId") id: number): Promise<User> {
-    // const urlsByUserId = await datasource.getRepository(User).findOne({
-    //   where: { id },
-    //   relations: ["urls" ],
-    // });
-
-    const urlsByUserId = await datasource
-      .getRepository(User)
-      .createQueryBuilder("user")
-      .where("user.id = :id", { id })
-      .leftJoinAndSelect("user.urls", "url")
-      .leftJoinAndSelect("url.responses", "response")
-      .getOne();
+  async getUrlsByUserId(@Ctx() ctx: ContextType): Promise<User> {
+    const urlsByUserId = await datasource.getRepository(User).findOne({
+      where: { id: ctx.currentUser?.id },
+      relations: { userToUrls: { url: { responses: true } } },
+    });
 
     if (urlsByUserId === null)
       throw new ApolloError("Urls not found", "NOT_FOUND");
     return urlsByUserId;
   }
 
-  @FieldResolver(() => [Url])
-  async urls(@Root() user: User): Promise<Url[]> {
-    return user.urls;
-  }
+  // @FieldResolver(() => [UserToUrl])
+  // async userToUrls(@Root() user: User): Promise<UserToUrl[]> {
+  //   return user.userToUrls;
+  // }
 
-  @FieldResolver(() => [Response])
-  async responses(@Root() url: Url): Promise<Response[]> {
-    return url.responses;
-  }
+  // @FieldResolver(() => [Url])
+  // async url(@Root() userToUrl: UserToUrl): Promise<Url> {
+  //   return userToUrl.url;
+  // }
+
+  // @FieldResolver(() => [Response])
+  // async responses(@Root() url: Url): Promise<Response[]> {
+  //   return url.responses;
+  // }
+
+  // @FieldResolver(() => [User])
+  // async user(@Root() userToUrl: UserToUrl): Promise<User> {
+  //   return userToUrl.user;
+  // }
 }

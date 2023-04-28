@@ -16,12 +16,18 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type FrequencyInput = {
+  frequency: Scalars['Float'];
+  urlId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUrl: Url;
   createUser: User;
   login: Scalars['String'];
   logout: Scalars['String'];
+  updateFrequency: UserToUrl;
 };
 
 
@@ -39,6 +45,11 @@ export type MutationLoginArgs = {
   data: UserInputLogin;
 };
 
+
+export type MutationUpdateFrequencyArgs = {
+  data: FrequencyInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   getUrlById: Url;
@@ -50,11 +61,6 @@ export type Query = {
 
 export type QueryGetUrlByIdArgs = {
   urlId: Scalars['Float'];
-};
-
-
-export type QueryGetUrlsByUserIdArgs = {
-  userId: Scalars['Float'];
 };
 
 export type Response = {
@@ -71,15 +77,15 @@ export type Url = {
   id: Scalars['Float'];
   responses: Array<Response>;
   url: Scalars['String'];
+  userToUrls: Array<UserToUrl>;
 };
 
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Float'];
-  responses: Array<Response>;
   role: Scalars['String'];
-  urls: Array<Url>;
+  userToUrls: Array<UserToUrl>;
   username: Scalars['String'];
 };
 
@@ -92,6 +98,13 @@ export type UserInput = {
 export type UserInputLogin = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type UserToUrl = {
+  __typename?: 'UserToUrl';
+  frequency: Scalars['Float'];
+  url: Url;
+  user: User;
 };
 
 export type CreateUrlInput = {
@@ -112,12 +125,10 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: number, username: string } };
 
-export type GetUrlsByUserIdQueryVariables = Exact<{
-  userId: Scalars['Float'];
-}>;
+export type GetUrlsByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', email: string, id: number, role: string, urls: Array<{ __typename?: 'Url', created_at: any, id: number, url: string, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> }> } };
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -147,6 +158,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: string };
+
+export type UpdateFrequencyMutationVariables = Exact<{
+  data: FrequencyInput;
+}>;
+
+
+export type UpdateFrequencyMutation = { __typename?: 'Mutation', updateFrequency: { __typename?: 'UserToUrl', frequency: number } };
 
 
 export const CreateUrlDocument = gql`
@@ -225,20 +243,24 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const GetUrlsByUserIdDocument = gql`
-    query GetUrlsByUserId($userId: Float!) {
-  getUrlsByUserId(userId: $userId) {
-    email
+    query GetUrlsByUserId {
+  getUrlsByUserId {
     id
+    username
+    email
     role
-    urls {
-      created_at
-      id
-      url
-      responses {
-        response_status
-        latency
+    userToUrls {
+      frequency
+      url {
         id
+        url
         created_at
+        responses {
+          id
+          response_status
+          latency
+          created_at
+        }
       }
     }
   }
@@ -257,11 +279,10 @@ export const GetUrlsByUserIdDocument = gql`
  * @example
  * const { data, loading, error } = useGetUrlsByUserIdQuery({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */
-export function useGetUrlsByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
+export function useGetUrlsByUserIdQuery(baseOptions?: Apollo.QueryHookOptions<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUrlsByUserIdQuery, GetUrlsByUserIdQueryVariables>(GetUrlsByUserIdDocument, options);
       }
@@ -455,3 +476,36 @@ export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<Logou
 export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
 export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
 export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const UpdateFrequencyDocument = gql`
+    mutation UpdateFrequency($data: FrequencyInput!) {
+  updateFrequency(data: $data) {
+    frequency
+  }
+}
+    `;
+export type UpdateFrequencyMutationFn = Apollo.MutationFunction<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;
+
+/**
+ * __useUpdateFrequencyMutation__
+ *
+ * To run a mutation, you first call `useUpdateFrequencyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFrequencyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFrequencyMutation, { data, loading, error }] = useUpdateFrequencyMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateFrequencyMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>(UpdateFrequencyDocument, options);
+      }
+export type UpdateFrequencyMutationHookResult = ReturnType<typeof useUpdateFrequencyMutation>;
+export type UpdateFrequencyMutationResult = Apollo.MutationResult<UpdateFrequencyMutation>;
+export type UpdateFrequencyMutationOptions = Apollo.BaseMutationOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;

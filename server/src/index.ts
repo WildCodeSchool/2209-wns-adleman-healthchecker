@@ -11,11 +11,12 @@ import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { sendNewRequestToAllUrls } from "./services/cronService";
+import startCron from "./services/cronService";
 
 import customAuthChecker from "./auth/customAuthChecker";
 
 import { UserResolver } from "./resolver/UserResolver";
+import { UserToUrlResolver } from "./resolver/UserToUrlResolver";
 
 const start = async (): Promise<void> => {
   await datasource.initialize();
@@ -40,7 +41,7 @@ const start = async (): Promise<void> => {
 
   app.use(cookieParser());
   const schema = await buildSchema({
-    resolvers: [UrlResolver, UserResolver],
+    resolvers: [UrlResolver, UserResolver, UserToUrlResolver],
     authChecker: customAuthChecker,
   });
 
@@ -64,7 +65,7 @@ const start = async (): Promise<void> => {
     console.log(`🚀 Server ready at ${env.SERVER_HOST}:${env.SERVER_PORT}`)
   );
 
-  setInterval(sendNewRequestToAllUrls, 3600000);
+  await startCron();
 };
 
 void start();

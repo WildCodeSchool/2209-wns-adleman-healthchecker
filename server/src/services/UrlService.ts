@@ -4,6 +4,7 @@ import Response from "../entity/Response";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import User from "../entity/User";
+import UserToUrl from "../entity/UserToUrl";
 export class UrlService {
   checkIfUrlIsValid(url: string): boolean {
     const urlPattern =
@@ -93,9 +94,15 @@ export class UrlService {
     });
 
     if (user !== null) {
-      user.urls = [...user.urls, newUrlCreated];
+      // user.userToUrls = [...user.userToUrls, newUrlCreated];
 
-      await datasource.getRepository(User).save(user);
+      // await datasource.getRepository(User).save(user);
+
+      await datasource.getRepository(UserToUrl).save({
+        userId: user.id,
+        urlId: newUrlCreated.id,
+        frequency: 3600000,
+      });
     }
 
     if (urlWithResponses === null)
@@ -127,10 +134,15 @@ export class UrlService {
         relations: ["responses"],
       });
 
-    if (user !== null) {
-      user.urls = [...user.urls, urlAlreadyExist];
+    if (user !== null && urlAlreadyExistWithResponses !== null) {
+      // user.urls = [...user.urls, urlAlreadyExist];
 
-      await datasource.getRepository(User).save(user);
+      // await datasource.getRepository(User).save(user);
+      await datasource.getRepository(UserToUrl).save({
+        userId: user.id,
+        urlId: urlAlreadyExistWithResponses.id,
+        frequency: 3600000,
+      });
     }
 
     if (urlAlreadyExistWithResponses === null)

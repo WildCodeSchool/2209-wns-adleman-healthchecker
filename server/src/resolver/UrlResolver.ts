@@ -37,9 +37,10 @@ export class UrlResolver {
       ctx.currentUser?.id !== null &&
       typeof ctx.currentUser?.id !== "undefined"
     ) {
-      user = await datasource
-        .getRepository(User)
-        .findOne({ where: { id: ctx.currentUser?.id }, relations: ["urls"] });
+      user = await datasource.getRepository(User).findOne({
+        where: { id: ctx.currentUser?.id },
+        relations: ["userToUrls"],
+      });
     }
     const urlService = new UrlService();
 
