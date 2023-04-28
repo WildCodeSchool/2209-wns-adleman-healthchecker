@@ -95,11 +95,7 @@ export default function History() {
     if (typeof start === "string") _start = Date.parse(start);
     if (typeof end === "string") _end = Date.parse(end);
     let newResonses = responseList.filter((r) => {
-      // console.log(_start + " => start");
-      // console.log(_end + " => end");
       let date = Date.parse(r.created_at.toString());
-      // console.log(date);
-      // if (r.created_at) console.log(r.created_at.getTime() + " => response");
       return (
         ((start && r.created_at && date > _start) || !_start) &&
         ((end && r.created_at && date < _end) || !_end)
@@ -125,7 +121,12 @@ export default function History() {
         </div>
         <div>filtre par statut</div>
       </div>
-      <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
+      {filteredResponseList.length > 0 ? (
+        <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
+      ) : (
+        <div>Pas de réponse dispo</div>
+      )}
+
       {/* <div className="header flex">
         <div>Statut</div>
         <div>Latence</div>
