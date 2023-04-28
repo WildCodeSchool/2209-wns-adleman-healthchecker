@@ -28,6 +28,9 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
     if (!reg.test(url)) {
       setIsValid(false);
       setIsDisabled(true);
+    } else if (url === "http://www.127.0.0.1:5000/servertest") {
+      setIsValid(true);
+      setIsDisabled(false);
     } else {
       setIsValid(true);
       setIsDisabled(false);

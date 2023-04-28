@@ -1,4 +1,4 @@
-name: Compile and push client and server to staging
+name: Compile and push client and server to production
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push-server-staging:
+  build-and-push-server:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
@@ -24,8 +24,8 @@ jobs:
           push: true
           context: "{{defaultContext}}:server"
           file: "Dockerfile.production"
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/healthchecker-server:main
-  build-and-push-client-staging:
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/healthchecker-server
+  build-and-push-client:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
@@ -43,14 +43,14 @@ jobs:
           push: true
           context: "{{defaultContext}}:client"
           file: "Dockerfile.production"
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/healthchecker-client:main
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/healthchecker-client
   notify:
     needs:
-      - build-and-push-server-staging
-      - build-and-push-client-staging
+      - build-and-push-client
+      - build-and-push-server
     runs-on: ubuntu-latest
     steps:
-      - name: Call VPS webhook to update staging
+      - name: Call VPS webhook to update production
         uses: wei/curl@master
         with:
           args: https://ops.adleman4.wns.wilders.dev/hooks/update-healthchecker-production

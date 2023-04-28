@@ -6,6 +6,7 @@ import { UrlService } from "../services/UrlService";
 import { ContextType } from "../auth/customAuthChecker";
 
 import User from "../entity/User";
+import { TEST_DOCKER_URL, TEST_URL } from "../const";
 
 @Resolver(Url)
 export class UrlResolver {
@@ -40,8 +41,43 @@ export class UrlResolver {
         .getRepository(User)
         .findOne({ where: { id: ctx.currentUser?.id }, relations: ["urls"] });
     }
-
     const urlService = new UrlService();
+
+    if (url.url === TEST_URL) {
+      const urlAlreadyExist = await datasource
+        .getRepository(Url)
+        .findOneBy({ url: url.url });
+
+      if (urlAlreadyExist === null) {
+        const responseForNewUrl = await urlService.getResponse(TEST_DOCKER_URL);
+
+        if (responseForNewUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${url.url}`
+          );
+
+        return await urlService.saveResponseForNewUrlAndGetResponses(
+          url.url,
+          responseForNewUrl,
+          user
+        );
+      } else {
+        const getResponseForExistingUrl = await urlService.getResponse(
+          TEST_DOCKER_URL
+        );
+
+        if (getResponseForExistingUrl.response_status === null)
+          throw new ApolloError(
+            `Error while getting response for url : ${urlAlreadyExist.url}`
+          );
+
+        return await urlService.saveAndGetResponsesFromExistingUrl(
+          urlAlreadyExist,
+          getResponseForExistingUrl,
+          user
+        );
+      }
+    }
 
     const urlValid = await urlService.checkIfUrlIsValid(url.url);
     if (!urlValid) throw new ApolloError("Url is not valid");
