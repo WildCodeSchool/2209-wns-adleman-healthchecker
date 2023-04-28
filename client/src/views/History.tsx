@@ -4,12 +4,13 @@ import {
   useGetUrlByIdQuery,
   useUpdateFrequencyMutation,
 } from "../graphql/generated/schema";
-import { formatDate, formatUrl } from "../utils/utils";
+import { formatUrl } from "../utils/utils";
 import { Ioption } from "../components/Select";
 import Select from "../components/Select";
 import DateFilter from "../components/DateFilter";
+import PaginatedItemList from "../components/PaginatedItemList";
 
-interface IResponse {
+export interface IResponse {
   id: number;
   response_status: number;
   latency: number;
@@ -124,7 +125,8 @@ export default function History() {
         </div>
         <div>filtre par statut</div>
       </div>
-      <div className="header flex">
+      <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
+      {/* <div className="header flex">
         <div>Statut</div>
         <div>Latence</div>
         <div>Date</div>
@@ -137,7 +139,7 @@ export default function History() {
             <div>{formatDate(r.created_at.toString())}</div>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
