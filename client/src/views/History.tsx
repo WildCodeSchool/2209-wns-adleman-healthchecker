@@ -30,6 +30,7 @@ export default function History() {
   );
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3600000);
   const [selectedStatus, setSelectedStatus] = useState<number>(0);
+  const [selectView, setSelectView] = useState<number>(0);
 
   const idFormat = parseInt(id!);
   const { data, startPolling } = useGetUrlByIdQuery({
@@ -58,6 +59,11 @@ export default function History() {
     { label: "3XX", value: 3 },
     { label: "4XX", value: 4 },
     { label: "5XX", value: 5 },
+  ];
+
+  const optionsView: Ioption[] = [
+    { label: "Liste", value: 0 },
+    { label: "Graph", value: 1 },
   ];
 
   // const { data } = useGetUrlByIdQuery({})
@@ -145,6 +151,10 @@ export default function History() {
     setSelectedStatus(value);
   };
 
+  const handleSelectView = (value: number) => {
+    setSelectView(value);
+  };
+
   const handleChangeDate = (
     _start: string | number | readonly string[] | undefined,
     _end: string | number | readonly string[] | undefined
@@ -189,9 +199,7 @@ export default function History() {
   return (
     <div className="container">
       <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url)}</h2>
-      <HistoryChart chartData={chartData} />
 
-      <h2>{data && formatUrl(data.getUrlById.url)}</h2>
       <div className="filterBar flex flex-around">
         <div>
           <Select
@@ -211,11 +219,19 @@ export default function History() {
           />
         </div>
       </div>
-      {filteredResponseList.length > 0 ? (
+      <Select
+        options={optionsView}
+        value={selectView}
+        onChange={handleSelectView}
+      />
+      {filteredResponseList.length < 1 ? (
+        <div>Pas de réponse dispo</div>
+      ) : !selectView ? (
         <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
       ) : (
-        <div>Pas de réponse dispo</div>
+        <HistoryChart chartData={chartData} />
       )}
     </div>
   );
 }
+// { selectView ? (<PaginatedItemList items={filteredResponseList} itemsPerPage={10} />): (<HistoryChart chartData={chartData} />)
