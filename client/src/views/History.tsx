@@ -85,12 +85,20 @@ export default function History() {
   useEffect(() => {
     setChartData({
       labels:
-        filteredResponseList?.map((r) => formatDate(r.created_at.toString())) ||
-        [],
+        filteredResponseList
+          ?.sort((a, b) =>
+            a.created_at.toString().localeCompare(b.created_at.toString())
+          )
+          .map((r) => formatDate(r.created_at.toString())) || [],
       datasets: [
         {
           label: "latence",
-          data: filteredResponseList?.map((r) => r.latency) || [],
+          data:
+            filteredResponseList
+              ?.sort((a, b) =>
+                a.created_at.toString().localeCompare(b.created_at.toString())
+              )
+              .map((r) => r.latency) || [],
           backgroundColor:
             filteredResponseList?.map((r) => {
               if (r.response_status === 200) return "#4caf50";

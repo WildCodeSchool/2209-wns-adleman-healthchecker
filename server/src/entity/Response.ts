@@ -42,7 +42,9 @@ class Response {
   @Column()
   urlId: number;
 
-  @ManyToOne(() => Url, (u) => u.responses)
+  @ManyToOne(() => Url, (u) => u.responses, {
+    onDelete: "CASCADE",
+  })
   url: Url;
 }
 export default Response;
