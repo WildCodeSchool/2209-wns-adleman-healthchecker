@@ -27,6 +27,7 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
   }, [dataFormUrl, refetch]);
 
   useEffect(() => {
+    console.log(urlList);
     if (urlList) {
       let newList = urlList
         .map((u) => {

@@ -4,6 +4,7 @@ import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import { UrlService } from "../services/UrlService";
 import { ContextType } from "../auth/customAuthChecker";
+import Response from "../entity/Response";
 
 import User from "../entity/User";
 import { TEST_DOCKER_URL } from "../const";
@@ -12,18 +13,36 @@ import { TEST_DOCKER_URL } from "../const";
 export class UrlResolver {
   @Query(() => [Url])
   async getUrls(): Promise<Url[]> {
-    return await datasource
-      .getRepository(Url)
-      .find({ relations: ["responses"] });
+    const urls = await datasource.getRepository(Url).find();
+
+    const urlToReturn = await Promise.all(
+      urls.map(async (url: Url) => {
+        const responses = await datasource
+          .getRepository(Response)
+          .find({ where: { urlId: url.id }, take: 10, order: { id: "DESC" } });
+
+        return { ...url, responses };
+      })
+    );
+
+    return urlToReturn;
   }
 
   @Query(() => Url)
   async getUrlById(@Arg("urlId") id: number): Promise<Url> {
     const urlExist = await datasource
       .getRepository(Url)
-      .findOne({ where: { id }, relations: ["responses"] });
+      .findOne({ where: { id } });
+
     if (urlExist === null) throw new ApolloError("Url not found", "NOT_FOUND");
-    return urlExist;
+
+    const responses = await datasource.getRepository(Response).find({
+      where: { urlId: urlExist.id },
+      take: 1000,
+      order: { id: "DESC" },
+    });
+
+    return { ...urlExist, responses };
   }
 
   @Authorized()
