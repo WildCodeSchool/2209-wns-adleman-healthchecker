@@ -33,22 +33,32 @@ const Pagination: React.FC<Props> = ({
   // Render the pagination controls
   return (
     <div>
-      <button onClick={handleFirstPageClick} disabled={currentPage === 1}>
+      <button
+        className="paginationButton"
+        onClick={handleFirstPageClick}
+        disabled={currentPage === 1}
+      >
         First
       </button>
-      <button onClick={handlePrevPageClick} disabled={currentPage === 1}>
+      <button
+        className="paginationButton"
+        onClick={handlePrevPageClick}
+        disabled={currentPage === 1}
+      >
         &lt;
       </button>
-      <span>
-        Page {currentPage} of {totalPages}
+      <span className="paginationText">
+        {currentPage} / {totalPages}
       </span>
       <button
+        className="paginationButton"
         onClick={handleNextPageClick}
         disabled={currentPage === totalPages}
       >
         &gt;
       </button>
       <button
+        className="paginationButton"
         onClick={handleLastPageClick}
         disabled={currentPage === totalPages}
       >
