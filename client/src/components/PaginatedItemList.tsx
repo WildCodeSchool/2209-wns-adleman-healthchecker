@@ -21,11 +21,6 @@ const PaginatedItemList: React.FC<Props> = ({ items, itemsPerPage }) => {
   // Render the item list component with the current page and items per page props
   return (
     <div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
       <ItemList
         items={items}
         currentPage={currentPage}

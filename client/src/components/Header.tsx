@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <header>
       <nav>
-        <ul>
+        <ul className="navbarList">
           <li data-testid="accueil">
             <Link to="/">Accueil</Link>
           </li>
@@ -28,7 +28,7 @@ export default function Header() {
                     await logout();
                     await client.resetStore();
                   }}
-                  className="button"
+                  className="logoutButton"
                 >
                   Log out
                 </button>

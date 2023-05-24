@@ -204,13 +204,20 @@ export default function History() {
       <div className="filterBar flex flex-around">
         <div>
           <Select
-            options={options}
-            value={selectedFrequency}
-            onChange={handleChangeFrequency}
+            options={optionsView}
+            value={selectView}
+            onChange={handleSelectView}
           />
         </div>
         <div>
           <DateFilter start={start} end={end} onChange={handleChangeDate} />
+        </div>
+        <div>
+          <Select
+            options={options}
+            value={selectedFrequency}
+            onChange={handleChangeFrequency}
+          />
         </div>
         <div>
           <Select
@@ -220,11 +227,6 @@ export default function History() {
           />
         </div>
       </div>
-      <Select
-        options={optionsView}
-        value={selectView}
-        onChange={handleSelectView}
-      />
       {filteredResponseList.length < 1 ? (
         <div>Pas de réponse dispo</div>
       ) : !selectView ? (

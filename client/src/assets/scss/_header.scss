@@ -5,3 +5,22 @@ header {
   margin-bottom: $space-medium;
   box-shadow: $shadow;
 }
+
+.navbarList {
+  display: flex;
+  justify-content: space-around;
+  width: 500px;
+  align-items: center;
+}
+
+.logoutButton {
+  color: #38383f;
+  background-color: transparent;
+  border: none;
+  font-family: Avenir-heavy;
+  font-size: 18px;
+  font-weight: 900;
+}
+.logoutButton:hover {
+  cursor: pointer;
+}
