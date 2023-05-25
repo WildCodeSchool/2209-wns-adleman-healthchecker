@@ -34,6 +34,10 @@ class Url {
   @Field()
   created_at: Date;
 
+  @Column({ default: 3600000 })
+  @Field()
+  frequency: number;
+
   @OneToMany(() => Response, (r) => r.url)
   @Field(() => [Response])
   responses: Response[];

@@ -6,6 +6,7 @@ import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import { HistoryChart } from "../components/HistoryChart";
 import {
+  useGetProfileQuery,
   useGetUrlByIdQuery,
   useUpdateFrequencyMutation,
 } from "../graphql/generated/schema";
@@ -39,11 +40,10 @@ export default function History() {
     },
   });
 
-  // const { data } = useGetUrlByIdQuery({
-  //   variables: {
-  //     urlId: idFormat,
-  //   },
-  // });
+  const { data: currentUser } = useGetProfileQuery({
+    errorPolicy: "ignore",
+  });
+
   const options: Ioption[] = [
     { label: "5 secondes", value: 5000 },
     { label: "30 secondes", value: 30000 },
@@ -129,7 +129,7 @@ export default function History() {
           };
         })
         .sort((a, b) => b.created_at.localeCompare(a.created_at));
-
+      setSelectedFrequency(data.getUrlById.frequency);
       setResponseList(responseList);
       setFilteredResponseList(responseList);
       startPolling(5000);
@@ -212,13 +212,17 @@ export default function History() {
         <div>
           <DateFilter start={start} end={end} onChange={handleChangeDate} />
         </div>
-        <div>
-          <Select
-            options={options}
-            value={selectedFrequency}
-            onChange={handleChangeFrequency}
-          />
-        </div>
+
+        {currentUser && (
+          <div>
+            <Select
+              options={options}
+              value={selectedFrequency}
+              onChange={handleChangeFrequency}
+            />
+          </div>
+        )}
+
         <div>
           <Select
             value={selectedStatus}

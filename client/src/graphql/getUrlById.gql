@@ -3,6 +3,7 @@ query GetUrlById($urlId: Float!) {
     url
     id
     created_at
+    frequency
     responses {
       response_status
       latency

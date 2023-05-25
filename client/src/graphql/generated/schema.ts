@@ -74,6 +74,7 @@ export type Response = {
 export type Url = {
   __typename?: 'Url';
   created_at: Scalars['DateTime'];
+  frequency: Scalars['Float'];
   id: Scalars['Float'];
   responses: Array<Response>;
   url: Scalars['String'];
@@ -140,7 +141,7 @@ export type GetUrlByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'Url', url: string, id: number, created_at: any, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
+export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'Url', url: string, id: number, created_at: any, frequency: number, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -336,6 +337,7 @@ export const GetUrlByIdDocument = gql`
     url
     id
     created_at
+    frequency
     responses {
       response_status
       latency
