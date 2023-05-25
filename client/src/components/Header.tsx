@@ -3,6 +3,7 @@ import {
   useGetProfileQuery,
   useLogoutMutation,
 } from "../graphql/generated/schema";
+
 export default function Header() {
   const { data: currentUser, client } = useGetProfileQuery({
     errorPolicy: "ignore",
