@@ -11,10 +11,10 @@ import { Url, useGetUrlsQuery } from "../../graphql/generated/schema";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCreateUrlMutation } from "../../graphql/generated/schema";
 import { Response } from "../../graphql/generated/schema";
-
+type UrlWithoutUser = Omit<Url, "userToUrls">;
 type RootStackParamList = {
   Home: undefined;
-  Historical: { url: Url };
+  Historical: { url: UrlWithoutUser };
 };
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home", "Tab">;
@@ -47,7 +47,7 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
     }
   }, [url]);
 
-  const navigateToHistorical = (url: Url) => {
+  const navigateToHistorical = (url: UrlWithoutUser) => {
     navigation.navigate("Historical", { url: url });
   };
 

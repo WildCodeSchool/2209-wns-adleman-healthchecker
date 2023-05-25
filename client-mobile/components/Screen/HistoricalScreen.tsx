@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, FlatList, ScrollView } from "react-native";
 import { Url } from "../../graphql/generated/schema";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+type UrlWithoutUser = Omit<Url, "userToUrls">;
 
 type RootStackParamList = {
   Home: undefined;
-  Historical: { url: Url };
+  Historical: { url: UrlWithoutUser };
 };
 
 type HistoricalProps = NativeStackScreenProps<
