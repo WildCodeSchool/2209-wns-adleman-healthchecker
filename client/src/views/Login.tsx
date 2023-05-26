@@ -4,7 +4,7 @@ import {
   useLoginMutation,
   // useLogoutMutation,
 } from "../graphql/generated/schema";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Login() {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -19,7 +19,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className="login">
       {currentUser ? (
         <div>
           <div
@@ -79,6 +79,9 @@ export default function Login() {
           </button>
         </form>
       )}
+      <p>
+        You don't have an account, <Link to="/signup">register</Link>
+      </p>
     </div>
   );
 }

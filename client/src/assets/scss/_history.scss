@@ -1,0 +1,45 @@
+.customSelect {
+  width: 150px;
+  height: 48px;
+  border: 1px solid #d8dae8;
+  color: #555;
+  font-size: 18px;
+  padding: 8px;
+  border-radius: 5px;
+  background-color: #fff;
+}
+.customSelect:hover {
+  cursor: pointer;
+}
+.customInput:hover {
+  cursor: pointer;
+}
+.filterBar {
+  margin-bottom: 25px;
+}
+.paginationButton {
+  background-color: #fff;
+  border-radius: 5px;
+  color: #555;
+  border: 1px solid #d8dae8;
+  cursor: pointer;
+  font-size: 16px;
+  &:disabled {
+    background-color: rgb(149, 157, 175, 0.5);
+    color: #fff;
+    cursor: not-allowed;
+  }
+}
+
+.paginationText {
+  color: #555;
+  font-size: 16px;
+  margin: 0 10px;
+  cursor: pointer;
+
+  &:disabled {
+    background-color: rgb(149, 157, 175, 0.5);
+    color: #fff;
+    cursor: not-allowed;
+  }
+}

@@ -26,27 +26,28 @@
 }
 
 .header {
-  margin-bottom: $space-medium;
+  margin-bottom: $space-xlittle;
   position: relative;
 
-  &::after {
-    content: "";
-    background-color: #38383f;
-    width: 99%;
-    height: 2px;
-    position: absolute;
-    top: 38px;
-    right: 4px;
-    border-radius: 3;
-  }
+  // &::after {
+  //   content: "";
+  //   background-color: #38383f;
+  //   width: 99%;
+  //   height: 2px;
+  //   position: absolute;
+  //   top: 38px;
+  //   right: 4px;
+  //   border-radius: 3;
+  // }
 }
 
 .row {
   border-radius: $radius;
   background-color: $tertiary;
-  margin-bottom: $space-little;
+  margin-bottom: $space-xxlittle;
   padding: $space-xlittle 0;
   cursor: pointer;
+  font-size: 16px;
 
   &:hover {
     transform: scale(

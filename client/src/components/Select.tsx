@@ -10,7 +10,11 @@ interface ISelectProps {
 
 const Select: React.FC<ISelectProps> = ({ value, onChange, options }) => {
   return (
-    <select value={value} onChange={(e) => onChange(parseInt(e.target.value))}>
+    <select
+      className="customSelect"
+      value={value}
+      onChange={(e) => onChange(parseInt(e.target.value))}
+    >
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}

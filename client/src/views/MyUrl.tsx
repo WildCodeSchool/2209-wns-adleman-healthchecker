@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGetUrlsByUserIdQuery } from "../graphql/generated/schema";
+import {
+  useGetProfileQuery,
+  useGetUrlsByUserIdQuery,
+} from "../graphql/generated/schema";
 
 interface IResponse {
   latency: number;
@@ -25,6 +28,7 @@ export default function MyUrl() {
   const { data } = useGetUrlsByUserIdQuery();
 
   useEffect(() => {
+    // console.log(data?.getUrlsByUserId);
     if (data?.getUrlsByUserId) {
       let newList = data.getUrlsByUserId.userToUrls.map((u) => {
         let lastLatency = u.url.responses[u.url.responses.length - 1].latency;
@@ -65,8 +69,8 @@ export default function MyUrl() {
         <div>Status</div>
       </div>
       {urlList &&
-        urlList.map((u) => (
-          <div className="row flex" onClick={() => onUrlClick(u.id)}>
+        urlList.map((u, i) => (
+          <div className="row flex" onClick={() => onUrlClick(u.id)} key={i}>
             <div>{u.url}</div>
             <div>{u.lastLatency}</div>
             <div>{u.lastStatus}</div>

@@ -22,6 +22,10 @@ export default async function startCron(): Promise<void> {
         minFrequency = url.userToUrls.sort(
           (a, b) => a.frequency - b.frequency
         )[0].frequency;
+      if (minFrequency !== url.frequency) {
+        url.frequency = minFrequency;
+        await datasource.getRepository(Url).save(url);
+      }
       const lastResponse = url.responses.sort(
         (a: Response, b: Response) =>
           b.created_at.getTime() - a.created_at.getTime()

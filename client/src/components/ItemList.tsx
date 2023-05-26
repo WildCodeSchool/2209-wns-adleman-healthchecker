@@ -17,9 +17,9 @@ const ItemList: React.FC<Props> = ({ items, currentPage, itemsPerPage }) => {
   return (
     <>
       <div className="header flex">
-        <div>Statut</div>
-        <div>Latence</div>
-        <div>Date</div>
+        <div className="heavy">Statut</div>
+        <div className="heavy">Latence</div>
+        <div className="heavy">Date</div>
       </div>
       <div className="body">
         {itemsToDisplay.map((r) => (

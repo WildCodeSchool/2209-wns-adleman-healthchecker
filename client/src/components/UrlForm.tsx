@@ -60,11 +60,11 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
 
   return (
     <div className="form flex">
-      <div className="heavy">Ici, entrer votre URL :</div>
+      <div className="heavy">Here, enter your URL:</div>
 
       <input
         id="input-URL"
-        placeholder="Entrer une URL"
+        placeholder="URL..."
         value={url}
         onChange={handleChange}
         required={true}
@@ -75,7 +75,7 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
         onClick={handleValidate}
         className="button"
       >
-        Rechercher
+        Search
       </button>
     </div>
   );

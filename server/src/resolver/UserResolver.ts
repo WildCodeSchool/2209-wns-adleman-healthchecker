@@ -10,6 +10,8 @@ import User, {
 import { ContextType } from "../auth/customAuthChecker";
 import jwt from "jsonwebtoken";
 import { env } from "../environment";
+import UserToUrl from "../entity/UserToUrl";
+import Response from "../entity/Response";
 
 @Resolver(User)
 export class UserResolver {
@@ -74,14 +76,25 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async getUrlsByUserId(@Ctx() ctx: ContextType): Promise<User> {
-    const urlsByUserId = await datasource.getRepository(User).findOne({
+    const user = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
-      relations: { userToUrls: { url: { responses: true } } },
+      relations: { userToUrls: { url: true } },
     });
 
-    if (urlsByUserId === null)
-      throw new ApolloError("Urls not found", "NOT_FOUND");
-    return urlsByUserId;
+    if (user === null) throw new ApolloError("Urls not found", "NOT_FOUND");
+
+    console.log(user.userToUrls[0]);
+
+    const userToUrls = await Promise.all(
+      user.userToUrls.map(async (u: UserToUrl) => {
+        const responses = await datasource
+          .getRepository(Response)
+          .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });
+        return { ...u, url: { ...u.url, responses } };
+      })
+    );
+
+    return { ...user, userToUrls };
   }
 
   // @FieldResolver(() => [UserToUrl])

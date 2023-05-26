@@ -5,16 +5,17 @@ import {
   FlatList,
   Button,
   TextInput,
+  Pressable,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { Url, useGetUrlsQuery } from "../../graphql/generated/schema";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useCreateUrlMutation } from "../../graphql/generated/schema";
 import { Response } from "../../graphql/generated/schema";
-
+type UrlWithoutUser = Omit<Url, "userToUrls">;
 type RootStackParamList = {
   Home: undefined;
-  Historical: { url: Url };
+  Historical: { url: UrlWithoutUser };
 };
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, "Home", "Tab">;
@@ -47,7 +48,7 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
     }
   }, [url]);
 
-  const navigateToHistorical = (url: Url) => {
+  const navigateToHistorical = (url: UrlWithoutUser) => {
     navigation.navigate("Historical", { url: url });
   };
 
@@ -91,7 +92,7 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
     <View style={styles.container}>
       <View style={styles.containerInput}>
         <View>
-          <Text>Enter URL : </Text>
+          <Text style={styles.label}>Ici, entrer votre URL : </Text>
           <TextInput
             style={styles.input}
             placeholder="http://toto.fr"
@@ -100,31 +101,36 @@ export default function HomeScreen({ route, navigation }: HomeProps) {
             autoCapitalize="none"
             autoCorrect={false}
           />
-          <Button
+          <Pressable
             onPress={handleValidate}
-            title="Validate"
             disabled={isDisabled || !isValid}
-          />
+            style={styles.button}
+          >
+            <Text style={styles.buttontext}>Rechercher</Text>
+          </Pressable>
         </View>
-        <View>
-          <Text>
+        <View style={styles.response}>
+          <Text style={styles.text}>
             Status: {response?.response_status && response.response_status}
           </Text>
-          <Text>Latency: {response?.latency && response.latency}</Text>
-          {/* <Text>Date: {response?.created_at && response.created_at}</Text> */}
+          <Text style={styles.text}>
+            Latency: {response?.latency && response.latency}
+          </Text>
         </View>
       </View>
       <View style={styles.containerList}>
         <FlatList
           keyExtractor={(item: any) => item.id}
           contentContainerStyle={{ paddingBottom: 30 }}
-          // ItemSeparatorComponent={() => <View style={style.separator} />}
-          // ListEmptyComponent={() => <Text>No wilders for now</Text>}
           data={urlList}
-          // refreshing={loadingWilders}
           renderItem={({ item }) => (
-            <View>
-              <Text onPress={() => navigateToHistorical(item)}>{item.url}</Text>
+            <View style={styles.listItem}>
+              <Text
+                style={styles.text}
+                onPress={() => navigateToHistorical(item)}
+              >
+                {item.url}
+              </Text>
             </View>
           )}
         />
@@ -139,36 +145,70 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    // borderColor: "red",
-    // borderWidth: 1,
   },
   containerInput: {
-    backgroundColor: "#fff",
-    // borderColor: "blue",
+    backgroundColor: "#f5ebe0",
     width: 400,
-    borderWidth: 1,
     flexDirection: "row",
-    padding: 5,
+    padding: 15,
     borderRadius: 10,
     marginTop: 15,
   },
   containerList: {
     flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "flex-start",
-    // borderColor: "green",
-    // borderWidth: 1,
+    backgroundColor: "#f5ebe0",
     padding: 5,
     borderRadius: 10,
     marginTop: 15,
+    width: 400,
   },
   input: {
+    backgroundColor: "#fff",
     height: 40,
     margin: 12,
     width: 200,
-    borderWidth: 1,
     padding: 10,
     borderRadius: 10,
+    color: "#38383f",
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 6,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "#dba39a",
+  },
+  buttontext: {
+    fontSize: 16,
+    lineHeight: 30,
+    fontWeight: "600",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  response: {
+    width: 140,
+    backgroundColor: "#dba39a",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
+    marginLeft: 10,
+  },
+  text: {
+    color: "#38383f",
+    fontWeight: "600",
+  },
+  label: {
+    color: "#38383f",
+    fontWeight: "600",
+    marginLeft: 50,
+  },
+  listItem: {
+    backgroundColor: "#dba39a",
+    padding: 10,
+    margin: 5,
+    borderRadius: 4,
+    alignItems: "center",
   },
 });
