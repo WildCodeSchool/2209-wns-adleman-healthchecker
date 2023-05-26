@@ -14,6 +14,7 @@ import { Ioption } from "../components/Select";
 import Select from "../components/Select";
 import DateFilter from "../components/DateFilter";
 import PaginatedItemList from "../components/PaginatedItemList";
+import ToggleSelect from "../components/ToggleSelect";
 
 export interface IResponse {
   id: number;
@@ -45,11 +46,11 @@ export default function History() {
   });
 
   const options: Ioption[] = [
-    { label: "5 secondes", value: 5000 },
-    { label: "30 secondes", value: 30000 },
+    { label: "5 seconds", value: 5000 },
+    { label: "30 seconds", value: 30000 },
     { label: "10 minutes", value: 600000 },
     { label: "30 minutes", value: 1800000 },
-    { label: "1 heure", value: 3600000 },
+    { label: "1 hour", value: 3600000 },
   ];
 
   const optionsStatus: Ioption[] = [
@@ -61,8 +62,8 @@ export default function History() {
     { label: "5XX", value: 5 },
   ];
 
-  const optionsView: Ioption[] = [
-    { label: "Liste", value: 0 },
+  const toggleOptions: Ioption[] = [
+    { label: "List", value: 0 },
     { label: "Graph", value: 1 },
   ];
 
@@ -152,8 +153,12 @@ export default function History() {
     setSelectedStatus(value);
   };
 
-  const handleSelectView = (value: number) => {
-    setSelectView(value);
+  const toggleChange = () => {
+    if (selectView === 0) {
+      setSelectView(1);
+    } else {
+      setSelectView(0);
+    }
   };
 
   const handleChangeDate = (
@@ -203,13 +208,6 @@ export default function History() {
 
       <div className="filterBar flex flex-around">
         <div>
-          <Select
-            options={optionsView}
-            value={selectView}
-            onChange={handleSelectView}
-          />
-        </div>
-        <div>
           <DateFilter start={start} end={end} onChange={handleChangeDate} />
         </div>
 
@@ -230,6 +228,13 @@ export default function History() {
             onChange={handleChangeStatus}
           />
         </div>
+      </div>
+      <div>
+        <ToggleSelect
+          options={toggleOptions}
+          toggleChange={toggleChange}
+          value={selectView}
+        />
       </div>
       {filteredResponseList.length < 1 ? (
         <div>Pas de réponse dispo</div>

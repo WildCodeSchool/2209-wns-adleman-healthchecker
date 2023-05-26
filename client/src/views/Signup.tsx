@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   useCreateUserMutation,
   useGetProfileQuery,
@@ -22,7 +22,7 @@ export default function Signup() {
   });
 
   return (
-    <div>
+    <div className="login">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -100,6 +100,9 @@ export default function Signup() {
           Register
         </button>
       </form>
+      <p>
+        You aleady have an account, <Link to="/login">login</Link>
+      </p>
     </div>
   );
 }

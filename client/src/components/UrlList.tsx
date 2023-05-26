@@ -57,7 +57,7 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
     setSearch(e.target.value);
   };
 
-  if (!urlList) return <div>Pas d'adresse trouvée</div>;
+  if (!urlList) return <div>No URL found ...</div>;
 
   const rows = filteredList.map((u) => ({
     id: u.id,
@@ -72,13 +72,13 @@ export default function UrlList({ dataFormUrl }: { dataFormUrl: string }) {
 
   return (
     <div className="url-list card">
-      <h1>Liste des URLs</h1>
+      <h1>URLs list</h1>
 
       <div className="url-list-form flex">
-        <span className="medium">Rechercher une URL déjà enregistrée: </span>
+        <span className="medium">Search an URL: </span>
         <input
           id="list-input-URL"
-          placeholder="Entrer une URL"
+          placeholder="URL..."
           value={search}
           onChange={handleChangeSearch}
         />

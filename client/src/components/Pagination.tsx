@@ -32,7 +32,7 @@ const Pagination: React.FC<Props> = ({
 
   // Render the pagination controls
   return (
-    <div>
+    <div className="pagination">
       <button
         className="paginationButton"
         onClick={handleFirstPageClick}
