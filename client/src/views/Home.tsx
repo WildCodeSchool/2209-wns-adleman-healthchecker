@@ -36,6 +36,8 @@ export default function Home() {
       <div className="container">
         <div className="card url-form flex">
           <UrlForm getFormUrl={getFormUrl} />
+
+          {/* {response.status ? ( */}
           <div className="response">
             <div className="header flex">
               <div className="heavy">Status</div>
@@ -48,6 +50,9 @@ export default function Home() {
               <div>{response.date ? formatDate(response.date) : "-"}</div>
             </div>
           </div>
+          {/* ) : (
+            ""
+          )} */}
         </div>
         <UrlList dataFormUrl={dataFormUrl} />
       </div>
