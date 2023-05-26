@@ -43,8 +43,6 @@ export default function UrlForm({ getFormUrl }: { getFormUrl: Function }) {
               response.data.createUrl.responses.length - 1
             ];
 
-          console.log(response);
-
           getFormUrl(
             url,
             lastResponse.response_status,

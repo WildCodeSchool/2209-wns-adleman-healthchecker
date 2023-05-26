@@ -10,9 +10,6 @@ export default function Header() {
   });
 
   const location = useLocation();
-  const navigate = useNavigate();
-
-  console.log(navigate);
 
   const [logout] = useLogoutMutation();
 

@@ -83,8 +83,6 @@ export class UserResolver {
 
     if (user === null) throw new ApolloError("Urls not found", "NOT_FOUND");
 
-    console.log(user.userToUrls[0]);
-
     const userToUrls = await Promise.all(
       user.userToUrls.map(async (u: UserToUrl) => {
         const responses = await datasource

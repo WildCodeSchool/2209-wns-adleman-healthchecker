@@ -118,7 +118,6 @@ export default function History() {
   }, [filteredResponseList]);
 
   useEffect(() => {
-    console.log(data?.getUrlById);
     if (data) {
       let responseList = data.getUrlById.responses
         .map((r) => {

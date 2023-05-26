@@ -68,7 +68,6 @@ export class UrlResolver {
         .getRepository(Url)
         .findOneBy({ url: url.url });
       if (urlAlreadyExist === null) {
-        console.log(urlAlreadyExist);
         const responseForNewUrl = await urlService.getResponse(TEST_DOCKER_URL);
 
         if (responseForNewUrl.response_status === null)
