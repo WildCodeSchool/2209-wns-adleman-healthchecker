@@ -1,4 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import Constants from "expo-constants";
+const env = Constants.expoConfig?.extra || {};
 
 export default new ApolloClient({
   cache: new InMemoryCache(),
@@ -8,7 +10,7 @@ export default new ApolloClient({
     },
   },
   link: createHttpLink({
-    uri: "http://localhost:4000",
+    uri: env.GRAPHQL_API_URL as string,
     credentials: "include",
   }),
 });
