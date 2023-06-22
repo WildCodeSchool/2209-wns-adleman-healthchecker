@@ -138,11 +138,21 @@ export class UrlService {
       // user.urls = [...user.urls, urlAlreadyExist];
 
       // await datasource.getRepository(User).save(user);
-      await datasource.getRepository(UserToUrl).save({
-        userId: user.id,
-        urlId: urlAlreadyExistWithResponses.id,
-        frequency: 3600000,
-      });
+      const existingUserToUrl = await datasource
+        .getRepository(UserToUrl)
+        .findOne({
+          where: {
+            userId: user.id,
+            urlId: urlAlreadyExistWithResponses.id,
+          },
+        });
+
+      if (existingUserToUrl === null)
+        await datasource.getRepository(UserToUrl).save({
+          userId: user.id,
+          urlId: urlAlreadyExistWithResponses.id,
+          frequency: 3600000,
+        });
     }
 
     if (urlAlreadyExistWithResponses === null)
@@ -193,6 +203,7 @@ export class UrlService {
   async periodicFetchUrl(): Promise<void> {
     const urlService = new UrlService();
     const interval = 5000;
+
     const update = async (): Promise<void> => {
       const _urls = await datasource
         .getRepository(Url)
