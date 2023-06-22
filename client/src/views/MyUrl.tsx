@@ -28,7 +28,6 @@ export default function MyUrl() {
   const { data } = useGetUrlsByUserIdQuery();
 
   useEffect(() => {
-    // console.log(data?.getUrlsByUserId);
     if (data?.getUrlsByUserId) {
       let newList = data.getUrlsByUserId.userToUrls.map((u) => {
         let lastLatency = u.url.responses[u.url.responses.length - 1].latency;
