@@ -12,9 +12,18 @@ export default async function startCron(): Promise<void> {
   const urlService = new UrlService();
   const interval = 5000;
   const update = async (): Promise<void> => {
-    const urls = await datasource
+    const _urls = await datasource
       .getRepository(Url)
-      .find({ relations: ["userToUrls", "responses"] });
+      .find({ relations: ["userToUrls"] });
+
+    const urls = await Promise.all(
+      _urls.map(async (u: Url) => {
+        const response = await datasource
+          .getRepository(Response)
+          .find({ where: { urlId: u.id }, take: 1, order: { id: "DESC" } });
+        return { ...u, response };
+      })
+    );
 
     urls.forEach(async (url) => {
       let minFrequency = 3600000;
@@ -26,11 +35,9 @@ export default async function startCron(): Promise<void> {
         url.frequency = minFrequency;
         await datasource.getRepository(Url).save(url);
       }
-      const lastResponse = url.responses.sort(
-        (a: Response, b: Response) =>
-          b.created_at.getTime() - a.created_at.getTime()
-      )[0].created_at;
-      const lastResSecond = lastResponse.getTime();
+
+      const lastResSecond = url.response[0].created_at.getTime();
+
       if (hasToBeFetched(minFrequency, lastResSecond)) {
         console.log(`${url.url} IS FETCHED`);
         await urlService.getAndSaveResponseForEachUrl(url.url, url.id);
