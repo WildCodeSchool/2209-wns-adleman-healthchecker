@@ -1,60 +1,37 @@
 header {
   background-color: $tertiary;
-  width: 100%;
   padding: 1rem;
   margin-bottom: $space-medium;
   box-shadow: $shadow;
 }
 
 .navbarList {
-  display: flex;
-
-  align-items: center;
-
-  li {
-    margin-right: $space-medium;
-    position: relative;
-    a,
-    button {
-      text-transform: uppercase;
-
-      &::after {
-        content: "";
-        position: absolute;
-        width: 100%;
-        transform: scaleX(0);
-        height: 2px;
-        bottom: 0;
-        left: 0;
-        background-color: $bg-color;
-        transform-origin: bottom right;
-        transition: transform 0.25s ease-out;
-      }
-    }
-
-    &.active {
-      a,
-      button {
-        color: $bg-color;
-
-        &:hover,
-        &::after {
-          transform: scaleX(1);
-          transform-origin: bottom left;
-        }
-      }
-    }
-  }
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
-.logoutButton {
-  color: #38383f;
-  background-color: transparent;
-  border: none;
+.firstNav {
+  float: left;
+  padding: 14px 16px;
+}
+.secondNav {
+  float: left;
+  padding: 14px 16px;
+}
+.thirdNav {
+  float: right;
+  padding: 14px 16px;
   font-family: Avenir-heavy;
-  font-size: 18px;
-  font-weight: 900;
-}
-.logoutButton:hover {
   cursor: pointer;
+}
+.fourNav {
+  float: right;
+  padding: 14px 16px;
+}
+.active {
+  a {
+    color: $bg-color;
+  }
 }
