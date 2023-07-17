@@ -20,6 +20,10 @@ class UserToUrl {
   @Field()
   frequency: number;
 
+  @Column({ default: 0 })
+  @Field()
+  latency_threshold: number;
+
   @ManyToOne(() => User, (user) => user.userToUrls)
   @Field(() => User)
   user: User;
@@ -33,6 +37,15 @@ class UserToUrl {
 export class FrequencyInput {
   @Field()
   frequency: number;
+
+  @Field()
+  urlId: number;
+}
+
+@InputType()
+export class LatencyTresholfInput {
+  @Field()
+  threshold: number;
 
   @Field()
   urlId: number;
