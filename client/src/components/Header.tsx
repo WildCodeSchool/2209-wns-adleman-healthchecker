@@ -19,48 +19,46 @@ export default function Header() {
         <ul className="navbarList">
           <li
             data-testid="accueil"
-            className={
+            className={`firstNav ${
               location.pathname === "/" ||
               (location.pathname.includes("/history") && !currentUser)
                 ? "active"
                 : ""
-            }
+            }`}
           >
             <Link to="/">Home</Link>
           </li>
           {currentUser ? (
             <>
               <li
-                className={
+                className={`secondNav ${
                   location.pathname === "/myurl" ||
                   (location.pathname.includes("/history") && currentUser)
                     ? "active"
                     : ""
-                }
+                }`}
               >
                 <Link to="/myurl">My URLs</Link>
               </li>
-              <li>
-                <button
-                  onClick={async () => {
-                    await logout();
-                    await client.resetStore();
-                  }}
-                  className="logoutButton"
-                >
-                  Log out
-                </button>
+              <li
+                className="thirdNav"
+                onClick={async () => {
+                  await logout();
+                  await client.resetStore();
+                }}
+              >
+                Logout
               </li>
             </>
           ) : (
             <>
               <li
-                className={
+                className={`fourNav ${
                   location.pathname === "/login" ||
                   location.pathname === "/register"
                     ? "active"
                     : ""
-                }
+                }`}
               >
                 <Link to="/login">Login</Link>
               </li>
