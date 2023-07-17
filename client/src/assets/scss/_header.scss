@@ -33,5 +33,6 @@ header {
 .active {
   a {
     color: $bg-color;
+    transition: 0.3s;
   }
 }
