@@ -33,6 +33,7 @@ export default function History() {
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3600000);
   const [selectedStatus, setSelectedStatus] = useState<number>(0);
   const [selectView, setSelectView] = useState<number>(0);
+  const [selectedLimit, setSelectedLimit] = useState<number>(5000);
 
   const idFormat = parseInt(id!);
   const { data, startPolling } = useGetUrlByIdQuery({
@@ -60,6 +61,18 @@ export default function History() {
     { label: "3XX", value: 3 },
     { label: "4XX", value: 4 },
     { label: "5XX", value: 5 },
+  ];
+
+  const optionsLimit: Ioption[] = [
+    { label: "10 milliseconds", value: 10 },
+    { label: "50 milliseconds", value: 50 },
+    { label: "100 milliseconds", value: 100 },
+    { label: "500 milliseconds", value: 500 },
+    { label: "1 second", value: 1000 },
+    { label: "2 seconds", value: 2000 },
+    { label: "3 seconds", value: 3000 },
+    { label: "4 seconds", value: 4000},
+    { label: "5 seconds", value: 5000 },
   ];
 
   const toggleOptions: Ioption[] = [
@@ -152,6 +165,10 @@ export default function History() {
     setSelectedStatus(value);
   };
 
+  const handleChangeLimit = (value: number) => {
+    setSelectedLimit(value);
+  };
+
   const toggleChange = () => {
     if (selectView === 0) {
       setSelectView(1);
@@ -207,20 +224,48 @@ export default function History() {
 
       <div className="filterBar flex flex-around">
         <div>
+          <div className="flex flex-center medium">Fréquence :</div>
+          {currentUser && (
+            <div>
+              <Select
+                options={options}
+                value={selectedFrequency}
+                onChange={handleChangeFrequency}
+              />
+            </div>
+          )}
+        </div>
+        <div>
+          <div className="flex flex-center medium">Seuil de latence :</div>
+          {currentUser && (
+            <div>
+              <Select
+                options={optionsLimit}
+                value={selectedLimit}
+                onChange={handleChangeLimit}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="filterBar flex flex-around">
+        <div>
+          <div className="flex flex-center medium">Préciser une période :</div>
           <DateFilter start={start} end={end} onChange={handleChangeDate} />
         </div>
 
-        {currentUser && (
-          <div>
-            <Select
-              options={options}
-              value={selectedFrequency}
-              onChange={handleChangeFrequency}
-            />
-          </div>
-        )}
+        <div>
+          <div className="flex flex-center medium">Mode d'affichage :</div>
+          <ToggleSelect
+            options={toggleOptions}
+            toggleChange={toggleChange}
+            value={selectView}
+          />
+        </div>
 
         <div>
+          <div className="flex flex-center medium">Choisir un statut :</div>
           <Select
             value={selectedStatus}
             options={optionsStatus}
@@ -228,17 +273,11 @@ export default function History() {
           />
         </div>
       </div>
-      <div>
-        <ToggleSelect
-          options={toggleOptions}
-          toggleChange={toggleChange}
-          value={selectView}
-        />
-      </div>
+
       {filteredResponseList.length < 1 ? (
         <div>Pas de réponse dispo</div>
       ) : !selectView ? (
-        <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
+        <PaginatedItemList items={filteredResponseList} itemsPerPage={10} limit={selectedLimit} />
       ) : (
         <HistoryChart chartData={chartData} />
       )}

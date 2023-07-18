@@ -21,6 +21,10 @@ body {
   align-items: center;
 }
 
+.flex-center {
+  justify-content: center;
+}
+
 h1,
 h2,
 h3,
@@ -154,7 +158,7 @@ input {
 .toggle-switch {
   display: flex;
   justify-content: center;
-  margin: $space-little;
+  padding: 8px;
 
   & > span {
     &:first-child {
@@ -229,4 +233,7 @@ input {
   .slider.round:before {
     border-radius: 50%;
   }
+}
+.warning {
+  color: red;
 }
