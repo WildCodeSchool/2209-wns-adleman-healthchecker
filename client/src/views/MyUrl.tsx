@@ -4,6 +4,7 @@ import {
   useGetProfileQuery,
   useGetUrlsByUserIdQuery,
 } from "../graphql/generated/schema";
+import Modal from "../components/Modal";
 
 interface IResponse {
   latency: number;
@@ -24,6 +25,7 @@ export default function MyUrl() {
   let navigate = useNavigate();
 
   const [urlList, setUrlList] = useState<IUrl[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data } = useGetUrlsByUserIdQuery();
 
@@ -75,6 +77,10 @@ export default function MyUrl() {
             <div>{u.lastStatus}</div>
           </div>
         ))}
+    <button onClick={() => setIsModalOpen(true)}>
+    Open Modal
+  </button>
+  {isModalOpen && <Modal setIsOpen={setIsModalOpen} />}
     </div>
   );
 }

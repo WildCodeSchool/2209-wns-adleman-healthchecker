@@ -6,8 +6,9 @@ import Pagination from "./Pagination";
 interface Props {
   items: IResponse[];
   itemsPerPage: number;
+  limit: number;
 }
-const PaginatedItemList: React.FC<Props> = ({ items, itemsPerPage }) => {
+const PaginatedItemList: React.FC<Props> = ({ items, itemsPerPage, limit }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Logic to calculate the total number of pages
@@ -25,6 +26,7 @@ const PaginatedItemList: React.FC<Props> = ({ items, itemsPerPage }) => {
         items={items}
         currentPage={currentPage}
         itemsPerPage={itemsPerPage}
+        limit={limit}
       />
       <Pagination
         currentPage={currentPage}
