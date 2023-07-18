@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  useGetProfileQuery,
+  // useGetProfileQuery,
   useGetUrlsByUserIdQuery,
 } from "../graphql/generated/schema";
 
@@ -20,7 +20,17 @@ interface IUrl {
   responses: IResponse[];
 }
 
-export default function MyUrl() {
+interface IProfileProps {
+  currentUser: {
+    profile: {
+      id: number;
+      username: string;
+      email: string;
+    };
+  };
+}
+
+export default function MyUrl({ currentUser }: IProfileProps) {
   let navigate = useNavigate();
 
   const [urlList, setUrlList] = useState<IUrl[]>([]);
@@ -28,6 +38,11 @@ export default function MyUrl() {
   const { data } = useGetUrlsByUserIdQuery();
 
   useEffect(() => {
+    // Comparaison seuil et réponses
+    // Si seuil < latence -> ajouter URL dans la liste "URL dépassant seuil"
+    // Si on a des URL qui dépassent, on affiche la modale
+    console.log(currentUser);
+
     if (data?.getUrlsByUserId) {
       let newList = data.getUrlsByUserId.userToUrls.map((u) => {
         let lastLatency = u.url.responses[u.url.responses.length - 1].latency;
@@ -76,5 +91,7 @@ export default function MyUrl() {
           </div>
         ))}
     </div>
+
+    // MODAL non affiché par défaut
   );
 }

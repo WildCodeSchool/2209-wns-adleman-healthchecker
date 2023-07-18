@@ -66,11 +66,11 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
-    const urlsByUserId = await datasource.getRepository(User).findOne({
+    const profile = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
     });
 
-    return urlsByUserId as User;
+    return profile as User;
   }
 
   @Authorized()
@@ -85,6 +85,9 @@ export class UserResolver {
 
     const userToUrls = await Promise.all(
       user.userToUrls.map(async (u: UserToUrl) => {
+        // On a user.last_connection
+        // On prend toutes les réponses après last_connection
+
         const responses = await datasource
           .getRepository(Response)
           .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });

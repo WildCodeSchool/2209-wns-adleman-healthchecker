@@ -1,8 +1,19 @@
 import { useGetProfileQuery } from "../graphql/generated/schema";
 import { Navigate } from "react-router-dom";
+import React from "react";
+
+interface IProfileProps {
+  currentUser: {
+    profile: {
+      id: number;
+      username: string;
+      email: string;
+    };
+  };
+}
 
 export type ProtectedRouteProps = {
-  outlet: JSX.Element;
+  outlet: React.ReactElement<IProfileProps>;
 };
 
 export default function ProtectedRoute({ outlet }: ProtectedRouteProps) {
@@ -13,6 +24,6 @@ export default function ProtectedRoute({ outlet }: ProtectedRouteProps) {
   if (!currentUser?.profile) {
     return <Navigate to={{ pathname: "/login" }} />;
   } else {
-    return outlet;
+    return React.cloneElement(outlet, { currentUser });
   }
 }
