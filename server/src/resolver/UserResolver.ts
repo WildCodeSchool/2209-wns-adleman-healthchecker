@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../environment";
 import UserToUrl from "../entity/UserToUrl";
 import Response from "../entity/Response";
+import { MoreThan } from "typeorm";
 
 @Resolver(User)
 export class UserResolver {
@@ -73,12 +74,16 @@ export class UserResolver {
       where: { id: ctx.currentUser?.id },
     });
 
+    console.log(ctx);
+
     return profile as User;
   }
 
   @Authorized()
   @Query(() => User)
   async getUrlsByUserId(@Ctx() ctx: ContextType): Promise<User> {
+    console.log("REQUEST");
+
     const user = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
       relations: { userToUrls: { url: true } },
@@ -88,13 +93,31 @@ export class UserResolver {
 
     const userToUrls = await Promise.all(
       user.userToUrls.map(async (u: UserToUrl) => {
-        // On a user.last_connection
-        // On prend toutes les réponses après last_connection
+        console.log(u.url.url);
 
-        const responses = await datasource
+        let responses = await datasource
           .getRepository(Response)
-          .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });
+          .find({ where: { created_at: MoreThan(user.last_connection) } });
+
+        console.log(responses.length);
+
+        if (responses.length === 0) {
+          console.log("PAS DE REPONSE");
+          responses = await datasource.getRepository(Response).find({
+            where: { urlId: u.urlId },
+            take: 1,
+            order: { id: "DESC" },
+          });
+        }
+
         return { ...u, url: { ...u.url, responses } };
+        // const responses = await datasource
+        //   .getRepository(Response)
+        //   .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });
+
+        // console.log(responses.length);
+
+        // return { ...u, url: { ...u.url, responses } };
       })
     );
 

@@ -18,13 +18,15 @@ export type ProtectedRouteProps = {
 };
 
 export default function ProtectedRoute({ outlet }: ProtectedRouteProps) {
-  const { data: currentUser } = useGetProfileQuery({
+  const { data: currentUser, loading } = useGetProfileQuery({
     errorPolicy: "ignore",
   });
 
-  if (!currentUser?.profile) {
-    return <Navigate to={{ pathname: "/login" }} />;
-  } else {
-    return React.cloneElement(outlet, { currentUser });
-  }
+  return loading ? (
+    <h1>Loading ..</h1>
+  ) : !currentUser?.profile ? (
+    <Navigate to={{ pathname: "/login" }} />
+  ) : (
+    React.cloneElement(outlet, { currentUser })
+  );
 }

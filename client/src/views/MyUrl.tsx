@@ -6,6 +6,8 @@ import {
 } from "../graphql/generated/schema";
 import Modal from "../components/Modal";
 
+import { formatDate } from "../utils/utils";
+
 interface IResponse {
   latency: number;
   status: number;
@@ -48,7 +50,14 @@ export default function MyUrl({ currentUser }: IProfileProps) {
     // Comparaison seuil et réponses
     // Si seuil < latence -> ajouter URL dans la liste "URL dépassant seuil"
     // Si on a des URL qui dépassent, on affiche la modale
-    console.log(currentUser);
+    console.log("LAST CONNECTION");
+    console.log(formatDate(currentUser.profile.last_connection.toString()));
+    data?.getUrlsByUserId.userToUrls.forEach((u) => {
+      console.log(u.url.url);
+      u.url.responses.forEach((r) => {
+        console.log(formatDate(r.created_at));
+      });
+    });
 
     if (data?.getUrlsByUserId) {
       let newList = data.getUrlsByUserId.userToUrls.map((u) => {
@@ -97,10 +106,8 @@ export default function MyUrl({ currentUser }: IProfileProps) {
             <div>{u.lastStatus}</div>
           </div>
         ))}
-    <button onClick={() => setIsModalOpen(true)}>
-    Open Modal
-  </button>
-  {isModalOpen && <Modal setIsOpen={setIsModalOpen} />}
+      <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
+      {isModalOpen && <Modal setIsOpen={setIsModalOpen} />}
     </div>
 
     // MODAL non affiché par défaut
