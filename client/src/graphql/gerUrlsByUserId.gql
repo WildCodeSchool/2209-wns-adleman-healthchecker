@@ -6,6 +6,7 @@ query GetUrlsByUserId {
     role
     userToUrls {
       frequency
+      latency_threshold
       url {
         id
         url

@@ -93,16 +93,14 @@ export class UserResolver {
 
     const userToUrls = await Promise.all(
       user.userToUrls.map(async (u: UserToUrl) => {
-        console.log(u.url.url);
-
-        let responses = await datasource
-          .getRepository(Response)
-          .find({ where: { created_at: MoreThan(user.last_connection) } });
-
-        console.log(responses.length);
+        let responses = await datasource.getRepository(Response).find({
+          where: {
+            created_at: MoreThan(user.last_connection),
+            urlId: u.urlId,
+          },
+        });
 
         if (responses.length === 0) {
-          console.log("PAS DE REPONSE");
           responses = await datasource.getRepository(Response).find({
             where: { urlId: u.urlId },
             take: 1,
@@ -111,13 +109,6 @@ export class UserResolver {
         }
 
         return { ...u, url: { ...u.url, responses } };
-        // const responses = await datasource
-        //   .getRepository(Response)
-        //   .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });
-
-        // console.log(responses.length);
-
-        // return { ...u, url: { ...u.url, responses } };
       })
     );
 

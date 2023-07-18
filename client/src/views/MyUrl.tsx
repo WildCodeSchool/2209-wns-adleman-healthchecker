@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  // useGetProfileQuery,
-  useGetUrlsByUserIdQuery,
-} from "../graphql/generated/schema";
+import { useGetUrlsByUserIdQuery } from "../graphql/generated/schema";
 import Modal from "../components/Modal";
 
 import { formatDate } from "../utils/utils";
@@ -34,30 +31,41 @@ interface IProfileProps {
   };
 }
 
+interface IUrlId {
+  url: string;
+  id: number;
+}
+
 export default function MyUrl({ currentUser }: IProfileProps) {
   let navigate = useNavigate();
 
   const [urlList, setUrlList] = useState<IUrl[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [urlListTreshold, setUrlListTreshold] = useState<IUrlId[]>([]);
 
-  const { data, refetch} = useGetUrlsByUserIdQuery();
+  const { data, refetch } = useGetUrlsByUserIdQuery();
 
   useEffect(() => {
+    setUrlListTreshold([]);
     refetch();
   }, [currentUser, refetch]);
 
   useEffect(() => {
-    // Comparaison seuil et réponses
-    // Si seuil < latence -> ajouter URL dans la liste "URL dépassant seuil"
-    // Si on a des URL qui dépassent, on affiche la modale
-    console.log("LAST CONNECTION");
-    console.log(formatDate(currentUser.profile.last_connection.toString()));
+    let arrTreshold: IUrlId[] = [];
     data?.getUrlsByUserId.userToUrls.forEach((u) => {
-      console.log(u.url.url);
       u.url.responses.forEach((r) => {
-        console.log(formatDate(r.created_at));
+        if (
+          u.latency_threshold > 0 &&
+          u.latency_threshold < r.latency &&
+          arrTreshold.filter((el) => {
+            return el.id === u.url.id;
+          }).length === 0
+        )
+          arrTreshold.push({ id: u.url.id, url: u.url.url });
       });
     });
+    if (arrTreshold.length > 0) setIsModalOpen(true);
+    setUrlListTreshold(arrTreshold);
 
     if (data?.getUrlsByUserId) {
       let newList = data.getUrlsByUserId.userToUrls.map((u) => {
@@ -85,6 +93,10 @@ export default function MyUrl({ currentUser }: IProfileProps) {
     }
   }, [data]);
 
+  useEffect(() => {
+    console.log(urlListTreshold);
+  }, [urlListTreshold]);
+
   function onUrlClick(urlId: number) {
     navigate(`/history/${urlId}`);
   }
@@ -106,8 +118,14 @@ export default function MyUrl({ currentUser }: IProfileProps) {
             <div>{u.lastStatus}</div>
           </div>
         ))}
-      <button onClick={() => setIsModalOpen(true)}>Open Modal</button>
-      {isModalOpen && <Modal setIsOpen={setIsModalOpen} />}
+      {/* <button onClick={() => setIsModalOpen(true)}>Open Modal</button> */}
+      {isModalOpen && (
+        <Modal
+          setIsOpen={setIsModalOpen}
+          urls={urlListTreshold}
+          onClick={onUrlClick}
+        />
+      )}
     </div>
 
     // MODAL non affiché par défaut

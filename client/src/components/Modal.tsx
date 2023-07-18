@@ -1,10 +1,17 @@
 import React from "react";
 
-interface Props {
-  setIsOpen: (isOpen: boolean) => void;
+interface IUrlId {
+  url: string;
+  id: number;
 }
 
-const Modal: React.FC<Props> = ({ setIsOpen }) => {
+interface Props {
+  setIsOpen: (isOpen: boolean) => void;
+  urls: IUrlId[];
+  onClick: (urlId: number) => void;
+}
+
+const Modal: React.FC<Props> = ({ setIsOpen, urls, onClick }) => {
   return (
     <>
       <div className="darkBG" onClick={() => setIsOpen(false)} />
@@ -15,14 +22,16 @@ const Modal: React.FC<Props> = ({ setIsOpen }) => {
           </div>
           <div className="modalContent">
             Are you sure you want to delete the item?
+            {urls.map((u, i) => (
+              <div className="row flex" key={i} onClick={() => onClick(u.id)}>
+                <div>{u.url}</div>
+              </div>
+            ))}
           </div>
           <div className="modalActions">
             <div className="actionsContainer">
               <button className="deleteBtn" onClick={() => setIsOpen(false)}>
-                Valider
-              </button>
-              <button className="cancelBtn" onClick={() => setIsOpen(false)}>
-                Retour
+                Fermer
               </button>
             </div>
           </div>

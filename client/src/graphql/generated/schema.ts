@@ -142,7 +142,7 @@ export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __type
 export type GetUrlsByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, latency_threshold: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -265,6 +265,7 @@ export const GetUrlsByUserIdDocument = gql`
     role
     userToUrls {
       frequency
+      latency_threshold
       url {
         id
         url
