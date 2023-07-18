@@ -15,6 +15,7 @@ function App() {
       id: 0,
       username: "",
       email: "",
+      last_connection: new Date(),
     },
   });
   return (

@@ -54,6 +54,9 @@ export class UserResolver {
       httpOnly: true,
     });
 
+    user.last_connection = new Date();
+    await datasource.getRepository(User).save(user);
+
     return token;
   }
 

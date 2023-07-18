@@ -1,0 +1,22 @@
+query GetUrlsByUserId {
+  getUrlsByUserId {
+    id
+    username
+    email
+    role
+    userToUrls {
+      frequency
+      url {
+        id
+        url
+        created_at
+        responses {
+          id
+          response_status
+          latency
+          created_at
+        }
+      }
+    }
+  }
+}

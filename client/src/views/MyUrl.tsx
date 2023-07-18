@@ -26,6 +26,7 @@ interface IProfileProps {
       id: number;
       username: string;
       email: string;
+      last_connection: Date;
     };
   };
 }
