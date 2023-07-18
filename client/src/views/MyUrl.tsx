@@ -38,7 +38,11 @@ export default function MyUrl({ currentUser }: IProfileProps) {
   const [urlList, setUrlList] = useState<IUrl[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data } = useGetUrlsByUserIdQuery();
+  const { data, refetch} = useGetUrlsByUserIdQuery();
+
+  useEffect(() => {
+    refetch();
+  }, [currentUser, refetch]);
 
   useEffect(() => {
     // Comparaison seuil et réponses
