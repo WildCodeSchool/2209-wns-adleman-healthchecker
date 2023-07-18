@@ -1,0 +1,5 @@
+mutation UpdateFrequency($data: FrequencyInput!) {
+  updateFrequency(data: $data) {
+    frequency
+  }
+}

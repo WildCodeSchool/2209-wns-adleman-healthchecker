@@ -21,6 +21,11 @@ export type FrequencyInput = {
   urlId: Scalars['Float'];
 };
 
+export type LatencyTresholfInput = {
+  threshold: Scalars['Float'];
+  urlId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUrl: Url;
@@ -28,6 +33,7 @@ export type Mutation = {
   login: Scalars['String'];
   logout: Scalars['String'];
   updateFrequency: UserToUrl;
+  updateLatencyTreshhold: UserToUrl;
 };
 
 
@@ -48,6 +54,11 @@ export type MutationLoginArgs = {
 
 export type MutationUpdateFrequencyArgs = {
   data: FrequencyInput;
+};
+
+
+export type MutationUpdateLatencyTreshholdArgs = {
+  data: LatencyTresholfInput;
 };
 
 export type Query = {
@@ -85,6 +96,7 @@ export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Float'];
+  last_connection: Scalars['DateTime'];
   role: Scalars['String'];
   userToUrls: Array<UserToUrl>;
   username: Scalars['String'];
@@ -104,6 +116,7 @@ export type UserInputLogin = {
 export type UserToUrl = {
   __typename?: 'UserToUrl';
   frequency: Scalars['Float'];
+  latency_threshold: Scalars['Float'];
   url: Url;
   user: User;
 };
@@ -134,7 +147,7 @@ export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: number, username: string, email: string, role: string } };
+export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: number, username: string, email: string, role: string, last_connection: any } };
 
 export type GetUrlByIdQueryVariables = Exact<{
   urlId: Scalars['Float'];
@@ -301,6 +314,7 @@ export const GetProfileDocument = gql`
     username
     email
     role
+    last_connection
   }
 }
     `;

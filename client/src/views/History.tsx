@@ -116,7 +116,7 @@ export default function History() {
           data:
             filteredResponseList
               ?.sort((a, b) =>
-                a.created_at.toString().localeCompare(b.created_at.toString())
+                b.created_at.toString().localeCompare(a.created_at.toString())
               )
               .map((r) => r.latency) || [],
           backgroundColor:

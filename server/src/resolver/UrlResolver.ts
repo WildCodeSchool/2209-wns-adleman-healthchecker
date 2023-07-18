@@ -101,12 +101,12 @@ export class UrlResolver {
       if (!urlValid) throw new ApolloError("Url is not valid");
 
       const { href: urlFormatted } = await urlService.formatUrl(url.url);
-
       const urlAlreadyExist = await datasource
         .getRepository(Url)
         .findOneBy({ url: urlFormatted });
 
       if (urlAlreadyExist === null) {
+        console.log("DO NOT EXIST");
         const responseForNewUrl = await urlService.getResponse(urlFormatted);
 
         if (responseForNewUrl.response_status === null)
@@ -120,6 +120,7 @@ export class UrlResolver {
           user
         );
       } else {
+        console.log("EXIST");
         const getResponseForExistingUrl = await urlService.getResponse(
           urlAlreadyExist.url
         );
