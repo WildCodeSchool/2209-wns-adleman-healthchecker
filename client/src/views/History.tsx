@@ -35,6 +35,8 @@ export default function History() {
   const [selectedStatus, setSelectedStatus] = useState<number>(0);
   const [selectView, setSelectView] = useState<number>(0);
   const [selectedLimit, setSelectedLimit] = useState<number>(5000);
+  const [selectedOptionsLimitResponse, setSelectedOptionsLimitResponse] =
+    useState<number>(50);
 
   const idFormat = parseInt(id!);
 
@@ -83,7 +85,13 @@ export default function History() {
     { label: "Graph", value: 1 },
   ];
 
-  // const { data } = useGetUrlByIdQuery({})
+  const optionsLimitResponse: Ioption[] = [
+    { label: "25", value: 20 },
+    { label: "50", value: 50 },
+    { label: "100", value: 100 },
+    { label: "500", value: 500 },
+    { label: "1000", value: 1000 },
+  ];
 
   const [start, setStart] = useState<
     string | number | readonly string[] | undefined
@@ -110,7 +118,8 @@ export default function History() {
     setChartData({
       labels:
         filteredResponseList
-          ?.sort((a, b) =>
+          ?.slice(0, selectedOptionsLimitResponse)
+          .sort((a, b) =>
             a.created_at.toString().localeCompare(b.created_at.toString())
           )
           .map((r) => formatDate(r.created_at.toString())) || [],
@@ -119,7 +128,8 @@ export default function History() {
           label: "latence",
           data:
             filteredResponseList
-              ?.sort((a, b) =>
+              ?.slice(0, selectedOptionsLimitResponse)
+              .sort((a, b) =>
                 b.created_at.toString().localeCompare(a.created_at.toString())
               )
               .map((r) => r.latency) || [],
@@ -152,7 +162,7 @@ export default function History() {
       setFilteredResponseList(responseList);
       startPolling(5000);
     }
-  }, [data, startPolling]);
+  }, [data, startPolling, selectedOptionsLimitResponse]);
 
   const handleChangeFrequency = (value: number) => {
     setSelectedFrequency(value);
@@ -182,6 +192,10 @@ export default function History() {
     });
   };
 
+  const handleSelectedOptionsLimitResponse = (value: number) => {
+    setSelectedOptionsLimitResponse(value);
+  };
+
   const toggleChange = () => {
     if (selectView === 0) {
       setSelectView(1);
@@ -204,6 +218,7 @@ export default function History() {
     if (typeof start === "string") _start = Date.parse(start);
     if (typeof end === "string") _end = Date.parse(end);
     let newResonses = responseList
+      .slice(0, selectedOptionsLimitResponse)
       .filter((r) => {
         let date = Date.parse(r.created_at.toString());
         return (
@@ -283,6 +298,12 @@ export default function History() {
             onChange={handleChangeStatus}
           />
         </div>
+        <div className="flex flex-center medium">Choisir un statut :</div>
+        <Select
+          value={selectedOptionsLimitResponse}
+          options={optionsLimitResponse}
+          onChange={handleSelectedOptionsLimitResponse}
+        />
       </div>
 
       {loading ? (
@@ -298,19 +319,6 @@ export default function History() {
       ) : (
         <HistoryChart chartData={chartData} />
       )}
-
-      {/* {filteredResponseList.length < 1 ? (
-        <div>Pas de réponse dispo</div>
-      ) : !selectView ? (
-        <PaginatedItemList
-          items={filteredResponseList}
-          itemsPerPage={10}
-          limit={selectedLimit}
-        />
-      ) : (
-        <HistoryChart chartData={chartData} />
-      )} */}
     </div>
   );
 }
-// { selectView ? (<PaginatedItemList items={filteredResponseList} itemsPerPage={10} />): (<HistoryChart chartData={chartData} />)
