@@ -21,7 +21,6 @@ const Modal: React.FC<Props> = ({ setIsOpen, urls, onClick }) => {
             <h5 className="heading">Liste des urls avec un seuil dépassé</h5>
           </div>
           <div className="modalContent">
-            Are you sure you want to delete the item?
             {urls.map((u, i) => (
               <div className="row flex" key={i} onClick={() => onClick(u.id)}>
                 <div>{u.url}</div>

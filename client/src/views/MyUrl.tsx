@@ -93,10 +93,6 @@ export default function MyUrl({ currentUser }: IProfileProps) {
     }
   }, [data]);
 
-  useEffect(() => {
-    console.log(urlListTreshold);
-  }, [urlListTreshold]);
-
   function onUrlClick(urlId: number) {
     navigate(`/history/${urlId}`);
   }
@@ -118,7 +114,6 @@ export default function MyUrl({ currentUser }: IProfileProps) {
             <div>{u.lastStatus}</div>
           </div>
         ))}
-      {/* <button onClick={() => setIsModalOpen(true)}>Open Modal</button> */}
       {isModalOpen && (
         <Modal
           setIsOpen={setIsModalOpen}
@@ -127,7 +122,5 @@ export default function MyUrl({ currentUser }: IProfileProps) {
         />
       )}
     </div>
-
-    // MODAL non affiché par défaut
   );
 }

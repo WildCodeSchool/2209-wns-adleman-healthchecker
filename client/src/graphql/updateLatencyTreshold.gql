@@ -1,0 +1,5 @@
+mutation updateLatencyTreshold($data: LatencyTresholdInput!) {
+  updateLatencyTreshold(data: $data) {
+    latency_threshold
+  }
+}

@@ -43,7 +43,7 @@ export class FrequencyInput {
 }
 
 @InputType()
-export class LatencyTresholfInput {
+export class LatencyTresholdInput {
   @Field()
   threshold: number;
 
