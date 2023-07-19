@@ -8,6 +8,7 @@ import Response from "../entity/Response";
 
 import User from "../entity/User";
 import { TEST_DOCKER_URL } from "../const";
+import UserToUrl from "../entity/UserToUrl";
 
 @Resolver(Url)
 export class UrlResolver {
@@ -28,8 +29,14 @@ export class UrlResolver {
     return urlToReturn;
   }
 
+  @Authorized()
   @Query(() => Url)
-  async getUrlById(@Arg("urlId") id: number): Promise<Url> {
+  async getUrlById(@Arg("urlId") id: number,
+  @Ctx() ctx: ContextType
+  ): Promise<{url: Url, latency_treshold: number}> {
+
+    console.log(id)
+    console.log(ctx.currentUser?.id)
     const urlExist = await datasource
       .getRepository(Url)
       .findOne({ where: { id } });
@@ -42,7 +49,25 @@ export class UrlResolver {
       order: { id: "DESC" },
     });
 
-    return { ...urlExist, responses };
+    let userToUrlExist = null;
+    let latencyTreshold = 0;
+    if (
+      ctx.currentUser?.id !== null &&
+      typeof ctx.currentUser?.id !== "undefined"
+    ) {
+      userToUrlExist = await datasource.getRepository(UserToUrl).findOne({
+        where: { userId: ctx.currentUser?.id, urlId: id }
+      });
+
+      if (userToUrlExist === null) throw new ApolloError("User To Url not found", "NOT_FOUND");
+  
+      latencyTreshold = userToUrlExist.latency_threshold;
+
+    }
+    urlExist.responses = responses;
+
+
+    return { url: urlExist, latency_treshold: latencyTreshold };
   }
 
   @Authorized()

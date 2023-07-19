@@ -1,11 +1,11 @@
-import { Arg, Authorized, Ctx, Mutation, Resolver } from "type-graphql";
+import { Arg, Authorized, Ctx, Mutation,  Resolver } from "type-graphql";
 import { ContextType } from "../auth/customAuthChecker";
 
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
 import UserToUrl, {
   FrequencyInput,
-  LatencyTresholfInput,
+  LatencyTresholdInput,
 } from "../entity/UserToUrl";
 // import startCron from "../services/cronService";
 
@@ -29,8 +29,8 @@ export class UserToUrlResolver {
 
   @Authorized()
   @Mutation(() => UserToUrl)
-  async updateLatencyTreshhold(
-    @Arg("data") data: LatencyTresholfInput,
+  async updateLatencyTreshold(
+    @Arg("data") data: LatencyTresholdInput,
     @Ctx() ctx: ContextType
   ): Promise<UserToUrl> {
     const exisitingUserToUrl = await datasource

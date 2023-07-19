@@ -21,7 +21,7 @@ export type FrequencyInput = {
   urlId: Scalars['Float'];
 };
 
-export type LatencyTresholfInput = {
+export type LatencyTresholdInput = {
   threshold: Scalars['Float'];
   urlId: Scalars['Float'];
 };
@@ -33,7 +33,7 @@ export type Mutation = {
   login: Scalars['String'];
   logout: Scalars['String'];
   updateFrequency: UserToUrl;
-  updateLatencyTreshhold: UserToUrl;
+  updateLatencyTreshold: UserToUrl;
 };
 
 
@@ -57,8 +57,8 @@ export type MutationUpdateFrequencyArgs = {
 };
 
 
-export type MutationUpdateLatencyTreshholdArgs = {
-  data: LatencyTresholfInput;
+export type MutationUpdateLatencyTresholdArgs = {
+  data: LatencyTresholdInput;
 };
 
 export type Query = {
@@ -179,6 +179,13 @@ export type UpdateFrequencyMutationVariables = Exact<{
 
 
 export type UpdateFrequencyMutation = { __typename?: 'Mutation', updateFrequency: { __typename?: 'UserToUrl', frequency: number } };
+
+export type UpdateLatencyTresholdMutationVariables = Exact<{
+  data: LatencyTresholdInput;
+}>;
+
+
+export type UpdateLatencyTresholdMutation = { __typename?: 'Mutation', updateLatencyTreshold: { __typename?: 'UserToUrl', latency_threshold: number } };
 
 
 export const CreateUrlDocument = gql`
@@ -526,3 +533,36 @@ export function useUpdateFrequencyMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateFrequencyMutationHookResult = ReturnType<typeof useUpdateFrequencyMutation>;
 export type UpdateFrequencyMutationResult = Apollo.MutationResult<UpdateFrequencyMutation>;
 export type UpdateFrequencyMutationOptions = Apollo.BaseMutationOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;
+export const UpdateLatencyTresholdDocument = gql`
+    mutation updateLatencyTreshold($data: LatencyTresholdInput!) {
+  updateLatencyTreshold(data: $data) {
+    latency_threshold
+  }
+}
+    `;
+export type UpdateLatencyTresholdMutationFn = Apollo.MutationFunction<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>;
+
+/**
+ * __useUpdateLatencyTresholdMutation__
+ *
+ * To run a mutation, you first call `useUpdateLatencyTresholdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLatencyTresholdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLatencyTresholdMutation, { data, loading, error }] = useUpdateLatencyTresholdMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateLatencyTresholdMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>(UpdateLatencyTresholdDocument, options);
+      }
+export type UpdateLatencyTresholdMutationHookResult = ReturnType<typeof useUpdateLatencyTresholdMutation>;
+export type UpdateLatencyTresholdMutationResult = Apollo.MutationResult<UpdateLatencyTresholdMutation>;
+export type UpdateLatencyTresholdMutationOptions = Apollo.BaseMutationOptions<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>;

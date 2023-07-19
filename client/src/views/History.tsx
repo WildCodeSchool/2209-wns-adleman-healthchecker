@@ -9,6 +9,7 @@ import {
   useGetProfileQuery,
   useGetUrlByIdQuery,
   useUpdateFrequencyMutation,
+  useUpdateLatencyTresholdMutation,
 } from "../graphql/generated/schema";
 import { Ioption } from "../components/Select";
 import Select from "../components/Select";
@@ -36,14 +37,15 @@ export default function History() {
   const [selectedLimit, setSelectedLimit] = useState<number>(5000);
 
   const idFormat = parseInt(id!);
+  
+  const { data: currentUser } = useGetProfileQuery({
+    errorPolicy: "ignore",
+  });
+  
   const { data, startPolling } = useGetUrlByIdQuery({
     variables: {
       urlId: idFormat,
     },
-  });
-
-  const { data: currentUser } = useGetProfileQuery({
-    errorPolicy: "ignore",
   });
 
   const options: Ioption[] = [
@@ -64,6 +66,7 @@ export default function History() {
   ];
 
   const optionsLimit: Ioption[] = [
+    { label: "Pas de limite ", value: 0 },
     { label: "10 milliseconds", value: 10 },
     { label: "50 milliseconds", value: 50 },
     { label: "100 milliseconds", value: 100 },
@@ -71,7 +74,7 @@ export default function History() {
     { label: "1 second", value: 1000 },
     { label: "2 seconds", value: 2000 },
     { label: "3 seconds", value: 3000 },
-    { label: "4 seconds", value: 4000},
+    { label: "4 seconds", value: 4000 },
     { label: "5 seconds", value: 5000 },
   ];
 
@@ -90,6 +93,7 @@ export default function History() {
   >(undefined);
 
   const [updateFrequencyMutation] = useUpdateFrequencyMutation();
+  const [updateLatencyTreshold] = useUpdateLatencyTresholdMutation();
 
   const [chartData, setChartData] = useState({
     labels: [""],
@@ -143,6 +147,7 @@ export default function History() {
         })
         .sort((a, b) => b.created_at.localeCompare(a.created_at));
       setSelectedFrequency(data.getUrlById.frequency);
+      // setSelectedLimit(data.);
       setResponseList(responseList);
       setFilteredResponseList(responseList);
       startPolling(5000);
@@ -167,6 +172,14 @@ export default function History() {
 
   const handleChangeLimit = (value: number) => {
     setSelectedLimit(value);
+    updateLatencyTreshold({
+      variables: {
+        data: {
+          urlId: idFormat,
+          threshold: value,
+        },
+      },
+    });
   };
 
   const toggleChange = () => {
@@ -221,11 +234,11 @@ export default function History() {
   return (
     <div className="container">
       <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url)}</h2>
-
+      {currentUser && (
       <div className="filterBar flex flex-around">
         <div>
           <div className="flex flex-center medium">Fréquence :</div>
-          {currentUser && (
+          
             <div>
               <Select
                 options={options}
@@ -233,11 +246,10 @@ export default function History() {
                 onChange={handleChangeFrequency}
               />
             </div>
-          )}
+          
         </div>
         <div>
           <div className="flex flex-center medium">Seuil de latence :</div>
-          {currentUser && (
             <div>
               <Select
                 options={optionsLimit}
@@ -245,9 +257,9 @@ export default function History() {
                 onChange={handleChangeLimit}
               />
             </div>
-          )}
         </div>
       </div>
+      )}
 
       <div className="filterBar flex flex-around">
         <div>
@@ -277,7 +289,11 @@ export default function History() {
       {filteredResponseList.length < 1 ? (
         <div>Pas de réponse dispo</div>
       ) : !selectView ? (
-        <PaginatedItemList items={filteredResponseList} itemsPerPage={10} limit={selectedLimit} />
+        <PaginatedItemList
+          items={filteredResponseList}
+          itemsPerPage={10}
+          limit={selectedLimit}
+        />
       ) : (
         <HistoryChart chartData={chartData} />
       )}
