@@ -9,7 +9,12 @@ interface Props {
   limit: number;
 }
 
-const ItemList: React.FC<Props> = ({ items, currentPage, itemsPerPage, limit }) => {
+const ItemList: React.FC<Props> = ({
+  items,
+  currentPage,
+  itemsPerPage,
+  limit,
+}) => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const itemsToDisplay = items.slice(startIndex, endIndex);
@@ -24,11 +29,11 @@ const ItemList: React.FC<Props> = ({ items, currentPage, itemsPerPage, limit }) 
       </div>
       <div className="body">
         {itemsToDisplay.map((r) => (
-          <div className={`row flex ${
-            limit < r.latency ? "warning" : ""
-          }`} key={r.id}>
+          <div className={`row flex `} key={r.id}>
             <div>{r.response_status}</div>
-            <div>{r.latency}</div>
+            <div className={limit < r.latency && limit !== 0 ? "warning" : ""}>
+              {r.latency}
+            </div>
             <div>{formatDate(r.created_at.toString())}</div>
           </div>
         ))}

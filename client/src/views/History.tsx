@@ -37,12 +37,12 @@ export default function History() {
   const [selectedLimit, setSelectedLimit] = useState<number>(5000);
 
   const idFormat = parseInt(id!);
-  
+
   const { data: currentUser } = useGetProfileQuery({
     errorPolicy: "ignore",
   });
-  
-  const { data, startPolling } = useGetUrlByIdQuery({
+
+  const { data, loading, startPolling } = useGetUrlByIdQuery({
     variables: {
       urlId: idFormat,
     },
@@ -136,7 +136,7 @@ export default function History() {
 
   useEffect(() => {
     if (data) {
-      let responseList = data.getUrlById.responses
+      let responseList = data.getUrlById.url.responses
         .map((r) => {
           return {
             id: r.id,
@@ -146,8 +146,8 @@ export default function History() {
           };
         })
         .sort((a, b) => b.created_at.localeCompare(a.created_at));
-      setSelectedFrequency(data.getUrlById.frequency);
-      // setSelectedLimit(data.);
+      setSelectedFrequency(data.getUrlById.url.frequency);
+      setSelectedLimit(data.getUrlById.latency_treshold);
       setResponseList(responseList);
       setFilteredResponseList(responseList);
       startPolling(5000);
@@ -233,12 +233,12 @@ export default function History() {
 
   return (
     <div className="container">
-      <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url)}</h2>
+      <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url.url)}</h2>
       {currentUser && (
-      <div className="filterBar flex flex-around">
-        <div>
-          <div className="flex flex-center medium">Fréquence :</div>
-          
+        <div className="filterBar flex flex-around">
+          <div>
+            <div className="flex flex-center medium">Fréquence :</div>
+
             <div>
               <Select
                 options={options}
@@ -246,10 +246,9 @@ export default function History() {
                 onChange={handleChangeFrequency}
               />
             </div>
-          
-        </div>
-        <div>
-          <div className="flex flex-center medium">Seuil de latence :</div>
+          </div>
+          <div>
+            <div className="flex flex-center medium">Seuil de latence :</div>
             <div>
               <Select
                 options={optionsLimit}
@@ -257,8 +256,8 @@ export default function History() {
                 onChange={handleChangeLimit}
               />
             </div>
+          </div>
         </div>
-      </div>
       )}
 
       <div className="filterBar flex flex-around">
@@ -286,7 +285,9 @@ export default function History() {
         </div>
       </div>
 
-      {filteredResponseList.length < 1 ? (
+      {loading ? (
+        <div>Loading...</div>
+      ) : filteredResponseList.length < 1 ? (
         <div>Pas de réponse dispo</div>
       ) : !selectView ? (
         <PaginatedItemList
@@ -297,6 +298,18 @@ export default function History() {
       ) : (
         <HistoryChart chartData={chartData} />
       )}
+
+      {/* {filteredResponseList.length < 1 ? (
+        <div>Pas de réponse dispo</div>
+      ) : !selectView ? (
+        <PaginatedItemList
+          items={filteredResponseList}
+          itemsPerPage={10}
+          limit={selectedLimit}
+        />
+      ) : (
+        <HistoryChart chartData={chartData} />
+      )} */}
     </div>
   );
 }

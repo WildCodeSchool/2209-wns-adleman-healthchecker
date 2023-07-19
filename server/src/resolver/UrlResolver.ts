@@ -1,4 +1,13 @@
-import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Field,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+} from "type-graphql";
 import Url, { createUrlInput } from "../entity/Url";
 import datasource from "../database";
 import { ApolloError } from "apollo-server-errors";
@@ -9,6 +18,15 @@ import Response from "../entity/Response";
 import User from "../entity/User";
 import { TEST_DOCKER_URL } from "../const";
 import UserToUrl from "../entity/UserToUrl";
+
+@ObjectType()
+class UrlWithTreshold {
+  @Field(() => Url)
+  url: Url;
+
+  @Field()
+  latency_treshold: number;
+}
 
 @Resolver(Url)
 export class UrlResolver {
@@ -30,13 +48,13 @@ export class UrlResolver {
   }
 
   @Authorized()
-  @Query(() => Url)
-  async getUrlById(@Arg("urlId") id: number,
-  @Ctx() ctx: ContextType
-  ): Promise<{url: Url, latency_treshold: number}> {
-
-    console.log(id)
-    console.log(ctx.currentUser?.id)
+  @Query(() => UrlWithTreshold)
+  async getUrlById(
+    @Arg("urlId") id: number,
+    @Ctx() ctx: ContextType
+  ): Promise<UrlWithTreshold> {
+    console.log(id);
+    console.log(ctx.currentUser?.id);
     const urlExist = await datasource
       .getRepository(Url)
       .findOne({ where: { id } });
@@ -56,16 +74,15 @@ export class UrlResolver {
       typeof ctx.currentUser?.id !== "undefined"
     ) {
       userToUrlExist = await datasource.getRepository(UserToUrl).findOne({
-        where: { userId: ctx.currentUser?.id, urlId: id }
+        where: { userId: ctx.currentUser?.id, urlId: id },
       });
 
-      if (userToUrlExist === null) throw new ApolloError("User To Url not found", "NOT_FOUND");
-  
-      latencyTreshold = userToUrlExist.latency_threshold;
+      if (userToUrlExist === null)
+        throw new ApolloError("User To Url not found", "NOT_FOUND");
 
+      latencyTreshold = userToUrlExist.latency_threshold;
     }
     urlExist.responses = responses;
-
 
     return { url: urlExist, latency_treshold: latencyTreshold };
   }

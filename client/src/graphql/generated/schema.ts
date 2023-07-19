@@ -63,7 +63,7 @@ export type MutationUpdateLatencyTresholdArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  getUrlById: Url;
+  getUrlById: UrlWithTreshold;
   getUrls: Array<Url>;
   getUrlsByUserId: User;
   profile: User;
@@ -90,6 +90,12 @@ export type Url = {
   responses: Array<Response>;
   url: Scalars['String'];
   userToUrls: Array<UserToUrl>;
+};
+
+export type UrlWithTreshold = {
+  __typename?: 'UrlWithTreshold';
+  latency_treshold: Scalars['Float'];
+  url: Url;
 };
 
 export type User = {
@@ -154,7 +160,7 @@ export type GetUrlByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'Url', url: string, id: number, created_at: any, frequency: number, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
+export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'UrlWithTreshold', latency_treshold: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, frequency: number, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } } };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -354,17 +360,20 @@ export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
 export const GetUrlByIdDocument = gql`
-    query GetUrlById($urlId: Float!) {
+    query getUrlById($urlId: Float!) {
   getUrlById(urlId: $urlId) {
-    url
-    id
-    created_at
-    frequency
-    responses {
-      response_status
-      latency
+    latency_treshold
+    url {
       id
+      url
       created_at
+      frequency
+      responses {
+        id
+        response_status
+        latency
+        created_at
+      }
     }
   }
 }
