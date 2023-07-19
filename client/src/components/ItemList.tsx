@@ -30,8 +30,18 @@ const ItemList: React.FC<Props> = ({
       <div className="body">
         {itemsToDisplay.map((r) => (
           <div className={`row flex `} key={r.id}>
-            <div>{r.response_status}</div>
-            <div className={limit < r.latency && limit !== 0 ? "warning" : ""}>
+            <div
+              className={
+                r.response_status === 200
+                  ? "success"
+                  : r.response_status === 400
+                  ? "warning"
+                  : "error"
+              }
+            >
+              {r.response_status}
+            </div>
+            <div className={limit < r.latency && limit !== 0 ? "error" : ""}>
               {r.latency}
             </div>
             <div>{formatDate(r.created_at.toString())}</div>
