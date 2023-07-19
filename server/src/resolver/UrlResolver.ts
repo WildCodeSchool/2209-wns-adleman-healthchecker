@@ -53,8 +53,6 @@ export class UrlResolver {
     @Arg("urlId") id: number,
     @Ctx() ctx: ContextType
   ): Promise<UrlWithTreshold> {
-    console.log(id);
-    console.log(ctx.currentUser?.id);
     const urlExist = await datasource
       .getRepository(Url)
       .findOne({ where: { id } });

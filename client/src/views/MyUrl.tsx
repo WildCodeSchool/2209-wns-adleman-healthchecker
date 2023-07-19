@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetUrlsByUserIdQuery } from "../graphql/generated/schema";
 import Modal from "../components/Modal";
 
-import { formatDate } from "../utils/utils";
+import { formatDate, formatUrl } from "../utils/utils";
 
 interface IResponse {
   latency: number;
@@ -97,30 +97,32 @@ export default function MyUrl({ currentUser }: IProfileProps) {
     navigate(`/history/${urlId}`);
   }
 
-  if (!urlList) return <div>Pas d'adresse trouvée</div>;
+  if (!urlList) return <div>No URL added</div>;
 
   return (
     <div className="container">
-      <div className="header flex">
-        <div>URL</div>
-        <div>Latence</div>
-        <div>Status</div>
+      <div className="card">
+        <div className="header flex">
+          <div>URL</div>
+          <div>Latency</div>
+          <div>Status</div>
+        </div>
+        {urlList &&
+          urlList.map((u, i) => (
+            <div className="row flex" onClick={() => onUrlClick(u.id)} key={i}>
+              <div>{formatUrl(u.url)}</div>
+              <div>{u.lastLatency}</div>
+              <div>{u.lastStatus}</div>
+            </div>
+          ))}
+        {isModalOpen && (
+          <Modal
+            setIsOpen={setIsModalOpen}
+            urls={urlListTreshold}
+            onClick={onUrlClick}
+          />
+        )}
       </div>
-      {urlList &&
-        urlList.map((u, i) => (
-          <div className="row flex" onClick={() => onUrlClick(u.id)} key={i}>
-            <div>{u.url}</div>
-            <div>{u.lastLatency}</div>
-            <div>{u.lastStatus}</div>
-          </div>
-        ))}
-      {isModalOpen && (
-        <Modal
-          setIsOpen={setIsModalOpen}
-          urls={urlListTreshold}
-          onClick={onUrlClick}
-        />
-      )}
     </div>
   );
 }

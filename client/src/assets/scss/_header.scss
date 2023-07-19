@@ -1,5 +1,5 @@
 header {
-  background-color: $tertiary;
+  background-color: $primary;
   padding: 1rem;
   margin-bottom: $space-medium;
   box-shadow: $shadow;
@@ -32,7 +32,7 @@ header {
 }
 .active {
   a {
-    color: $bg-color;
+    color: $tertiary;
     transition: 0.3s;
   }
 }

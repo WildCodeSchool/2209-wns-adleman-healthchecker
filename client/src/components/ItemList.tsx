@@ -21,10 +21,10 @@ const ItemList: React.FC<Props> = ({
 
   // Render the list of items
   return (
-    <>
+    <div className="items-list">
       <div className="header flex">
-        <div className="heavy">Statut</div>
-        <div className="heavy">Latence</div>
+        <div className="heavy">Status</div>
+        <div className="heavy">Latency</div>
         <div className="heavy">Date</div>
       </div>
       <div className="body">
@@ -48,7 +48,7 @@ const ItemList: React.FC<Props> = ({
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

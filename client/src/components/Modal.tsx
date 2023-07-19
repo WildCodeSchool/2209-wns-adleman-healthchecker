@@ -18,21 +18,19 @@ const Modal: React.FC<Props> = ({ setIsOpen, urls, onClick }) => {
       <div className="centered">
         <div className="modal">
           <div className="modalHeader">
-            <h5 className="heading">Liste des urls avec un seuil dépassé</h5>
+            <h2 className="heading">
+              Latency treshold exceeded since last connection :
+            </h2>
           </div>
           <div className="modalContent">
             {urls.map((u, i) => (
-              <div className="row flex" key={i} onClick={() => onClick(u.id)}>
+              <div key={i} onClick={() => onClick(u.id)}>
                 <div>{u.url}</div>
               </div>
             ))}
-          </div>
-          <div className="modalActions">
-            <div className="actionsContainer">
-              <button className="deleteBtn" onClick={() => setIsOpen(false)}>
-                Fermer
-              </button>
-            </div>
+            <button className="button" onClick={() => setIsOpen(false)}>
+              Close
+            </button>
           </div>
         </div>
       </div>

@@ -82,8 +82,6 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async getUrlsByUserId(@Ctx() ctx: ContextType): Promise<User> {
-    console.log("REQUEST");
-
     const user = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
       relations: { userToUrls: { url: true } },
