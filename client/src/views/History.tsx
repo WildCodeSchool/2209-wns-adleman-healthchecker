@@ -83,7 +83,7 @@ export default function History() {
   ];
 
   const optionsLimitResponse: Ioption[] = [
-    { label: "25", value: 20 },
+    { label: "25", value: 25 },
     { label: "50", value: 50 },
     { label: "100", value: 100 },
     { label: "500", value: 500 },
@@ -127,7 +127,7 @@ export default function History() {
             filteredResponseList
               ?.slice(0, selectedOptionsLimitResponse)
               .sort((a, b) =>
-                b.created_at.toString().localeCompare(a.created_at.toString())
+                a.created_at.toString().localeCompare(b.created_at.toString())
               )
               .map((r) => r.latency) || [],
           backgroundColor:
