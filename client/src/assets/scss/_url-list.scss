@@ -13,6 +13,9 @@
     }
   }
 }
+.items-list {
+  margin-top: $space-large;
+}
 .header,
 .row {
   width: 100%;
@@ -26,7 +29,7 @@
 }
 
 .header {
-  margin-bottom: $space-xlittle;
+  margin-bottom: $space-xxlittle;
   position: relative;
 
   // &::after {
@@ -42,12 +45,17 @@
 }
 
 .row {
-  border-radius: $radius;
-  background-color: $tertiary;
-  margin-bottom: $space-xxlittle;
-  padding: $space-xlittle 0;
+  // border-radius: $radius;
+  // background-color: $tertiary-lighter;
+  // margin-bottom: $space-xxlittle;
+  padding: $space-xxlittle 0;
   cursor: pointer;
   font-size: 16px;
+  border-bottom: 1px solid $black;
+
+  &:last-child {
+    border-bottom: none;
+  }
 
   &:hover {
     transform: scale(
@@ -55,7 +63,7 @@
     ); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   }
 
-  &:nth-child(odd) {
-    background-color: $tertiary-lighter;
-  }
+  // &:nth-child(odd) {
+  //   background-color: $tertiary-lighter;
+  // }
 }

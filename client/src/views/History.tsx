@@ -51,11 +51,11 @@ export default function History() {
   });
 
   const options: Ioption[] = [
-    { label: "5 seconds", value: 5000 },
-    { label: "30 seconds", value: 30000 },
-    { label: "10 minutes", value: 600000 },
-    { label: "30 minutes", value: 1800000 },
-    { label: "1 hour", value: 3600000 },
+    { label: "5s", value: 5000 },
+    { label: "30s", value: 30000 },
+    { label: "10min", value: 600000 },
+    { label: "30min", value: 1800000 },
+    { label: "1h", value: 3600000 },
   ];
 
   const optionsStatus: Ioption[] = [
@@ -68,16 +68,13 @@ export default function History() {
   ];
 
   const optionsLimit: Ioption[] = [
-    { label: "Pas de limite ", value: 0 },
-    { label: "10 milliseconds", value: 10 },
-    { label: "50 milliseconds", value: 50 },
-    { label: "100 milliseconds", value: 100 },
-    { label: "500 milliseconds", value: 500 },
-    { label: "1 second", value: 1000 },
-    { label: "2 seconds", value: 2000 },
-    { label: "3 seconds", value: 3000 },
-    { label: "4 seconds", value: 4000 },
-    { label: "5 seconds", value: 5000 },
+    { label: "No treshold ", value: 0 },
+    { label: "10 ms", value: 10 },
+    { label: "50 ms", value: 50 },
+    { label: "100 ms", value: 100 },
+    { label: "500 ms", value: 500 },
+    { label: "1s", value: 1000 },
+    { label: "5s", value: 5000 },
   ];
 
   const toggleOptions: Ioption[] = [
@@ -250,9 +247,9 @@ export default function History() {
     <div className="container">
       <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url.url)}</h2>
       {currentUser && (
-        <div className="filterBar flex flex-around">
+        <div className="card flex flex-around">
           <div>
-            <div className="flex flex-center medium">Fréquence :</div>
+            <div className="flex flex-center medium">Fetch frequency :</div>
 
             <div>
               <Select
@@ -263,7 +260,7 @@ export default function History() {
             </div>
           </div>
           <div>
-            <div className="flex flex-center medium">Seuil de latence :</div>
+            <div className="flex flex-center medium">Latency treshold :</div>
             <div>
               <Select
                 options={optionsLimit}
@@ -275,41 +272,45 @@ export default function History() {
         </div>
       )}
 
-      <div className="filterBar flex flex-around">
-        <div>
-          <div className="flex flex-center medium">Préciser une période :</div>
-          <DateFilter start={start} end={end} onChange={handleChangeDate} />
-        </div>
+      <div className="card">
+        <div className="flex flex-around">
+          <div>
+            <div className="flex flex-center medium">Time period :</div>
+            <DateFilter start={start} end={end} onChange={handleChangeDate} />
+          </div>
 
-        <div>
-          <div className="flex flex-center medium">Mode d'affichage :</div>
-          <ToggleSelect
-            options={toggleOptions}
-            toggleChange={toggleChange}
-            value={selectView}
-          />
-        </div>
+          <div>
+            <div className="flex flex-center medium">Display mode :</div>
+            <ToggleSelect
+              options={toggleOptions}
+              toggleChange={toggleChange}
+              value={selectView}
+            />
+          </div>
 
-        <div>
-          <div className="flex flex-center medium">Choisir un statut :</div>
-          <Select
-            value={selectedStatus}
-            options={optionsStatus}
-            onChange={handleChangeStatus}
-          />
+          <div>
+            <div className="flex flex-center medium">Status :</div>
+            <Select
+              value={selectedStatus}
+              options={optionsStatus}
+              onChange={handleChangeStatus}
+            />
+          </div>
+          <div>
+            <div className="flex flex-center medium">Responses limit :</div>
+            <Select
+              value={selectedOptionsLimitResponse}
+              options={optionsLimitResponse}
+              onChange={handleSelectedOptionsLimitResponse}
+            />
+          </div>
         </div>
-        <div className="flex flex-center medium">Choisir un statut :</div>
-        <Select
-          value={selectedOptionsLimitResponse}
-          options={optionsLimitResponse}
-          onChange={handleSelectedOptionsLimitResponse}
-        />
       </div>
 
       {loading ? (
         <div>Loading...</div>
       ) : filteredResponseList.length < 1 ? (
-        <div>Pas de réponse dispo</div>
+        <div>No response...</div>
       ) : !selectView ? (
         <PaginatedItemList
           items={filteredResponseList}
