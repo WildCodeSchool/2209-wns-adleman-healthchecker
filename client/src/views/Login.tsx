@@ -35,7 +35,7 @@ export default function Login() {
             login({ variables: { data: credentials } })
               .then(async () => {
                 await client.resetStore();
-                navigate("/myurl");
+                navigate("/myurl", { state: { fromLogin: true } });
               })
               .catch((err) => {
                 // setTimeout
