@@ -1,7 +1,11 @@
 // color
-$primary: rgb(245, 235, 224);
-$secondary: rgb(240, 219, 219);
-$tertiary: rgb(219, 163, 154);
+// $primary: rgb(245, 235, 224);
+// $secondary: rgb(240, 219, 219);
+// $tertiary: rgb(219, 163, 154);
+
+$primary: #ff6d2c;
+$secondary: #fdf3ea;
+$tertiary: #ff6d2c;
 
 $primary-light: rgb(245, 235, 224, 0.7);
 $primary-lighter: rgb(245, 235, 224, 0.4);
@@ -10,7 +14,7 @@ $tertiary-lighter: rgb(219, 163, 154, 0.5);
 
 $bg-color: rgb(254, 252, 243);
 
-$black: #38383f;
+$black: #2e2f35;
 $text: $black;
 $white: #fff;
 

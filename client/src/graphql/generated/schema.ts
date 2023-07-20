@@ -21,6 +21,11 @@ export type FrequencyInput = {
   urlId: Scalars['Float'];
 };
 
+export type LatencyTresholdInput = {
+  threshold: Scalars['Float'];
+  urlId: Scalars['Float'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createUrl: Url;
@@ -28,6 +33,7 @@ export type Mutation = {
   login: Scalars['String'];
   logout: Scalars['String'];
   updateFrequency: UserToUrl;
+  updateLatencyTreshold: UserToUrl;
 };
 
 
@@ -50,9 +56,14 @@ export type MutationUpdateFrequencyArgs = {
   data: FrequencyInput;
 };
 
+
+export type MutationUpdateLatencyTresholdArgs = {
+  data: LatencyTresholdInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  getUrlById: Url;
+  getUrlById: UrlWithTreshold;
   getUrls: Array<Url>;
   getUrlsByUserId: User;
   profile: User;
@@ -81,10 +92,17 @@ export type Url = {
   userToUrls: Array<UserToUrl>;
 };
 
+export type UrlWithTreshold = {
+  __typename?: 'UrlWithTreshold';
+  latency_treshold: Scalars['Float'];
+  url: Url;
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Float'];
+  last_connection: Scalars['DateTime'];
   role: Scalars['String'];
   userToUrls: Array<UserToUrl>;
   username: Scalars['String'];
@@ -104,6 +122,7 @@ export type UserInputLogin = {
 export type UserToUrl = {
   __typename?: 'UserToUrl';
   frequency: Scalars['Float'];
+  latency_threshold: Scalars['Float'];
   url: Url;
   user: User;
 };
@@ -129,19 +148,19 @@ export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __type
 export type GetUrlsByUserIdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
+export type GetUrlsByUserIdQuery = { __typename?: 'Query', getUrlsByUserId: { __typename?: 'User', id: number, username: string, email: string, role: string, userToUrls: Array<{ __typename?: 'UserToUrl', frequency: number, latency_threshold: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } }> } };
 
 export type GetProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: number, username: string, email: string, role: string } };
+export type GetProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: number, username: string, email: string, role: string, last_connection: any } };
 
 export type GetUrlByIdQueryVariables = Exact<{
   urlId: Scalars['Float'];
 }>;
 
 
-export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'Url', url: string, id: number, created_at: any, frequency: number, responses: Array<{ __typename?: 'Response', response_status: number, latency: number, id: number, created_at: any }> } };
+export type GetUrlByIdQuery = { __typename?: 'Query', getUrlById: { __typename?: 'UrlWithTreshold', latency_treshold: number, url: { __typename?: 'Url', id: number, url: string, created_at: any, frequency: number, responses: Array<{ __typename?: 'Response', id: number, response_status: number, latency: number, created_at: any }> } } };
 
 export type GetUrlsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -166,6 +185,13 @@ export type UpdateFrequencyMutationVariables = Exact<{
 
 
 export type UpdateFrequencyMutation = { __typename?: 'Mutation', updateFrequency: { __typename?: 'UserToUrl', frequency: number } };
+
+export type UpdateLatencyTresholdMutationVariables = Exact<{
+  data: LatencyTresholdInput;
+}>;
+
+
+export type UpdateLatencyTresholdMutation = { __typename?: 'Mutation', updateLatencyTreshold: { __typename?: 'UserToUrl', latency_threshold: number } };
 
 
 export const CreateUrlDocument = gql`
@@ -252,6 +278,7 @@ export const GetUrlsByUserIdDocument = gql`
     role
     userToUrls {
       frequency
+      latency_threshold
       url {
         id
         url
@@ -301,6 +328,7 @@ export const GetProfileDocument = gql`
     username
     email
     role
+    last_connection
   }
 }
     `;
@@ -332,17 +360,20 @@ export type GetProfileQueryHookResult = ReturnType<typeof useGetProfileQuery>;
 export type GetProfileLazyQueryHookResult = ReturnType<typeof useGetProfileLazyQuery>;
 export type GetProfileQueryResult = Apollo.QueryResult<GetProfileQuery, GetProfileQueryVariables>;
 export const GetUrlByIdDocument = gql`
-    query GetUrlById($urlId: Float!) {
+    query getUrlById($urlId: Float!) {
   getUrlById(urlId: $urlId) {
-    url
-    id
-    created_at
-    frequency
-    responses {
-      response_status
-      latency
+    latency_treshold
+    url {
       id
+      url
       created_at
+      frequency
+      responses {
+        id
+        response_status
+        latency
+        created_at
+      }
     }
   }
 }
@@ -511,3 +542,36 @@ export function useUpdateFrequencyMutation(baseOptions?: Apollo.MutationHookOpti
 export type UpdateFrequencyMutationHookResult = ReturnType<typeof useUpdateFrequencyMutation>;
 export type UpdateFrequencyMutationResult = Apollo.MutationResult<UpdateFrequencyMutation>;
 export type UpdateFrequencyMutationOptions = Apollo.BaseMutationOptions<UpdateFrequencyMutation, UpdateFrequencyMutationVariables>;
+export const UpdateLatencyTresholdDocument = gql`
+    mutation updateLatencyTreshold($data: LatencyTresholdInput!) {
+  updateLatencyTreshold(data: $data) {
+    latency_threshold
+  }
+}
+    `;
+export type UpdateLatencyTresholdMutationFn = Apollo.MutationFunction<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>;
+
+/**
+ * __useUpdateLatencyTresholdMutation__
+ *
+ * To run a mutation, you first call `useUpdateLatencyTresholdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLatencyTresholdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLatencyTresholdMutation, { data, loading, error }] = useUpdateLatencyTresholdMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateLatencyTresholdMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>(UpdateLatencyTresholdDocument, options);
+      }
+export type UpdateLatencyTresholdMutationHookResult = ReturnType<typeof useUpdateLatencyTresholdMutation>;
+export type UpdateLatencyTresholdMutationResult = Apollo.MutationResult<UpdateLatencyTresholdMutation>;
+export type UpdateLatencyTresholdMutationOptions = Apollo.BaseMutationOptions<UpdateLatencyTresholdMutation, UpdateLatencyTresholdMutationVariables>;

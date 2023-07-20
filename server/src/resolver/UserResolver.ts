@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../environment";
 import UserToUrl from "../entity/UserToUrl";
 import Response from "../entity/Response";
+import { MoreThan } from "typeorm";
 
 @Resolver(User)
 export class UserResolver {
@@ -54,6 +55,9 @@ export class UserResolver {
       httpOnly: true,
     });
 
+    user.last_connection = new Date();
+    await datasource.getRepository(User).save(user);
+
     return token;
   }
 
@@ -66,11 +70,13 @@ export class UserResolver {
   @Authorized()
   @Query(() => User)
   async profile(@Ctx() ctx: ContextType): Promise<User> {
-    const urlsByUserId = await datasource.getRepository(User).findOne({
+    const profile = await datasource.getRepository(User).findOne({
       where: { id: ctx.currentUser?.id },
     });
 
-    return urlsByUserId as User;
+    console.log(ctx);
+
+    return profile as User;
   }
 
   @Authorized()
@@ -83,13 +89,23 @@ export class UserResolver {
 
     if (user === null) throw new ApolloError("Urls not found", "NOT_FOUND");
 
-    console.log(user.userToUrls[0]);
-
     const userToUrls = await Promise.all(
       user.userToUrls.map(async (u: UserToUrl) => {
-        const responses = await datasource
-          .getRepository(Response)
-          .find({ where: { urlId: u.urlId }, take: 10, order: { id: "DESC" } });
+        let responses = await datasource.getRepository(Response).find({
+          where: {
+            created_at: MoreThan(user.last_connection),
+            urlId: u.urlId,
+          },
+        });
+
+        if (responses.length === 0) {
+          responses = await datasource.getRepository(Response).find({
+            where: { urlId: u.urlId },
+            take: 1,
+            order: { id: "DESC" },
+          });
+        }
+
         return { ...u, url: { ...u.url, responses } };
       })
     );

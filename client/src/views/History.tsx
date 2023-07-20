@@ -9,6 +9,7 @@ import {
   useGetProfileQuery,
   useGetUrlByIdQuery,
   useUpdateFrequencyMutation,
+  useUpdateLatencyTresholdMutation,
 } from "../graphql/generated/schema";
 import { Ioption } from "../components/Select";
 import Select from "../components/Select";
@@ -33,24 +34,28 @@ export default function History() {
   const [selectedFrequency, setSelectedFrequency] = useState<number>(3600000);
   const [selectedStatus, setSelectedStatus] = useState<number>(0);
   const [selectView, setSelectView] = useState<number>(0);
+  const [selectedLimit, setSelectedLimit] = useState<number>(5000);
+  const [selectedOptionsLimitResponse, setSelectedOptionsLimitResponse] =
+    useState<number>(50);
 
   const idFormat = parseInt(id!);
-  const { data, startPolling } = useGetUrlByIdQuery({
-    variables: {
-      urlId: idFormat,
-    },
-  });
 
   const { data: currentUser } = useGetProfileQuery({
     errorPolicy: "ignore",
   });
 
+  const { data, loading, startPolling } = useGetUrlByIdQuery({
+    variables: {
+      urlId: idFormat,
+    },
+  });
+
   const options: Ioption[] = [
-    { label: "5 seconds", value: 5000 },
-    { label: "30 seconds", value: 30000 },
-    { label: "10 minutes", value: 600000 },
-    { label: "30 minutes", value: 1800000 },
-    { label: "1 hour", value: 3600000 },
+    { label: "5s", value: 5000 },
+    { label: "30s", value: 30000 },
+    { label: "10min", value: 600000 },
+    { label: "30min", value: 1800000 },
+    { label: "1h", value: 3600000 },
   ];
 
   const optionsStatus: Ioption[] = [
@@ -62,12 +67,28 @@ export default function History() {
     { label: "5XX", value: 5 },
   ];
 
+  const optionsLimit: Ioption[] = [
+    { label: "No treshold ", value: 0 },
+    { label: "10 ms", value: 10 },
+    { label: "50 ms", value: 50 },
+    { label: "100 ms", value: 100 },
+    { label: "500 ms", value: 500 },
+    { label: "1s", value: 1000 },
+    { label: "5s", value: 5000 },
+  ];
+
   const toggleOptions: Ioption[] = [
     { label: "List", value: 0 },
     { label: "Graph", value: 1 },
   ];
 
-  // const { data } = useGetUrlByIdQuery({})
+  const optionsLimitResponse: Ioption[] = [
+    { label: "25", value: 25 },
+    { label: "50", value: 50 },
+    { label: "100", value: 100 },
+    { label: "500", value: 500 },
+    { label: "1000", value: 1000 },
+  ];
 
   const [start, setStart] = useState<
     string | number | readonly string[] | undefined
@@ -77,6 +98,7 @@ export default function History() {
   >(undefined);
 
   const [updateFrequencyMutation] = useUpdateFrequencyMutation();
+  const [updateLatencyTreshold] = useUpdateLatencyTresholdMutation();
 
   const [chartData, setChartData] = useState({
     labels: [""],
@@ -93,7 +115,8 @@ export default function History() {
     setChartData({
       labels:
         filteredResponseList
-          ?.sort((a, b) =>
+          ?.slice(0, selectedOptionsLimitResponse)
+          .sort((a, b) =>
             a.created_at.toString().localeCompare(b.created_at.toString())
           )
           .map((r) => formatDate(r.created_at.toString())) || [],
@@ -102,7 +125,8 @@ export default function History() {
           label: "latence",
           data:
             filteredResponseList
-              ?.sort((a, b) =>
+              ?.slice(0, selectedOptionsLimitResponse)
+              .sort((a, b) =>
                 a.created_at.toString().localeCompare(b.created_at.toString())
               )
               .map((r) => r.latency) || [],
@@ -118,9 +142,8 @@ export default function History() {
   }, [filteredResponseList]);
 
   useEffect(() => {
-    console.log(data?.getUrlById);
     if (data) {
-      let responseList = data.getUrlById.responses
+      let responseList = data.getUrlById.url.responses
         .map((r) => {
           return {
             id: r.id,
@@ -130,12 +153,13 @@ export default function History() {
           };
         })
         .sort((a, b) => b.created_at.localeCompare(a.created_at));
-      setSelectedFrequency(data.getUrlById.frequency);
+      setSelectedFrequency(data.getUrlById.url.frequency);
+      setSelectedLimit(data.getUrlById.latency_treshold);
       setResponseList(responseList);
       setFilteredResponseList(responseList);
       startPolling(5000);
     }
-  }, [data, startPolling]);
+  }, [data, startPolling, selectedOptionsLimitResponse]);
 
   const handleChangeFrequency = (value: number) => {
     setSelectedFrequency(value);
@@ -151,6 +175,22 @@ export default function History() {
 
   const handleChangeStatus = (value: number) => {
     setSelectedStatus(value);
+  };
+
+  const handleChangeLimit = (value: number) => {
+    setSelectedLimit(value);
+    updateLatencyTreshold({
+      variables: {
+        data: {
+          urlId: idFormat,
+          threshold: value,
+        },
+      },
+    });
+  };
+
+  const handleSelectedOptionsLimitResponse = (value: number) => {
+    setSelectedOptionsLimitResponse(value);
   };
 
   const toggleChange = () => {
@@ -175,6 +215,7 @@ export default function History() {
     if (typeof start === "string") _start = Date.parse(start);
     if (typeof end === "string") _end = Date.parse(end);
     let newResonses = responseList
+      .slice(0, selectedOptionsLimitResponse)
       .filter((r) => {
         let date = Date.parse(r.created_at.toString());
         return (
@@ -204,46 +245,81 @@ export default function History() {
 
   return (
     <div className="container">
-      <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url)}</h2>
-
-      <div className="filterBar flex flex-around">
-        <div>
-          <DateFilter start={start} end={end} onChange={handleChangeDate} />
-        </div>
-
-        {currentUser && (
+      <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url.url)}</h2>
+      {currentUser && (
+        <div className="card flex flex-around">
           <div>
-            <Select
-              options={options}
-              value={selectedFrequency}
-              onChange={handleChangeFrequency}
+            <div className="flex flex-center medium">Fetch frequency :</div>
+
+            <div>
+              <Select
+                options={options}
+                value={selectedFrequency}
+                onChange={handleChangeFrequency}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="flex flex-center medium">Latency treshold :</div>
+            <div>
+              <Select
+                options={optionsLimit}
+                value={selectedLimit}
+                onChange={handleChangeLimit}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="card">
+        <div className="flex flex-around">
+          <div>
+            <div className="flex flex-center medium">Time period :</div>
+            <DateFilter start={start} end={end} onChange={handleChangeDate} />
+          </div>
+
+          <div>
+            <div className="flex flex-center medium">Display mode :</div>
+            <ToggleSelect
+              options={toggleOptions}
+              toggleChange={toggleChange}
+              value={selectView}
             />
           </div>
-        )}
 
-        <div>
-          <Select
-            value={selectedStatus}
-            options={optionsStatus}
-            onChange={handleChangeStatus}
-          />
+          <div>
+            <div className="flex flex-center medium">Status :</div>
+            <Select
+              value={selectedStatus}
+              options={optionsStatus}
+              onChange={handleChangeStatus}
+            />
+          </div>
+          <div>
+            <div className="flex flex-center medium">Responses limit :</div>
+            <Select
+              value={selectedOptionsLimitResponse}
+              options={optionsLimitResponse}
+              onChange={handleSelectedOptionsLimitResponse}
+            />
+          </div>
         </div>
       </div>
-      <div>
-        <ToggleSelect
-          options={toggleOptions}
-          toggleChange={toggleChange}
-          value={selectView}
-        />
-      </div>
-      {filteredResponseList.length < 1 ? (
-        <div>Pas de réponse dispo</div>
+
+      {loading ? (
+        <div>Loading...</div>
+      ) : filteredResponseList.length < 1 ? (
+        <div>No response...</div>
       ) : !selectView ? (
-        <PaginatedItemList items={filteredResponseList} itemsPerPage={10} />
+        <PaginatedItemList
+          items={filteredResponseList}
+          itemsPerPage={10}
+          limit={selectedLimit}
+        />
       ) : (
         <HistoryChart chartData={chartData} />
       )}
     </div>
   );
 }
-// { selectView ? (<PaginatedItemList items={filteredResponseList} itemsPerPage={10} />): (<HistoryChart chartData={chartData} />)

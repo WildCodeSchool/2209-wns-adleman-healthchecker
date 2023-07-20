@@ -11,7 +11,7 @@ import { buildSchema } from "type-graphql";
 import { UrlResolver } from "./resolver/UrlResolver";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import startCron from "./services/cronService";
+import { UrlService } from "./services/UrlService";
 
 import customAuthChecker from "./auth/customAuthChecker";
 
@@ -65,7 +65,8 @@ const start = async (): Promise<void> => {
     console.log(`🚀 Server ready at ${env.SERVER_HOST}:${env.SERVER_PORT}`)
   );
 
-  await startCron();
+  const urlService = new UrlService();
+  await urlService.periodicFetchUrl();
 };
 
 void start();

@@ -7,5 +7,5 @@ test.afterAll(disconnectFromDb);
 
 test("can view title on homepage", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByTestId(`accueil`)).toContainText("Accueil");
+  await expect(page.getByTestId(`accueil`)).toContainText("Home");
 });

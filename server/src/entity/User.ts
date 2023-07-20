@@ -1,7 +1,13 @@
 import { argon2id, hash, verify } from "argon2";
 import { IsEmail, Matches, MinLength } from "class-validator";
 import { Field, InputType, ObjectType } from "type-graphql";
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from "typeorm";
 
 import UserToUrl from "./UserToUrl";
 
@@ -28,6 +34,14 @@ class User {
   @Field()
   @Column({ enum: ["visitor", "admin"], default: "visitor" })
   role: Role;
+
+  @Field()
+  @UpdateDateColumn({ default: () => "CURRENT_TIMESTAMP" })
+  last_connection: Date;
+
+  // @Field(() => Date)
+  // @UpdateDateColumn({ type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
+  // last_connection: Date;
 
   // @ManyToMany(() => Url, (u) => u.users, { cascade: true })
   // @JoinTable()

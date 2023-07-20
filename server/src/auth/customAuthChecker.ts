@@ -18,7 +18,7 @@ const customAuthChecker = async (
   const tokenInCookie = context.req.cookies?.token;
   const token = tokenInHeaders ?? tokenInCookie;
 
-  console.log({ tokenInCookie, tokenInHeaders });
+  // console.log({ tokenInCookie, tokenInHeaders });
 
   try {
     let decoded;
@@ -34,7 +34,11 @@ const customAuthChecker = async (
       .getRepository(User)
       .findOne({ where: { id: context.jwtPayload.userId } });
 
-  if (context.req.body.operationName === "createUrl" && token === undefined) {
+  if (
+    (context.req.body.operationName === "createUrl" ||
+      context.req.body.operationName === "getUrlById") &&
+    token === undefined
+  ) {
     return true;
   }
 

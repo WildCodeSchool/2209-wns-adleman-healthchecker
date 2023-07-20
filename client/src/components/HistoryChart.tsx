@@ -15,6 +15,9 @@ export const HistoryChart = ({ chartData }: any) => {
               display: false,
             },
           },
+          animation:{
+            duration: 0
+          }
         }}
       />
     </div>
