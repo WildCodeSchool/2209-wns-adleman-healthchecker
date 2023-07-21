@@ -74,8 +74,6 @@ export class UserResolver {
       where: { id: ctx.currentUser?.id },
     });
 
-    console.log(ctx);
-
     return profile as User;
   }
 

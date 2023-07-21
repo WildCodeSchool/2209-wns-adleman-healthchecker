@@ -1,5 +1,5 @@
 .customSelect {
-  width: 150px;
+  width: 100px;
   height: 48px;
   border: 1px solid #d8dae8;
   color: #555;
@@ -8,6 +8,11 @@
   border-radius: 5px;
   background-color: #fff;
 }
+
+.settings .customSelect {
+  width: 150px;
+}
+
 .customSelect:hover {
   cursor: pointer;
 }

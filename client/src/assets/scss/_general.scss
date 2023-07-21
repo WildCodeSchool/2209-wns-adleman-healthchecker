@@ -166,11 +166,11 @@ input {
 
   & > span {
     &:first-child {
-      margin-right: $space-medium;
+      margin-right: $space-little;
     }
 
     &:last-child {
-      margin-left: $space-medium;
+      margin-left: $space-little;
     }
 
     &.selected {
@@ -240,8 +240,8 @@ input {
 }
 
 input[type="datetime-local"] {
-  width: 6rem;
-  margin-right: $space-little;
+  width: 5rem;
+  margin-right: $space-xlittle;
 }
 
 .error {

@@ -247,7 +247,7 @@ export default function History() {
     <div className="container">
       <h2>{data?.getUrlById && formatUrl(data?.getUrlById.url.url)}</h2>
       {currentUser && (
-        <div className="card flex flex-around">
+        <div className="card flex flex-around settings">
           <div>
             <div className="flex flex-center medium">Fetch frequency :</div>
 
@@ -275,17 +275,24 @@ export default function History() {
       <div className="card">
         <div className="flex flex-around">
           <div>
-            <div className="flex flex-center medium">Time period :</div>
-            <DateFilter start={start} end={end} onChange={handleChangeDate} />
-          </div>
-
-          <div>
             <div className="flex flex-center medium">Display mode :</div>
             <ToggleSelect
               options={toggleOptions}
               toggleChange={toggleChange}
               value={selectView}
             />
+          </div>
+          <div>
+            <div className="flex flex-center medium">Count :</div>
+            <Select
+              value={selectedOptionsLimitResponse}
+              options={optionsLimitResponse}
+              onChange={handleSelectedOptionsLimitResponse}
+            />
+          </div>
+          <div>
+            <div className="flex flex-center medium">Time period :</div>
+            <DateFilter start={start} end={end} onChange={handleChangeDate} />
           </div>
 
           <div>
@@ -296,30 +303,21 @@ export default function History() {
               onChange={handleChangeStatus}
             />
           </div>
-          <div>
-            <div className="flex flex-center medium">Responses limit :</div>
-            <Select
-              value={selectedOptionsLimitResponse}
-              options={optionsLimitResponse}
-              onChange={handleSelectedOptionsLimitResponse}
-            />
-          </div>
         </div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : filteredResponseList.length < 1 ? (
+          <div>No response...</div>
+        ) : !selectView ? (
+          <PaginatedItemList
+            items={filteredResponseList}
+            itemsPerPage={10}
+            limit={selectedLimit}
+          />
+        ) : (
+          <HistoryChart chartData={chartData} />
+        )}
       </div>
-
-      {loading ? (
-        <div>Loading...</div>
-      ) : filteredResponseList.length < 1 ? (
-        <div>No response...</div>
-      ) : !selectView ? (
-        <PaginatedItemList
-          items={filteredResponseList}
-          itemsPerPage={10}
-          limit={selectedLimit}
-        />
-      ) : (
-        <HistoryChart chartData={chartData} />
-      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useGetUrlsByUserIdQuery } from "../graphql/generated/schema";
 import Modal from "../components/Modal";
 
@@ -20,7 +20,7 @@ interface IUrl {
   responses: IResponse[];
 }
 
-interface IProfileProps {
+interface IMyUrlProps {
   currentUser: {
     profile: {
       id: number;
@@ -36,8 +36,13 @@ interface IUrlId {
   id: number;
 }
 
-export default function MyUrl({ currentUser }: IProfileProps) {
+export default function MyUrl({ currentUser }: IMyUrlProps) {
   let navigate = useNavigate();
+
+  const location = useLocation();
+  const fromLogin = location.state?.fromLogin;
+
+  console.log(fromLogin);
 
   const [urlList, setUrlList] = useState<IUrl[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -64,7 +69,7 @@ export default function MyUrl({ currentUser }: IProfileProps) {
           arrTreshold.push({ id: u.url.id, url: u.url.url });
       });
     });
-    if (arrTreshold.length > 0) setIsModalOpen(true);
+    if (arrTreshold.length > 0 && fromLogin) setIsModalOpen(true);
     setUrlListTreshold(arrTreshold);
 
     if (data?.getUrlsByUserId) {
